@@ -79,15 +79,14 @@ Basically we decide if we specifically need unordered "bags" of data. If so, enc
 
 
 
-```mermaid
+{{< mermaid >}}
   flowchart LR;
       A[Array to Polynomial] --> B{Is the data unordered?};
       B -- Unordered --> C[Roots];
       B -- Ordered or don't care --> D{Open data from polynomial later?};
       D -- Yes --> E[Evaluation Points];
       D -- No --> F[Coefficients];
-
-```
+{{< /mermaid >}}
 
 The short answer is to start with evaluation point encoding until you realize you need something different.
 
