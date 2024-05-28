@@ -1,0 +1,16 @@
+baseURL = 'https://madibagroup.github.io/2024-Gadgets/'
+languageCode = 'en-us'
+title = 'Handbook'
+theme = 'hugo-book'
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.extensions]
+      [markup.goldmark.extensions.passthrough]
+        enable = true
+        [markup.goldmark.extensions.passthrough.delimiters]
+          block = [['\[', '\]'], ['$$', '$$']]
+          inline = [['\(', '\)'], ['$', '$']]
+[params]
+  math = true
+  BookMenuBundle = '/menu'
