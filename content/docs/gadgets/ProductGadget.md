@@ -13,7 +13,7 @@
 - The prover then commits to these two polynomials (e.g. with KZG)
 - The prover also commits to $P_{B'}(x):= P_{B}(x \cdot \omega)$. In other words, $P_B'(x)$ is the interpolation of the array $B'$ such that $B'_i = B_{i + 1}$, except $B'_{n-1}$, which is equal to $B_0$
 - To prove $abcde = z$ the prover simply opens the commitment to $P_B(x)$ at $x = \omega^0 = 1$​ 
-- To prove $B_i = A_iB_{i-1} \forall i$ we define $Q(X) = P_A(x)P_{B'}(x) - P_B(x)$ and show it vanishes for $1 \leq x \leq n - 1$​ (this is a separate gadget)
+- To prove $B_i = A_iB_{i-1} \forall i$ we define $Q(X) = P_A(x)P_{B'}(x) - P_B(x)$ and show it vanishes for $x = \omega^i$ for $0 \leq i \leq n-1$ (this is a separate gadget)
 - For $z \neq 1$ we fix the edge case by multiplying $Q(x)$ by $(x - \omega^{n-1})$, making $\omega^{n-1}$ a root. Then $Q(x)$ vanished at $\omega^{n-1}$, even though  $B_i = A_iB_{i-1} \forall i$ doesn't hold for $i = n - 1$. In this case, $Q(X) = (P_A(x)P_{B'}(x) - P_B(x))(x - \omega^{n-1})$
 
 **Verifier Level**
@@ -46,5 +46,5 @@
 
   Thus this equation, which the verifier can calculate, is used to verify that $Q(x)$ is the correct polynomial.
 
-- need to verify $Q(x)$ vanished on domain (this is a separate gadget) 
+- need to verify $Q(x)$ vanished on $x = \omega^i$ for $0 \leq i \leq n-1$ (this is a separate gadget) 
 
