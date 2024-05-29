@@ -8,4 +8,5 @@ headless: true
 
 - [**Gadgets**]({{< relref "/docs/gadgets" >}})
 - [Mult2]({{< relref "/docs/gadgets/mult2" >}})
+- [ProdGadget]({{< relref "/docs/gadgets/ProductGadget" >}})
 <br />
