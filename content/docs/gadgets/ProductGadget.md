@@ -1,50 +1,27 @@
 **Array Level**
 
-- Prover has A = {a, b, c, d, e} and wants to show the $\prod A= z$
-- Prover computes the accumulator B = {abcde, bcde, cde, de, e}
-- To prove $\prod A= z$, it suffices to show that (i) $abcde = z$ and (ii) $B_i = A_iB_{i+1} \forall i$​​
-- Note that (ii) doesn't hold in general for $i = n -1$, the last entry of A. We can deal with the simpler special case $z = 1$, and separately for $z \neq 1$​ 
-- For $z = 1$, (ii) holds for $n - 1$, assuming the indices wrap around (this works if we use an nth root of unity, where n is the length of the array)
-- For $z \neq 1$, the edge case will be fixed with an extra condition when we define our polynomial 
+The prover has a list of value $A = [a_0, a_1, a_2, \dots, a_{n-1}]$  and wishes to commit to and prove that product of all entries in $A$ equals some value $z$. In other words, that $\prod_{i = 0}^{n-1} a_i= z$. First, the prover will compute an accumulator, $B$ according to the following rules: $i)  B_i = A_i \cdot B_{i+1} \space 0 \leq i \lt n-1$ and $ii)B_{n-1} = A_{n-1}$. Then $B_0 = z$. To prove that $\prod_{i = 0}^{n-1} a_i= z$, it suffices for the prover to demonstrate that $B_0 = z$ and that $i)$ and $ii)$ hold, and that $B_0 = z$.
 
 **Polynomial Level**
 
-- The prover interpolates A and B to get $P_A(x)$ and $P_B(x)$, with the y values as the entries in the array and the x values as powers of an nth root of unity. For example $P_A(X)$ passes through ($\omega^0$, a), ($\omega^1$, b), ($\omega^2$, c), ($\omega^3$, d), ($\omega^4$, e)
-- The prover then commits to these two polynomials (e.g. with KZG)
-- The prover also commits to $P_{B'}(x):= P_{B}(x \cdot \omega)$. In other words, $P_B'(x)$ is the interpolation of the array $B'$ such that $B'_i = B_{i + 1}$, except $B'_{n-1}$, which is equal to $B_0$
-- To prove $abcde = z$ the prover simply opens the commitment to $P_B(x)$ at $x = \omega^0 = 1$​ 
-- To prove $B_i = A_iB_{i-1} \forall i$ we define $Q(X) = P_A(x)P_{B'}(x) - P_B(x)$ and show it vanishes for $x = \omega^i$ for $0 \leq i \leq n-1$ (this is a separate gadget)
-- For $z \neq 1$ we fix the edge case by multiplying $Q(x)$ by $(x - \omega^{n-1})$, making $\omega^{n-1}$ a root. Then $Q(x)$ vanished at $\omega^{n-1}$, even though  $B_i = A_iB_{i-1} \forall i$ doesn't hold for $i = n - 1$. In this case, $Q(X) = (P_A(x)P_{B'}(x) - P_B(x))(x - \omega^{n-1})$
+The prover interpolates $A$ and $B$ to get $P_A(x)$ and $P_B(x)$. To do so, an $n$th root of unity (which we will call $\omega$) is used, and the values of $A$ and $B$ are paired with the powers of this root of unity as follows: $(\omega^0, a_0), (\omega^1, a_1), \dots, (\omega^{n-1}, a_{n-1})$ and similarly for $B$. Then the interpolation (using the fast fourier transform (FFT)) creates a polynomial that passes through the points represented by these tuples. We also define $H$ as the set $[\omega^0, \omega^1, \dots, \omega^{n-1}]$. We are assuming that $n$ is a power of 2, so that we can use FFT. In practice, if it is not, then a power of 2 greater than $n$, say $2^m$, is used and the last $2^m - n$ entries of $A$ are padded with 1s.
+
+The prover then compute $W_1(x) = [P_B(x) - P_B(x\omega) \cdot P_a(x))] \cdot (x - \omega^{n-1})$ and $W_2(x) = [P_A(x) - P_B(x)] \cdot \frac{x^n - 1} {x - w^{n-1}}$. If $W_1$ is vanishing on $H$, then $i)$ holds for $0 \leq i \lt n$. We note that the $(x - \omega^{n-1})$ is included in the equation to add a root at $x = n -1$, since $i)$ does not hold for $i = n -1 $ (unless $z = 1$, in which case the ($x - \omega^{n-1}$) is unnecessary). Similarly, If $W_2$ is vanishing on $H$, then $ii)$ holds. We note that multiplying [$P_A(x) - P_B(x)]$ by $\frac{x^n - 1} {x - w^{n-1}}$ zeroes $W_2$ on all of $H$ except $\omega^{n-1}$, thus $W_2$ vanishing on $H$ is testing only the equality of $A_{n-1}$ and $B_{n-1}$​.
+
+The prover then computes $Q_1(x) = \frac{W_1(x)}{x^n - 1}$ and $Q_2(x) = \frac{W_2(x)}{x^n - 1}$. Since $x^n - 1$ is the vanishing polynomial for $H$, if $Q_1$ and $Q_2$ are polynomials (and not rational functions), then $W_1$ and $W_2$ must be vanishing on $H$.
+
+The prover then commits to $P_A$, $P_B$, $Q_1$, and $Q_2$. They then hash the four commitments to get a random challenge, $\tau$. They open $P_A(\tau), P_B(\tau), Q_1(\tau), Q_2(\tau),$ and $P_B(\tau \cdot \omega)$ to demonstrate that $Q_1$ and $Q_2$ are polynomials, as defined above $-$ thus $i)$ and $ii)$ hold. They also open $P_B(1)$, showing that $B_0 = z$. Thus they have demontrated that $\prod_{i = 0}^{n-1} a_i= z$.
 
 **Verifier Level**
 
-- verify $P_A(x)$ and $P_B(x)$ are correct interpolations of A and B (checking $Q(x)$​ vanishes is checking they are defined properly in terms of each other - do we have to verify that they accurately correspond to the array in any way?)
+The verifier first checks that $\tau$​ is correct by hashing the four commitments which have been sent to them by the prover.
 
-- verify $P_{B'}(x)$ is correct, i.e. $P_{B'}(x) = P_{B}(x \omega)$. To do so, the verifier sends a random challenge value $u$. The prover then sends $P_{B'}(u), P_{B}(u\omega)$ and $u\omega$ as well as a proof $\pi$ that these openings are correct. If the proof $\pi$ is correct and $P_B'(u) = P_B(u\omega)$, then with high probability we can say that $P_{B'}(x) = P_B(x\omega)$. By the Fiat-Shamir, this can also be done non-interactively.
+Next, the verifier checks that the evaluations $P_A(\tau), P_B(\tau), Q_1(\tau), Q_2(\tau),$ and $P_B(\tau \cdot \omega)$​ sent to them by the prover are correct. This can be done (assuming we are working with KZG) as a single batch opening. 
 
--  verify opening of $P_A(x)$​ at $x = \omega^0 = 1$ (KZG let's us do this)
+The verifier will then check the following two equalities, so make sure that $Q_1$ and $Q_2$​ were defined as they should be:
 
-- verify $Q(x)$ is defined properly; this can be done using the commitments to $P_A(x)$, $P_B(x)$, and $P_{B'}(x)$ which the verifier has, and a pairing operation. The verifier wishes to check the following:
+​	$a) \space [P_B(\tau) - P_B(\tau \cdot \omega)\cdot P_A(\tau)] \cdot (\tau - \omega^{n-1}) = (\tau^n - 1) \cdot Q_1(\tau)$​ 
 
-  ​	$comm(Q(x)) = comm(P_A(x)) \cdot P_{B'}(x) - P_B(x))$​​
+​	$b) \space \frac{P_A(\tau) - P_B(\tau)}{\tau - \omega^{n-1}} = Q_2(\tau)$
 
-  By the homomorphic property of the commitment, we could rewrite the equation as the following:
-
-  ​	$comm(Q(x)) = comm(P_A(x)) \cdot P_{B'}(x)) - comm(P_B(x))$​
-
-  But then we get stuck trying to deal with the mulitplication. Instead, the verifier must use a pairing operation to check the equality. First, we will rewrite our equation in terms of the group element used for the commitment:
-
-  ​	$g^{Q(\tau)} = g^{P_A(\tau) \cdot P_{B'}(\tau) - P_B(\tau)}$​
-
-  Now, we note the above equation holds if and only if the following equation (using pairings) holds:
-
-  ​	$e(g,g)^{Q(\tau)}= e(g, g)^{P_A(\tau)\cdot P_{B'}(\tau) - P_B(\tau)}$​
-
-  Which is equivalent to:
-
-  ​	$e(g, g^{Q(\tau)}) = e(g^{P_A(\tau)}, g^{P_{B'}(\tau)}) \cdot e(g, (g^{P_B(\tau)})^{-1})$​​
-
-  Thus this equation, which the verifier can calculate, is used to verify that $Q(x)$ is the correct polynomial.
-
-- need to verify $Q(x)$ vanished on $x = \omega^i$ for $0 \leq i \leq n-1$ (this is a separate gadget) 
-
+Finally, the verifier will check the opening of $P_B(1)$. This value is $z$, and they have verified that it is equal to the product of the entries in $A$.
