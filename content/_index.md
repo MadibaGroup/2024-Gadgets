@@ -1,5 +1,5 @@
 ---
-title: Introduction
+title: Plonkbook
 type: docs
 ---
 
@@ -27,7 +27,7 @@ TBD
 
 
 
-## Basic Gadgets
+## Gadgets
 
 Below is a quick summary of various gadgets you can use in your Poly-IOP systems.
 
@@ -59,10 +59,6 @@ Below is a quick summary of various gadgets you can use in your Poly-IOP systems
 | mult1 | $\mathsf{Arr}_3=\mathsf{Arr}_1 \cdot \mathsf{Arr}_2$         | Array $\mathsf{Arr}_3$ is the element-wise multiplication of $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$. |
 | mult2 | $\mathsf{Prod}_\mathsf{Arr}=\prod_{i = 0}^{n-1} \mathsf{Arr}[i]$ | $\mathsf{Prod}_\mathsf{Arr}$ is the disclosed product of all the elements in array $\mathsf{Arr}$. |
 | mult3 | $\prod_{i = 0}^{n-1} \mathsf{Arr}_1[i]=\prod_{i = 0}^{n-1} \mathsf{Arr}_2[i]$ | Arrays $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$ have the same undisclosed product. |
-
-
-
-## Intermediate Gadgets
 
 
 
@@ -100,13 +96,9 @@ Below is a quick summary of various gadgets you can use in your Poly-IOP systems
 
 
 
-# Advanced Gadgets
-
-
-
 ### Circuit Evaluations
 
-| Type  | Description            | Recap                                                        |
-| ----- | ---------------------- | ------------------------------------------------------------ |
-| plonk | $z=\mathsf{Circ}(x,y)$ | $z$ is the output of disclosed arithmetic circuit $\mathsf{Circ}$ with disclosed (and/or undisclosed) inputs $x$ and $y$. |
+| Type    | Description            | Recap                                                        |
+| ------- | ---------------------- | ------------------------------------------------------------ |
+| circuit | $z=\mathsf{Circ}(x,y)$ | $z$ is the output of disclosed arithmetic circuit $\mathsf{Circ}$ with disclosed (and/or undisclosed) inputs $x$ and $y$. |
 
