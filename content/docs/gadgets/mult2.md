@@ -78,17 +78,17 @@ The prover has a list of value $A = [a_0, a_1, a_2, \dots, a_{n-1}]$  and wishes
 
 ## Polynomial Level
 
-We assume arrays are encoded as y-coordinates into a univariant polynomial where the x-coordinates are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of this domain $\mathcal{H}$.
+We assume arrays are encoded as y-coordinates into a univariant polynomial where the x-coordinates are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of this domain $H$.
 
 In polynomial form, the three constraints are:
 
-1. For $X=w^\kappa$: $\mathsf{Poly}_\mathsf{Acc}(X)=\mathsf{Poly}_\mathsf{Arr}(X)$,
+1. For $X=w^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc}(X)=\mathsf{Poly}_\mathsf{Arr}(X)$,
 2. For all $X$ except $X=\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc}(X)=\mathsf{Poly}_\mathsf{Arr}(X)\cdot\mathsf{Poly}_\mathsf{Acc}(\omega\cdot X)$ 
 3. For $X=w^0$: $\mathsf{Poly}_\mathsf{Acc}(X)=\mathsf{Prod}_\mathsf{Arr}$
 
 We adjust each of these constraints to show an equality with 0:
 
-1. For $X=w^\kappa$: $\mathsf{Poly}_\mathsf{Acc}(X)-\mathsf{Poly}_\mathsf{Arr}(X)=0$,
+1. For $X=w^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc}(X)-\mathsf{Poly}_\mathsf{Arr}(X)=0$,
 2. For all $X$ except $X=\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc}(X)-\mathsf{Poly}_\mathsf{Arr}(X)\cdot\mathsf{Poly}_\mathsf{Acc}(\omega\cdot X)=0$ 
 3. For $X=w^0$: $\mathsf{Poly}_\mathsf{Acc}(X)-\mathsf{Prod}_\mathsf{Arr}=0$​
 
@@ -108,7 +108,7 @@ These equations are true for every value of $X \in \mathbb{G}_\kappa$ (but not n
 
 The prover interpolates $A$ and $B$ to get $P_A(x)$ and $P_B(x)$. To do so, an $n$th root of unity (which we will call $\omega$) is used, and the values of $A$ and $B$ are paired with the powers of this root of unity as follows: $(\omega^0, a_0), (\omega^1, a_1), \dots, (\omega^{n-1}, a_{n-1})$ and similarly for $B$. Then the interpolation (using the fast fourier transform (FFT)) creates a polynomial that passes through the points represented by these tuples. We also define $H$ as the set $[\omega^0, \omega^1, \dots, \omega^{n-1}]$. We are assuming that $n$ is a power of 2, so that we can use FFT. In practice, if it is not, then a power of 2 greater than $n$, say $2^m$, is used and the last $2^m - n$ entries of $A$ are padded with 1s.
 
-The prover then compute $W_1(x) = [P_B(x) - P_B(x\omega) \cdot P_a(x))] \cdot (x - \omega^{n-1})$ and $W_2(x) = [P_A(x) - P_B(x)] \cdot \frac{x^n - 1} {x - w^{n-1}}$. If $W_1$ is vanishing on $H$, then $i)$ holds for $0 \leq i \lt n$. We note that the $(x - \omega^{n-1})$ is included in the equation to add a root at $x = n -1$, since $i)$ does not hold for $i = n -1 $ (unless $z = 1$, in which case the ($x - \omega^{n-1}$) is unnecessary). Similarly, If $W_2$ is vanishing on $H$, then $ii)$ holds. We note that multiplying [$P_A(x) - P_B(x)]$ by $\frac{x^n - 1} {x - w^{n-1}}$ zeroes $W_2$ on all of $H$ except $\omega^{n-1}$, thus $W_2$ vanishing on $H$ is testing only the equality of $A_{n-1}$ and $B_{n-1}$​.
+The prover then computes $W_1(x) = [P_B(x) - P_B(x\omega) \cdot P_a(x)] \cdot (x - \omega^{n-1})$ and $W_2(x) = [P_A(x) - P_B(x)] \cdot \frac{x^n - 1} {x - w^{n-1}}$. If $W_1$ is vanishing on $H$, then $i)$ holds for $0 \leq i \lt n$. We note that the $(x - \omega^{n-1})$ is included in the equation to add a root at $x = n -1$, since $i)$ does not hold for $i = n -1 $ (unless $z = 1$, in which case the ($x - \omega^{n-1}$) is unnecessary). Similarly, If $W_2$ is vanishing on $H$, then $ii)$ holds. We note that multiplying [$P_A(x) - P_B(x)]$ by $\frac{x^n - 1} {x - w^{n-1}}$ zeroes $W_2$ on all of $H$ except $\omega^{n-1}$, thus $W_2$ vanishing on $H$ is testing only the equality of $A_{n-1}$ and $B_{n-1}$​.
 
 The prover then computes $Q_1(x) = \frac{W_1(x)}{x^n - 1}$ and $Q_2(x) = \frac{W_2(x)}{x^n - 1}$. Since $x^n - 1$ is the vanishing polynomial for $H$, if $Q_1$ and $Q_2$ are polynomials (and not rational functions), then $W_1$ and $W_2$ must be vanishing on $H$.
 
