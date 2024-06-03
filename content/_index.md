@@ -5,6 +5,7 @@ type: docs
 
 # Plonkbook: A Handbook for Poly-IOP Gadgets 
 
+*A handbook for gadgets in the polynomial interactive oracle proof (Poly-IOP) model used by Plonk.*
 
 *Contributors: Elizabeth van Oorschot (McGill), Youwei Deng (Concordia), & Jeremy Clark (Concordia)*
 
