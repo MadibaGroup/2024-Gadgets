@@ -78,7 +78,7 @@ The prover has a list of value $A = [a_0, a_1, a_2, \dots, a_{n-1}]$  and wishes
 
 ## Polynomial Level
 
-We assume arrays are encoded as y-coordinates into a univariant polynomial where the x-coordinates are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element. 
+We assume arrays are encoded as y-coordinates into a univariant polynomial where the x-coordinates are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of this domain $\mathcal{H}$.
 
 In polynomial form, the three constraints are:
 

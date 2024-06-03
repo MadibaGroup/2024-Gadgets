@@ -2,11 +2,14 @@
 headless: true
 ---
 
-- [**Background**]({{< relref "/docs/background" >}})
+- **Background**
+
 - [Poly IOP]({{< relref "/docs/background/poly-iop" >}})
 <br />
 
-- [**Gadgets**]({{< relref "/docs/gadgets" >}})
+- **Gadgets**
+
 - [Mult2]({{< relref "/docs/gadgets/mult2" >}})
-- [ProdGadget]({{< relref "/docs/gadgets/ProductGadget" >}})
-<br />
+
+
+  <br />
