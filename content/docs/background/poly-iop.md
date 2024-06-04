@@ -16,7 +16,7 @@ At the end of the protocol, $\mathcal{V}$ outputs **acc** if and only if the two
 
 Moreover, a Poly-IOP has to satisfy the following properties.
 
-**Definition 3 (Completeness).** If each pair of $(\mathcal{C}_{P_i},P_i)$ and $(\mathcal{C}_{Q_j},Q_j)$ is valid and $\{Q_j\}$ satisfy $\mathcal{R}(\{P_i\})$, $\text{Pr}[out_{\mathcal{V}}=\textbf{acc}]\ge{1}$.
+**Definition 3 (Completeness).** If each pair of $(\mathcal{C}_{P_i},P_i)$ and $(\mathcal{C}_{Q_j},Q_j)$ is valid and $\{Q_j\}$ satisfy $\mathcal{R}(\{P_i\})$, $\text{Pr}[out_{\mathcal{V}}=\textbf{acc}]=1$.
 
 **Definition 4 (Soundness).** If $(\mathcal{C}_{P_i},P_i)$ or $(\mathcal{C}_{Q_j},Q_j)$ are not a valid pair, or $\{Q_j\}$ does not satisfy $\mathcal{R}(\{P_i\})$, $\text{Pr}[out_{\mathcal{V}}=\textbf{rej}]\ge{1-\text{negl}(k)}$.
 
