@@ -112,25 +112,25 @@ Next we take care of the "for $X$" conditions by zeroing out the rest of the pol
 
 These equations are true for every value of $X \in \mathcal{H}_\kappa$ (but not necessarily true outside of these values) show we show each is a vanishing polynomial. 
 
-The prover then computes $Q_1(x) = \frac{\mathsf{Poly}_\mathsf{Vanish1}(X)}{x^n - 1}$ and $Q_2(x) = \frac{\mathsf{Poly}_\mathsf{Vanish2}(X)}{x^n - 1}$. Since $x^n - 1$ is the vanishing polynomial for $\mathcal{H}_\kappa$, if $Q_1$ and $Q_2$ are polynomials (and not rational functions), then $\mathsf{Poly}_\mathsf{Vanish1}(X)$ and $\mathsf{Poly}_\mathsf{Vanish2}(X)$ must be vanishing on $\mathcal{H}_\kappa$.
+The prover then computes $Q_1(x) = \frac{\mathsf{Poly}_\mathsf{Vanish1}(X)}{X^\kappa - 1}$,  $Q_2(x) = \frac{\mathsf{Poly}_\mathsf{Vanish2}(X)}{X^\kappa - 1}$, and $Q_3(x) = \frac{\mathsf{Poly}_\mathsf{Vanish3}(X)}{X^\kappa - 1}$. Since $X^\kappa - 1$ is the vanishing polynomial for $\mathcal{H}_\kappa$, if $Q_1$, $Q_2$, and $Q_3$ are polynomials (and not rational functions), then $\mathsf{Poly}_\mathsf{Vanish1}(X)$, $\mathsf{Poly}_\mathsf{Vanish2}(X)$, and $\mathsf{Poly}_\mathsf{Vanish2}(X)$ must be vanishing on $\mathcal{H}_\kappa$.
 
 ## Commitment Level
 
-The prover then commits to $\mathsf{Poly}_\mathsf{Acc}(X)$, $\mathsf{Poly}_\mathsf{Arr}(X)$, $Q_1$, and $Q_2$. They then hash the four commitments to get a random challenge, $\zeta$. They open $\mathsf{Poly}_\mathsf{Acc}(\zeta), \mathsf{Poly}_\mathsf{Arr}(\zeta), Q_1(\zeta), Q_2(\zeta),$ and $\mathsf{Poly}_\mathsf{Acc}(\zeta \cdot \omega)$ to demonstrate that $Q_1$ and $Q_2$ are polynomials, as defined above $-$ thus $i)$ and $ii)$ hold. They also open $\mathsf{Poly}_\mathsf{Arr}(1)$, showing that $\mathsf{Acc}[0] = \mathsf{Prod}_\mathsf{Arr}$. Thus they have demontrated that $\prod_{i = 0}^{n-1} \mathsf{Acc}[i]= \mathsf{Prod}_\mathsf{Arr}$.
+The prover then commits to $\mathsf{Poly}_\mathsf{Acc}(X)$, $\mathsf{Poly}_\mathsf{Arr}(X)$, $Q_1$, $Q_2$, and $Q3$. They then hash the five commitments to get a random challenge, $\zeta$. They open $\mathsf{Poly}_\mathsf{Acc}(\zeta), \mathsf{Poly}_\mathsf{Arr}(\zeta), Q_1(\zeta), Q_2(\zeta),$ $Q_3(\zeta)$, and $\mathsf{Poly}_\mathsf{Acc}(\zeta \cdot \omega)$ to demonstrate that $Q_1$, $Q_2$, and $Q_3$ are polynomials, as defined above $-$ thus $i)$ and $ii)$ hold, and $\mathsf{Acc}[0] = \mathsf{Prod}_\mathsf{Arr}$. Thus they have demontrated that $\prod_{i = 0}^{n-1} \mathsf{Acc}[i]= \mathsf{Prod}_\mathsf{Arr}$.
 
-The verifier first checks that $\zeta$ is correct by hashing the four commitments which have been sent to them by the prover.
+The verifier first checks that $\zeta$ is correct by hashing the five commitments which have been sent to them by the prover.
 
-Next, the verifier checks that the evaluations $\mathsf{Poly}_\mathsf{Acc}(\zeta), \mathsf{Poly}_\mathsf{Arr}(\zeta), Q_1(\zeta), Q_2(\zeta),$ and $P_B(\zeta \cdot \omega)$ sent to them by the prover are correct. This can be done (assuming we are working with KZG) as a single batch opening. 
+Next, the verifier checks that the evaluations $\mathsf{Poly}_\mathsf{Acc}(\zeta), \mathsf{Poly}_\mathsf{Arr}(\zeta), Q_1(\zeta), Q_2(\zeta),Q_3(\zeta)$, and $P_B(\zeta \cdot \omega)$ sent to them by the prover are correct. This can be done (assuming we are working with KZG) as a single batch opening. 
 
-The verifier will then check the following two equalities, so make sure that $Q_1$ and $Q_2$ were defined as they should be:
+The verifier will then check the following three equalities, so make sure that $Q_1$, $Q_2$, and $Q_3$ were defined as they should be:
 
-   $a) \space \mathsf{Poly}_\mathsf{Acc}(\zeta) - \mathsf{Poly}_\mathsf{Acc}(\zeta \cdot \omega)\cdot \mathsf{Poly}_\mathsf{Arr}(\zeta)] \cdot (\zeta - \omega^{n-1}) = (\zeta^n - 1) \cdot Q_1(\zeta)$ 
+$a) \space {\mathsf{Poly}_\mathsf{Arr}(\zeta) - \mathsf{Poly}_\mathsf{Acc}(\zeta)} = (\zeta - \omega^{\kappa-1})Q_1(\zeta) $
 
-   $b) \space \frac{\mathsf{Poly}_\mathsf{Arr}(\zeta) - \mathsf{Poly}_\mathsf{Acc}(\zeta)}{\zeta - \omega^{n-1}} = Q_2(\zeta)$
+$b)\space \mathsf{Poly}_\mathsf{Acc}(\zeta) - \mathsf{Poly}_\mathsf{Acc}(\zeta \cdot \omega)\cdot \mathsf{Poly}_\mathsf{Arr}(\zeta)] \cdot (\zeta - \omega^{\kappa-1}) = (\zeta^\kappa - 1) \cdot Q_2(\zeta)$
 
-Finally, the verifier will check the opening of $\mathsf{Poly}_\mathsf{Acc}(1)$. This value is $\mathsf{Prod}_\mathsf{Arr}$, and they have verified that it is equal to the product of the entries in $\mathsf{Arr}$.
+$c) \space (\mathsf{Poly}_\mathsf{Acc}(X)-\mathsf{Prod}_\mathsf{Arr}) = {(X-\omega^0)} \cdot Q_3(\zeta)$
 
-
+If these hold, then by the Schwartz–Zippel lemma, we can say that with very high probability $Q_1$, $Q_2$, and $Q_3$ and defined as they should be.
 
 ## Implementations
 
