@@ -141,10 +141,13 @@ If these hold, then by the Schwartz–Zippel lemma, we can say that with very hi
 
 ## Security Proof
 
-
-
 ### Completeness
 
 ### Soundness
 
 ### Zero-Knowledge
+
+- We define a simulator $S$ which selects a random value $\zeta'$ and compute commitments to $\mathsf{Poly}_\mathsf{Acc}(\zeta), \mathsf{Poly}_\mathsf{Arr}(\zeta), Q_1(\zeta), Q_2(\zeta),$ $Q_3(\zeta)$, and $\mathsf{Poly}_\mathsf{Acc}(\zeta \cdot \omega)$ such that the three equalities $a), b),$ and $c)$ above hold. It then interacts with the verifier to get a random challenge $\zeta$; if $\zeta' \neq \zeta$, then it rewinds and selects a new random value $\zeta'$.
+- Expected number of iterations to get a random value $\zeta'$ such that $\zeta' \neq \zeta$ is $| \mathbb{F} |$, so we rewind and run it up to $| \mathbb{F} |$ times (or $n \cdot | \mathbb{F} |$) times for some value $n$?). It outputs fail if it has not succeeded in generating $\zeta'$ such that $\zeta'  = \zeta$ by then. Thus it terminates after at most $| \mathbb{F} |$ iterations (or $n \cdot |\mathbb{F}|$​ iterations?) and it fails with negligible probability.3
+- The distribution for the view from this simulation is indistinguishable from that of a real execution, due to the hiding nature of the commitments in KZG
+
