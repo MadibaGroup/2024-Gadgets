@@ -1,5 +1,24 @@
 # Notes on Polynomial Interactive Oracle Proofs (Draft)
 
+## Definitions
+
+**Definition 1 (Polynomial Commitment Scheme).** A polynomial commitment scheme (PCS) is an interactive proof system that enables $\mathcal{P}$ to convince $\mathcal{V}$ that he knows a polynomial, without revealing the polynomial directly. $\mathcal{P}$ and $\mathcal{V}$ run the protocol in three moves: **gen**, **com**, and **open**. [Plonk]
+
+**Definition 2 (Polynomial IOP).** Let $\mathcal{R}$ be a set of the relations among polynomials $\{P_i\}$. Let $\mathcal{C}_{P_i}$ is the commitment to $P_i$. Given common inputs $\mathcal{R}(\{P_i\})$, $\{\mathcal{C}_{P_i}\}$ to $\mathcal{P}$ and $\mathcal{V}$, and private input $\{P_i\}$ to $\mathcal{P}$, they run the following protocol:
+1. $\mathcal{P}$ converts the relations into polynomials $\{Q_j\}$, commits to them, and sends to $\mathcal{V}$
+2. $\mathcal{V}$ sends a random challenge $\xi$
+3. $\mathcal{P}$ runs **open** for $\{P_i(\xi)\}$ and $\{Q_j(\xi)\}$ and outputs the result
+4. $\mathcal{V}$ checks:
+    - the evaluations of $P_i(\xi)$ and $Q_j(\xi)$ are correct
+    - $\{Q_j\}$ satisfy $\mathcal{R}(\{P_i\})$
+
+At the end of the protocol, $\mathcal{V}$ outputs **acc** if and only if the two conditions hold, otherwise **rej**.
+
+Moreover, a Poly-IOP has to satisfy the following properties.
+
+**Definition 3 (Completeness).** If each pair of $(\mathcal{C}_{P_i},P_i)$ and $(\mathcal{C}_{Q_j},Q_j)$ is valid and $\{Q_j\}$ satisfy $\mathcal{R}(\{P_i\})$, $\text{Pr}[out_{\mathcal{V}}=\textbf{acc}]\ge{1}$.
+
+**Definition 4 (Soundness).** If $(\mathcal{C}_{P_i},P_i)$ or $(\mathcal{C}_{Q_j},Q_j)$ are not a valid pair, or $\{Q_j\}$ does not satisfy $\mathcal{R}(\{P_i\})$, $\text{Pr}[out_{\mathcal{V}}=\textbf{rej}]\ge{1-\text{negl}(k)}$.
 
 ## Encoding Arrays of Data into Polynomials
 
