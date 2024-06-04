@@ -110,7 +110,7 @@ These equations are true for every value of $X \in \mathcal{H}_\kappa$ (but not 
 
 
 
-@Elizabeth Can you update from here down to end of commitment level with the new notation? Also can you change $\tau$ to $\zeta$ as $\tau$ is typically reserved for the trusted setup secret value ("powers of tau")? I think $Q$ is ok to keep for quotient polynomials. 
+@Elizabeth Can you update from here down to end of commitment level with the new notation? Also can you change $\tau$ to $\zeta$ as $\tau$ is typically reserved for the trusted setup secret value ("powers of tau")? I think $Q$ is ok to keep for quotient polynomials.
 
 
 
