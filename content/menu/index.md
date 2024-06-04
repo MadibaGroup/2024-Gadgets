@@ -9,7 +9,9 @@ headless: true
 
 - **Gadgets**
 
-- [Mult2]({{< relref "/docs/gadgets/mult2" >}})
+- [zero1]({{< relref "/docs/gadgets/zero1" >}})
+- [mult2]({{< relref "/docs/gadgets/mult2" >}})
 
 
-  <br />
+
+<br />
