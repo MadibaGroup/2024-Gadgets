@@ -126,9 +126,9 @@ The verifier will then check the following three equalities, so make sure that $
 
 $a) \space {\mathsf{Poly}_\mathsf{Arr}(\zeta) - \mathsf{Poly}_\mathsf{Acc}(\zeta)} = (\zeta - \omega^{\kappa-1})Q_1(\zeta) $
 
-$b)\space \mathsf{Poly}_\mathsf{Acc}(\zeta) - \mathsf{Poly}_\mathsf{Acc}(\zeta \cdot \omega)\cdot \mathsf{Poly}_\mathsf{Arr}(\zeta)] \cdot (\zeta - \omega^{\kappa-1}) = (\zeta^\kappa - 1) \cdot Q_2(\zeta)$
+$b)\space [\mathsf{Poly}_\mathsf{Acc}(\zeta) - \mathsf{Poly}_\mathsf{Acc}(\zeta \cdot \omega)\cdot \mathsf{Poly}_\mathsf{Arr}(\zeta)] \cdot (\zeta - \omega^{\kappa-1}) = (\zeta^\kappa - 1) \cdot Q_2(\zeta)$
 
-$c) \space (\mathsf{Poly}_\mathsf{Acc}(X)-\mathsf{Prod}_\mathsf{Arr}) = {(X-\omega^0)} \cdot Q_3(\zeta)$
+$c) \space \mathsf{Poly}_\mathsf{Acc}(\zeta)-\mathsf{Prod}_\mathsf{Arr}(\zeta) = {(\zeta -\omega^0)} \cdot Q_3(\zeta)$
 
 If these hold, then by the Schwartz–Zippel lemma, we can say that with very high probability $Q_1$, $Q_2$, and $Q_3$ and defined as they should be.
 
@@ -137,17 +137,23 @@ If these hold, then by the Schwartz–Zippel lemma, we can say that with very hi
 * [Rust](https://github.com/MadibaGroup/2024-Gadgets-Code/tree/main/src)
 * [Mathematica](https://github.com/MadibaGroup/2024-Gadgets-Code/tree/main/Mathematica) (Toy Example)
 
-
-
 ## Security Proof
 
 ### Completeness
 
+- Any honest verifier can do the computations explained above and create a successful proof.
+
 ### Soundness
+
+- Not perfect soundness, but computationally sound, since Pedersen commitments are not perfectly binding $-$ can we reduce the soundness of the product check to the soundness of Pedersen commitments?
+- Or; we can try to directly define and extractor for the product check. We define an $E$, which will extract $\mathsf{Poly}_\mathsf{Arr}$, as follows:
 
 ### Zero-Knowledge
 
-- We define a simulator $S$ which selects a random value $\zeta'$ and compute commitments to $\mathsf{Poly}_\mathsf{Acc}(\zeta), \mathsf{Poly}_\mathsf{Arr}(\zeta), Q_1(\zeta), Q_2(\zeta),$ $Q_3(\zeta)$, and $\mathsf{Poly}_\mathsf{Acc}(\zeta \cdot \omega)$ such that the three equalities $a), b),$ and $c)$ above hold. It then interacts with the verifier to get a random challenge $\zeta$; if $\zeta' \neq \zeta$, then it rewinds and selects a new random value $\zeta'$.
-- Expected number of iterations to get a random value $\zeta'$ such that $\zeta' \neq \zeta$ is $| \mathbb{F} |$, so we rewind and run it up to $| \mathbb{F} |$ times (or $n \cdot | \mathbb{F} |$) times for some value $n$?). It outputs fail if it has not succeeded in generating $\zeta'$ such that $\zeta'  = \zeta$ by then. Thus it terminates after at most $| \mathbb{F} |$ iterations (or $n \cdot |\mathbb{F}|$​ iterations?) and it fails with negligible probability.3
-- The distribution for the view from this simulation is indistinguishable from that of a real execution, due to the hiding nature of the commitments in KZG
+- The simulator $S$ generates an array $\mathsf{Arr'}$  whose product is equal to the disclosed value $\mathsf{Prod}_\mathsf{Arr}$ (this array could just have $\mathsf{Prod}_\mathsf{Arr}$ in one entry, and $1$'s elsewhere), then follows the same steps a prover would to prove the product of this array. So, $S$ computes the accumulator $\mathsf{Acc'}$ and interpolates the two arrays into there respective polynomials, $\mathsf{Poly}_\mathsf{Acc}(X)$ and $\mathsf{Poly}_\mathsf{Arr}(X)$. It computes $Q_1$, $Q_2$, and $Q3$ using  $\mathsf{Poly}_\mathsf{Acc}(X)$ and $\mathsf{Poly}_\mathsf{Arr}(X)$. It commits to each of these five polynomials, then hashes the commitments to get the random challenge $\zeta'$. It then sends creates commitments to $\mathsf{Poly}_\mathsf{Acc}(\zeta'), \mathsf{Poly}_\mathsf{Arr}(\zeta'), Q_1(\zeta'), Q_2(\zeta'),$ $Q_3(\zeta')$, and $\mathsf{Poly}_\mathsf{Acc}(\zeta' \cdot \omega)$. The transcript it generates this way will be (perfectly?) indistinguishable from a transcript generated from a real execution, since Pedersen commitments are perfectly hiding (since we are proving zk, we assume Pedersen commiments have been used in the protocol, as that is how it is made zk).
 
+Here is my previous (unsuccessful) attempt at a simulator. I've left it in case the above attempt is incorrect and we need to work with a more complicated simulator using rewinding, in which case perhaps the ideas below are still useful.
+
+- We define a simulator $S$ which selects a random value $\zeta'$ and compute commitments to  $\mathsf{Poly}_\mathsf{Acc}(X)$, $\mathsf{Poly}_\mathsf{Arr}(X)$, $Q_1$, $Q_2$, and $Q3$ as well as $\mathsf{Poly}_\mathsf{Acc}(\zeta'), \mathsf{Poly}_\mathsf{Arr}(\zeta'), Q_1(\zeta'), Q_2(\zeta'),$ $Q_3(\zeta')$, and $\mathsf{Poly}_\mathsf{Acc}(\zeta' \cdot \omega)$ such that the three equalities $a), b),$ and $c)$ above hold and each polynomial correctly opens to it's evaluation at $\zeta$. It then hashes the commitments to the five polynomials to get the random challenge $\zeta$; if $\zeta' \neq \zeta$, then it rewinds and selects a new random value $\zeta'$.
+- Expected number of iterations to get a random value $\zeta'$ such that $\zeta' = \zeta$ is $| \mathbb{F} |$, so we rewind and run it up to $| \mathbb{F} |$ times (or $n \cdot | \mathbb{F} |$) times for some value $n$?). It outputs fail if it has not succeeded in generating $\zeta'$ such that $\zeta'  = \zeta$ by then. Thus it terminates after at most $| \mathbb{F} |$ iterations (or $n \cdot |\mathbb{F}|$ iterations?) and it fails with negligible probability.
+- The distribution for the view from this simulation is (perfectly? computationally?) indistinguishable from that of a real execution (when we use Pedersen commitments to make it zk), since Pedersen commmitments are perfectly hiding.
