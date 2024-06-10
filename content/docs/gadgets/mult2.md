@@ -2,25 +2,15 @@
 
 ## Recap of types
 
-
-
 | Type      | Description                                                  | Recap                                                        | This |
 | --------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ---- |
 | [mult1]() | $\mathsf{Arr}_3=\mathsf{Arr}_1 \cdot \mathsf{Arr}_2$         | $\mathsf{Arr}_3$ is the element-wise multiplication of $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$. |      |
 | mult2     | $\mathsf{Prod}_\mathsf{Arr}=\prod_{i = 0}^{n-1} \mathsf{Arr}[i]$ | $\mathsf{Prod}_\mathsf{Arr}$ is the disclosed product of all the elements in $\mathsf{Arr}$. | ✅    |
 | mult3     | $\prod_{i = 0}^{n-1} \mathsf{Arr}_1[i]=\prod_{i = 0}^{n-1} \mathsf{Arr}_2[i]$ | $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$ have the same undisclosed product. |      |
 
-
-
-
-
 ## Relation
 
-
-
 $ \mathcal{R}_{\mathtt{mult2}} := \left\{ \begin{array}{l} (K_\mathsf{Arr},\mathsf{Prod}_\mathsf{Arr}) \end{array} \middle | \begin{array}{l} \mathsf{Arr} = [a_0, a_1, a_2, \dots, a_{n-1}], \\ \mathsf{Prod}_\mathsf{Arr} = \prod_{i = 0}^{n-1} a_i, \\ \mathsf{Poly}_\mathsf{Arr}=\mathsf{FFT.Interp}(\omega,\mathsf{Arr}), \\ K_\mathsf{Arr}=\mathsf{KZG.Commit}(\mathsf{Poly}_\mathsf{Arr}) \end{array} \right\} $
-
-
 
 ## Intuition
 
@@ -70,9 +60,9 @@ Last, while it is not necessary to do, it is often convenient to hold the the va
 * $ \mathsf{Acc} = [72, 84, 36, 65, 84, 67]$ 
 * $\mathsf{Prod}_\mathsf{Arr}=72$
 
+## Protocol Details
 
-
-## Array Level
+### Array Level
 
 * $\mathcal{P}$ holds an array $\mathsf{Arr} = [a_0, a_1, a_2, \dots, a_{n-1}]$ of $n$ integers ($a_i \in \mathbb{Z}_q$)
 * $\mathcal{P}$ computes array $\mathsf{Acc}$ as follows:
@@ -80,13 +70,11 @@ Last, while it is not necessary to do, it is often convenient to hold the the va
   * $\mathsf{Acc}[i]\leftarrow\mathsf{Arr}[i]\cdot\mathsf{Acc}[i+1]$ for $i$ from $n-2$ to 0
 * $\mathcal{P}$ computes $\mathsf{Prod}_\mathsf{Arr}\leftarrow\mathsf{Acc}[0]$
 
-
-
-## Polynomial Level
+### Polynomial Level
 
 We assume arrays $\mathsf{Arr}$ and $\mathsf{Acc}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 1 (which will not change the product).
 
-Recall the three constraints from the arrays: 
+Recall the three constraints we want to prove: 
 
 1. The first value in $\mathsf{Acc}$ matches the first value in $\mathsf{Arr}$,
 2. The rest of the values in $\mathsf{Acc}$ are of the form $\mathsf{Acc}[i]=\mathsf{Arr}[i]\cdot\mathsf{Acc}[i-1]$,
@@ -118,8 +106,6 @@ These equations are true for every value of $X \in \mathcal{H}_\kappa$ (but not 
 2. $Q_2(X) = \frac{\mathsf{Poly}_\mathsf{Vanish2}(X)}{X^\kappa - 1}$
 3. $Q_3(X) = \frac{\mathsf{Poly}_\mathsf{Vanish3}(X)}{X^\kappa - 1}$​​
 
-### Optimization
-
 We can replace polynomials $Q_1(X)$, $Q_2(X)$, and $Q_3(X)$ with a single polynomial $Q(X)$. We can do this because all three constraints have the same format: $\mathsf{Poly}_\mathsf{Vanish_i}(X)=0$. The batching technique is to create a new polynomial with all three $\mathsf{Poly}_\mathsf{Vanish_i}(X)$ values as coefficients. If and (overwhelmingly) only if all three are vanishing, then so will the new polynomial. This polynomial will be evaluated at a random challenge point $\rho$ selected after the commitments to the earlier polynomials are fixed. 
 
 $Q(X) = \frac{\mathsf{Poly}_\mathsf{Vanish1}(X) + \mathsf{Poly}_\mathsf{Vanish2}(X) \rho  +  \mathsf{Poly}_\mathsf{Vanish3}(X)\rho^2}{X^n - 1}$
@@ -128,17 +114,13 @@ By rearranging, we can get $\mathsf{Poly}_\mathsf{Zero}(X)$ as a true zero polyn
 
 $\mathsf{Poly}_\mathsf{Zero}(X)=\mathsf{Poly}_\mathsf{Vanish1}(X) + \rho \mathsf{Poly}_\mathsf{Vanish2}(X) + \rho^2 \mathsf{Poly}_\mathsf{Vanish3}(X) - Q(X)\cdot (X^n - 1)=0$​​​
 
-### Final Steps
-
 Ultimately the mult2 argument will satisfy the following constraints at the Commitment Level:
 
 1. Show $Q(X)$​ exists (as a polynomial that evenly divides the divisor)
 2. Show $\mathsf{Poly}_\mathsf{Zero}(X)$ is correctly constructed from $\mathsf{Poly}_\mathsf{Acc}(X)$,  $\mathsf{Poly}_\mathsf{Acc}(\omega X)$, $\mathsf{Poly}_\mathsf{Arr}(X)$, and $\mathsf{Prod}_\mathsf{Arr}$
 3. Show $\mathsf{Poly}_\mathsf{Zero}(X)$ is the zero polynomial
 
-
-
-## Commitment Level
+### Commitment Level
 
 The verifier will never see the arrays or polynomials themselves. They are undisclosed because they either (i) contain private data or (ii) they are too large to examine and maintain a succinct proof system. Instead the prover will use commitments.
 
@@ -167,11 +149,9 @@ To check the proof, the verifier uses the transcript to construct the value $Y_\
 * $Y_\mathsf{Vanish3}=(\mathsf{Poly}_\mathsf{Acc}(\zeta)-\mathsf{Prod}_\mathsf{Arr})\cdot\frac{(\zeta^\kappa-1)}{(\zeta-\omega^0)}$​
 * $Y_\mathsf{Zero}=Y_\mathsf{Vanish1} + \rho Y_\mathsf{Vanish2} + \rho^2 Y_\mathsf{Vanish3} - Q(\zeta)\cdot (\zeta^n - 1)$​​
 
-Last it checks the constraint which will be only be true (with overwhelming probability, due to the Schwartz-Zippel lemma) if the constraint system is true:
+Finally, if the constraint system is true, the following constraint will be true (and will be false otherwise with overwhelming probability, due to the Schwartz-Zippel lemma on $\rho$ and $\zeta$) :
 
 * $Y_\mathsf{Zero}\overset{?}{=}0$
-
-
 
 ## Implementations
 
