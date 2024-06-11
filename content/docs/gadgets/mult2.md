@@ -162,20 +162,45 @@ Finally, if the constraint system is true, the following constraint will be true
 
 ### Completeness
 
-- Any honest verifier can do the computations explained above and create a successful proof.
+Any honest verifier can do the computations explained above and create an accepting proof.
 
 ### Soundness
 
-- We show that the probability that an adversarial prover $P$ can convince a verifier $V$ that $a), \space b), \space c)$ hold while conditions $1, 2$, or $3$ do not, is negligible. If any of the conditions (WLOG $1$) do not hold, then (WLOG) $Q_1$ is not a polynomial (instead it is a rational function). This means that $P$ cannot create a valid commitment to it, so when $P$ sends $Com(Q_1)$ it is simply choosing a value (but this value does not have the properties of a real commitment in relation to the "polynomial" it is a commitment to). Then same is true for $Q_1(u)$ and $q(\tau)$ in the opening proof. Thus, creating a valid opening proof for $Q_1(u)$ becomes equivalent to the t-BSDH. Then $P$​​'s probability of success is negligible.
-- $P$ select values for the "commitments" of $\mathsf{Poly}_\mathsf{Acc}(\zeta), \mathsf{Poly}_\mathsf{Arr}(\zeta), Q_1(\zeta), Q_2(\zeta),$ $Q_3(\zeta)$, and $\mathsf{Poly}_\mathsf{Acc}(\zeta \cdot \omega)$ such that the three equalities hold. As above, WLOG we look at $Q_1$, so $\mathsf{Poly}_\mathsf{Arr}(\zeta) - \mathsf{Poly}_\mathsf{Acc}(\zeta) = (\zeta - \omega^{k-1}) \cdot Q_1(\zeta)$ must hold. $P$ is then tasked with  finding $g^{q(\tau)}$ where $q(\tau) = \frac{Q_1(\tau) - Q_1(\zeta)}{\tau - \zeta}$ such that the evaluation proof is accepting, i.e. $e(g,g)^{Q_1(\tau) - Q_1(\zeta)}= e(g,g)^{(\tau - \zeta)q(\tau)}$. This is the same as finding $e(g,g)^{\frac{Q_1(\tau) - Q_1(\zeta)}{\tau - \zeta}}$, and since $Q_1(\tau)$ and $Q_1(\zeta)$ are known, this implies knowing $e(g,g)^{\frac{1}{\tau - \zeta}}$. Thus, the prover has found $\langle \zeta, e(g,g)^{\frac{1}{\tau - \zeta}}$​, which is the t-BSDH problem.
-- Note that we could have tried to my $Q_1$ depend on what makes the opening proof hold, but then we end up with a set value for $\mathsf{Poly}_\mathsf{Arr}(\zeta)$ or $\mathsf{Poly}_\mathsf{Acc}(\zeta)$, and the same issue and producing an accepting evalutation proof would appear there. Thus we assume that $\mathsf{Poly}_\mathsf{Arr}(\zeta)$ and $\mathsf{Poly}_\mathsf{Acc}(\zeta)$​ are set (and allow them to have accepting evaluation proofs) and show we cannot achieve an accepting transcript for the entire protocol
+We prove knowledge soundness in the Algebraic Group Model (AGM). To do so, we must prove that there exists an efficient extractor $E$ such that for any algebraic adversary $A$ the probability of $A$ winning the following game is negligible.
+
+1. Given $[g, g^\tau, g^{\tau^2}, \dots,g^{\tau^{n-1}}]$ $A$ outputs commitments to $\mathsf{Poly}_\mathsf{Acc}(X)$, $\mathsf{Poly}_\mathsf{Arr}(X)$, $Q_1$, $Q_2$, and $Q3$
+
+2. $E$, given access to $A$'s outputs from the previous step, outputs $\mathsf{Poly}_\mathsf{Acc}(X)$, $\mathsf{Poly}_\mathsf{Arr}(X)$, $Q_1$, $Q_2$, and $Q3$
+
+3. $A$ plays the part of the prover in showing that each of $Q_1, \space Q_2, \space Q_3$ is zero at a random challenge $\zeta$
+
+4. $A$ wins if: 
+
+   i) $V$ accepts at the end of the protocol
+
+   ii) $\mathsf{Prod}_\mathsf{Arr}\neq\prod_{i = 0}^{n-1} \mathsf{Arr}[i]$
+
+Our proof is as follows. Each commitment $A$ outputs in step 1 is a linear combination of the elements in $[g, g^\tau, g^{\tau^2}, \dots,g^{\tau^{n-1}}]$. $E$ is given these coefficients (since $A$ is an algebraic adversary) so $E$ can output the original polynomials.
+
+Next, $A$ obtains a random challenge $\zeta$ by hashing the commitments to $\mathsf{Poly}_\mathsf{Acc}(X)$, $\mathsf{Poly}_\mathsf{Arr}(X)$, $Q_1$, $Q_2$, and $Q3$. They must now conduct an opening proof of each polynomial at $\zeta$, as well as $\mathsf{Poly}_\mathsf{Acc}$ at $\zeta \cdot \omega$  (this can also be done as a batch opening, but for simplicity we will look at individual openings and the logic will extend to the batch opening optimization). 
+
+For the second win condition to be fulfilled, one of the constraints must be false. However, for $V$ to accept, the three equalities $a), \space b), \space c)$ must hold for the random challenge $\zeta$ and each opening proof must be correct. We show that the probability that $A$ can convince a verifier $V$ that $a), \space b), \space c)$​ hold while one of the constraints does not, is negligible. 
+
+WLOG, we that constraint 1 is false. Then $\mathsf{Poly}_\mathsf{Vanish1}(X)$ is not vanishing on $\mathcal{H}_\kappa$, thus $Q_1$ is not a polynomial (it is a rational function). This means that $A$ cannot calcuated the correct commitment value $g^{Q_1(\tau)}$ without solving the t-SDH. Thus, the value sent as $com(Q_1)$ is an arbitrary value of $A$'s choice. By the binding property KZG commitments, we also have that $\mathsf{Poly}_\mathsf{Acc}(\zeta)$ and $\mathsf{Poly}_\mathsf{Arr}(\zeta)$ can only feasibliy be opened to one value; therefore, for $A$ to have the verifier accept, they must send a proof that $Q_1(\zeta)$ opens to $\frac{\mathsf{Poly}_\mathsf{Arr}(\zeta) - \mathsf{Poly}_\mathsf{Acc}(\zeta)}{(\zeta - \omega^{k-1})}$. This means being able to send $g^{q(\tau)}$ where $q(\tau) = \frac{Q_1(\tau) - Q_1(\zeta)}{\tau - \zeta}$ such that the evaluation proof is accepting, i.e. $e(g,g)^{Q_1(\tau) - Q_1(\zeta)}= e(g,g)^{(\tau - \zeta)q(\tau)}$. This is the same as finding $e(g,g)^{\frac{Q_1(\tau) - Q_1(\zeta)}{\tau - \zeta}}$, and since $Q_1(\tau)$ and $Q_1(\zeta)$ are known, this implies knowing $e(g,g)^{\frac{1}{\tau - \zeta}}$. Thus, the prover has found $\langle \zeta, e(g,g)^{\frac{1}{\tau - \zeta}}\rangle$, which is the t-BSDH problem. We have shown that creating an accepting proof reduces to the t-BSDH, so $P$'s probability of success is negligible.
+
 - Should I show how using with the ability described above $P$ would enable one to construct an algortihm that break t-BSDH?
 
 ### Zero-Knowledge
 
-- Here we used $\mathsf{PolyCommit}_\mathsf{Ped}$ (from the KZG paper) is used for our commitments
-- The simulator $S$ generates an array $\mathsf{Arr'}$  whose product is equal to the disclosed value $\mathsf{Prod}_\mathsf{Arr}$ (this array could just have $\mathsf{Prod}_\mathsf{Arr}$ in one entry, and $1$'s elsewhere), then follows the same steps a prover would to prove the product of this array. So, $S$ computes the accumulator $\mathsf{Acc'}$ and interpolates the two arrays into there respective polynomials, $\mathsf{Poly}_\mathsf{Acc}(X)$ and $\mathsf{Poly}_\mathsf{Arr}(X)$. It computes $Q_1$, $Q_2$, and $Q3$ using  $\mathsf{Poly}_\mathsf{Acc}(X)$ and $\mathsf{Poly}_\mathsf{Arr}(X)$. It commits to each of these five polynomials, then hashes the commitments to get the random challenge $\zeta'$. It then sends creates commitments to $\mathsf{Poly}_\mathsf{Acc}(\zeta'), \mathsf{Poly}_\mathsf{Arr}(\zeta'), Q_1(\zeta'), Q_2(\zeta'),$ $Q_3(\zeta')$, and $\mathsf{Poly}_\mathsf{Acc}(\zeta' \cdot \omega)$, as well as a proof that each of these commitments is correct. The transcript it generates this way will be indistinguishable from a transcript generated from a real execution, since $\mathsf{PolyCommit}_\mathsf{Ped}$ has the property of Indistinguishability of Commitments due to the randomization by $h^{\hat{\phi}(x)}$​. (This is the specific version of KZG commitments used in the zk adjustment).
-- Could also define a simulator that know $\tau$ and thus can create a passing witness for any commitment, would also have an indistinguishable transcript, again because of the indistinguishability of commitments that $\mathsf{PolyCommit}_\mathsf{Ped}$ has
+We prove that the above protocol is zero-knowledge when $\mathsf{PolyCommit}_\mathsf{Ped}$ (from the KZG paper) is used for the polynomial commitments. We do so by constructing a simulator $S$ which, for every (possibly malicious) verifier $V$​, can output a view of the execution of the protocol that is indistinguishable from the view produced by the real execution of the program.
+
+The simulator $S$ generates an array $\mathsf{Arr'}$  whose product is equal to the disclosed value $\mathsf{Prod}_\mathsf{Arr}$ (this array could just have $\mathsf{Prod}_\mathsf{Arr}$ in one entry, and $1$'s elsewhere), then follows the same steps a prover would to prove the product of this array. So, $S$ computes the accumulator $\mathsf{Acc'}$ and interpolates the two arrays into their respective polynomials, $\mathsf{Poly}_\mathsf{Acc}(X)$ and $\mathsf{Poly}_\mathsf{Arr}(X)$. It computes $Q_1$, $Q_2$, and $Q3$ using  $\mathsf{Poly}_\mathsf{Acc}(X)$ and $\mathsf{Poly}_\mathsf{Arr}(X)$. It commits to each of these five polynomials, then hashes the commitments to get the random challenge $\zeta'$. It then sends creates commitments to $\mathsf{Poly}_\mathsf{Acc}(\zeta'), \mathsf{Poly}_\mathsf{Arr}(\zeta'), Q_1(\zeta'), Q_2(\zeta'),$ $Q_3(\zeta')$, and $\mathsf{Poly}_\mathsf{Acc}(\zeta' \cdot \omega)$, as well as a proof that each of these commitments is correct. Since $S$ knows each of the above polynomials, it can honestly compute this step and the proof will be accepted by $V$. The transcript it generates this way will be indistinguishable from a transcript generated from a real execution, since $\mathsf{PolyCommit}_\mathsf{Ped}$ has the property of Indistinguishability of Commitments due to the randomization by $h^{\hat{\phi}(x)}$​. 
+
+- Could also define a simulator that generates the public parameters (honestly), but then know $\tau$ and thus can create a passing witness for any commitment. This would also have an indistinguishable transcript, again because of the indistinguishability of commitments that $\mathsf{PolyCommit}_\mathsf{Ped}$​ has
+- do we want to talk about perfect (vs statistically) vs computationally indistinguishable?
+- should I be more formal in the proof? (i.e. saying calling $S$ a "probabilistic polynomial time oracle machine", writing out the indistinguishable in terms of probability distributions, etc)
+
+
 
 Here is my previous (unsuccessful) attempt at a simulator. I've left it in case the above attempt is incorrect and we need to work with a more complicated simulator using rewinding, in which case perhaps the ideas below are still useful.
 
