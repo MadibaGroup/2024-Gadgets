@@ -46,7 +46,7 @@ Below is a quick summary of various gadgets you can use in your Poly-IOP systems
 | mult1    | $\mathsf{Arr}_3=\mathsf{Arr}_1 \cdot \mathsf{Arr}_2$         | Array $\mathsf{Arr}_3$ is the element-wise multiplication of $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$. |
 | mult2    | $\mathsf{Prod}_\mathsf{Arr}=\prod_{i = 0}^{n-1} \mathsf{Arr}[i]$ | $\mathsf{Prod}_\mathsf{Arr}$ is the disclosed product of all the elements in array $\mathsf{Arr}$. |
 | mult3    | $\prod_{i = 0}^{n-1} \mathsf{Arr}_1[i]=\prod_{i = 0}^{n-1} \mathsf{Arr}_2[i]$ | Arrays $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$ have the same undisclosed product. |
-| encode   | $\mathsf{Arr}_3=\mathsf{Encode}(\mathsf{Arr}_1,\mathsf{Arr}_2)$ | Map a set of elements, such as the pair $\{\mathsf{Arr}_1[i],\mathsf{Arr}_1[2]\}$, into a single element $\mathsf{Arr}_3[i]$ without collisions. |
+| encode   | $\mathsf{Arr}_3\leftarrow\mathsf{Encode}(\mathsf{Arr}_1,\mathsf{Arr}_2)$ | Map a set of elements, such as the pair $\{\mathsf{Arr}_1[i],\mathsf{Arr}_2[i]\}$, into a single element $\mathsf{Arr}_3[i]$ without collisions. |
 | shuffle1 | $\mathsf{Arr}_2=\mathsf{Permute}(\mathsf{Arr}_1)$            | Array $\mathsf{Arr}_2$ is a shuffle of $\mathsf{Arr}_1$ for some undisclosed permutation $\pi$. |
 | shuffle2 | $\mathsf{Arr}_2=\mathsf{Permute}(\mathsf{Arr}_1 ,\pi)$       | Array $\mathsf{Arr}_2$ is a shuffle of $\mathsf{Arr}_1$ under a disclosed permutation $\pi$. |
 | lookup1  | $\mathsf{Arr}[i]\in \{0,1\}$                                 | Each element of array $\mathsf{Arr}$ is in $\{0,1\}$ (or another small set). |
