@@ -12,7 +12,6 @@ headless: true
 - [zero1]({{< relref "/docs/gadgets/zero1" >}})
 - [mult1]({{< relref "/docs/gadgets/mult1" >}})
 - [mult2]({{< relref "/docs/gadgets/mult2" >}})
-- [mult3]({{< relref "/docs/gadgets/mult3" >}})
 
 
 
