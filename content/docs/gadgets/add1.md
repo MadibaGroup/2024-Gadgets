@@ -1,4 +1,4 @@
-- # Addition (Type 1)
+# Addition (Type 1)
 
   ## Recap of types
 

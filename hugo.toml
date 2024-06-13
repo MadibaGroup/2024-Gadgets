@@ -1,4 +1,4 @@
-baseURL = 'https://madibagroup.github.io/2024-Gadgets/'
+baseURL = 'http://plonkbook.org/'
 languageCode = 'en-us'
 title = 'Handbook'
 theme = 'hugo-book'

@@ -1,4 +1,4 @@
-- # Multiplication (Type 2)
+# Multiplication (Type 2)
 
   ## Recap of types
 
