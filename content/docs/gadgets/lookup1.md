@@ -9,7 +9,7 @@
 
 ## Relation
 
-$ \mathcal{R}_{\mathtt{lookup1}} := \left\{ \begin{array}{l} (K_\mathsf{Arr_1} \end{array} \middle | \begin{array}{l} \mathsf{Arr_3}[i]=\mathsf{Arr_1}[i]+\mathsf{Arr_2}[i], 0\leq i \leq n, \\ \mathsf{Poly}_\mathsf{Arr_j}=\mathsf{FFT.Interp}(\omega,\mathsf{Arr_j}), 1\leq j \leq 3, \\ K_\mathsf{Arr_j}=\mathsf{KZG.Commit}(\mathsf{Poly}_\mathsf{Arr_j}), 1\leq j \leq 3, \end{array} \right\} $
+$ \mathcal{R}_{\mathtt{lookup1}} := \left\{ \begin{array}{l} (K_\mathsf{Arr}) \end{array} \middle | \begin{array}{l} \mathsf{Arr} = [a_0, a_1, a_2, \dots, a_{n-1}], \\ \mathsf{Poly}_\mathsf{Arr}=\mathsf{FFT.Interp}(\omega,\mathsf{Arr}), \\ K_\mathsf{Arr}=\mathsf{KZG.Commit}(\mathsf{Poly}_\mathsf{Arr}), \end{array} \right\} $
 
 ## Intuition
 
@@ -116,5 +116,3 @@ Finally, if the constraint system is true, the following constraint will be true
   Now, $S$ generates the second random challenge point $\zeta$ (which we assume is not in $\mathcal{H}_\kappa$; if it is in $\mathcal{H}_\kappa$, $S$ simply restarts and runs from the beginning). This is once again by strong Fiat-Shamir.  $S$ then create fake opening proofs for ${\mathsf{Poly}_\mathsf{Arr}(\zeta)}$, to an arbitrary value. This is done using the knowledge of $\tau$, calculating the witness polynomial $q(\tau) = \frac{{f(\tau) - f(\zeta)}}{\tau - \zeta}$.
 
   Finally, $S$ creates a fake opening proof for $Q(\zeta) = \frac{Y_\mathsf{Vanish1}}{(\zeta^n - 1)}$. This is done using knowledge of $\tau$ to calculate an accepting witness $q(\tau)$, as above. This means that $Y_\mathsf{Zero}$ will be zero, and the transcript will be accepted by the verifier. It is indistinguishable from a transcript generates from a real execution, since $\mathsf{PolyCommit}_\mathsf{Ped}$ has the property of Indistinguishability of Commitments due to the randomization by $h^{\hat{\phi}(x)}$. 
-
-  - For add2, the proof is written with a simulator that doesn't know the trapdoor; however, with small alterations the proof for add2 should apply here and vice versa
