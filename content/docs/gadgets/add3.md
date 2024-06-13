@@ -122,7 +122,7 @@ By rearranging, we can get $\mathsf{Poly}_\mathsf{Zero}(X)$ as a true zero polyn
 
 $\mathsf{Poly}_\mathsf{Zero}(X)=\mathsf{Poly}_\mathsf{Vanish1}(X) + \mathsf{Poly}_\mathsf{Vanish2} (X) \rho + \mathsf{Poly}_\mathsf{Vanish3}(X) \rho^2 + \mathsf{Poly}_\mathsf{Vanish4}(X)\rho^3 + \mathsf{Poly}_\mathsf{Vanish5}(X)\rho^4 - Q(X)\cdot (X^n - 1)=0$
 
-Ultimately the mult3 argument will satisfy the following constraints at the Commitment Level:
+Ultimately the add3 argument will satisfy the following constraints at the Commitment Level:
 
 1. Show $Q(X)$ exists (as a polynomial that evenly divides the divisor)
 2. Show $\mathsf{Poly}_\mathsf{Zero}(X)$ is correctly constructed from $\mathsf{Poly}_\mathsf{Acc_1}(X)$,  $\mathsf{Poly}_\mathsf{Acc_1}(\omega X)$, $\mathsf{Poly}_\mathsf{Arr_1}(X)$, $\mathsf{Poly}_\mathsf{Acc_2}(X)$,  $\mathsf{Poly}_\mathsf{Acc_2}(\omega X)$, and $\mathsf{Poly}_\mathsf{Arr_2}(X)$
