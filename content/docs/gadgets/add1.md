@@ -1,4 +1,4 @@
-# Addition (Type 1)
+- # Addition (Type 1)
 
   ## Recap of types
 
@@ -41,7 +41,7 @@
 
   ### Polynomial Level
 
-  We assume the three arrays $\mathsf{Arr_1}$, $\mathsf{Arr_2}$ and $\mathsf{Arr_3}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded.
+  We assume the three arrays $\mathsf{Arr_1}$, $\mathsf{Arr_2}$ and $\mathsf{Arr_3}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 0 (which will not change the sum).
 
   Recall the constraint we want to prove: 
 
@@ -124,7 +124,7 @@
 
        i) $V$ accepts at the end of the protocol
 
-       ii) $\mathsf{Arr}_3\neq \mathsf{Arr}_1 \cdot \mathsf{Arr}_2$
+       ii) $\mathsf{Arr}_3\neq \mathsf{Arr}_1 + \mathsf{Arr}_2$
 
     Our proof is as follows:
 
@@ -140,7 +140,7 @@
 
     The simulator $S$ choose arbitrary values for ${\mathsf{Poly}_\mathsf{Arr1}(\tau)}$, ${\mathsf{Poly}_\mathsf{Arr2}(\tau)}$, and $\mathsf{Poly}_\mathsf{Arr3}(\tau)$, then computes $g^{\mathsf{Poly}_\mathsf{Arr1}(\tau)}$,  $g^{\mathsf{Poly}_\mathsf{Arr2}(\tau)}$ , and $g^{\mathsf{Poly}_\mathsf{Arr3}(\tau)}$ to output as the commitments $K_\mathsf{Arr1}$, $ K_\mathsf{Arr2}$, and $ K_\mathsf{Arr3}$. $S$ then generates the challenge evaluation pount $\rho$ (by strong Fiat-Shamir) and computes $Q(\tau)$ using $\rho$ and the values they chose for ${\mathsf{Poly}_\mathsf{Arr1}(\tau)}$, ${\mathsf{Poly}_\mathsf{Arr2}(\tau)}$, and $\mathsf{Poly}_\mathsf{Arr3}(\tau)$. $S$ outputs the commitment $K_Q = g^{Q(\tau)}$.
 
-    Now, $S$ generates the second random challenge point $\zeta$, once again using strong Fiat-Shamir. $S$ then create fake opening proofs for ${\mathsf{Poly}_\mathsf{Arr1}(\zeta)}$, ${\mathsf{Poly}_\mathsf{Arr2}(\zeta)}$, and $\mathsf{Poly}_\mathsf{Arr3}(\zeta)$,to arbitrary values. This is done using the knowledge of $\tau$, calculating the respective witness $q(\tau) = \frac{{f(\tau) - f(\zeta)}}{\tau - \zeta}$ for each of the polynomials.
+    Now, $S$ generates the second random challenge point $\zeta$ (which we assume is not in $\mathcal{H}_\kappa$; if it is in $\mathcal{H}_\kappa$, $S$ simply restarts and runs from the beginning). This is once again by strong Fiat-Shamir.  $S$ then create fake opening proofs for ${\mathsf{Poly}_\mathsf{Arr1}(\zeta)}$, ${\mathsf{Poly}_\mathsf{Arr2}(\zeta)}$, and $\mathsf{Poly}_\mathsf{Arr3}(\zeta)$,to arbitrary values. This is done using the knowledge of $\tau$, calculating the respective witness $q(\tau) = \frac{{f(\tau) - f(\zeta)}}{\tau - \zeta}$ for each of the polynomials.
 
     Finally, $S$ creates a fake opening proof for $Q(\zeta) = \frac{Y_\mathsf{Vanish1}}{(\zeta^n - 1)}$. This is done using knowledge of $\tau$ to calculate an accepting witness $q(\tau)$, as above. This means that $Y_\mathsf{Zero}$ will be zero, and the transcript will be accepted by the verifier. It is indistinguishable from a transcript generates from a real execution, since $\mathsf{PolyCommit}_\mathsf{Ped}$ has the property of Indistinguishability of Commitments due to the randomization by $h^{\hat{\phi}(x)}$. 
 

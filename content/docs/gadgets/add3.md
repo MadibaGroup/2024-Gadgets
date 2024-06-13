@@ -1,24 +1,24 @@
-# Multiplication (Type 3)
+# Addition (Type 3)
 
 ## Recap of types
 
-| Type      | Description                                                  | Recap                                                        | This |
-| --------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ---- |
-| [mult1]() | $\mathsf{Arr}_3=\mathsf{Arr}_1 \cdot \mathsf{Arr}_2$         | $\mathsf{Arr}_3$ is the element-wise multiplication of $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$. |      |
-| mult2     | $\mathsf{Prod}_\mathsf{Arr}=\prod_{i = 0}^{n-1} \mathsf{Arr}[i]$ | $\mathsf{Prod}_\mathsf{Arr}$ is the disclosed product of all the elements in $\mathsf{Arr}$. |      |
-| mult3     | $\prod_{i = 0}^{n-1} \mathsf{Arr}_1[i]=\prod_{i = 0}^{n-1} \mathsf{Arr}_2[i]$ | $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$ have the same undisclosed product. | ✅    |
+| Type           | Description                                                  | Recap                                                        | This |
+| -------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ---- |
+| [add1](./add1) | $\mathsf{Arr}_3=\mathsf{Arr}_1 + \mathsf{Arr}_2$             | $\mathsf{Arr}_3$ is the element-wise addition of $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$. |      |
+| [add2](./add2) | $\mathsf{Sum}_\mathsf{Arr}=\sum_{i = 0}^{n-1} \mathsf{Arr}[i]$ | $\mathsf{Sum}_\mathsf{Arr}$ is the disclosed sum of all the elements in $\mathsf{Arr}$. |      |
+| [add3](./add3) | $\sum_{i = 0}^{n-1} \mathsf{Arr}_1[i]=\sum_{i = 0}^{n-1} \mathsf{Arr}_2[i]$ | $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$ have the same undisclosed sum. | ✅    |
 
 ## Relation
 
-$ \mathcal{R}_{\mathtt{mult3}} := \left\{ \begin{array}{l} (K_\mathsf{Arr_1},K_\mathsf{Arr2}) \end{array} \middle | \begin{array}{l} \mathsf{Arr_1} = [a_{(1,0)}, a_{(1,1)}, a_{(1,2)}, \dots, a_{(1,n-1)}],\\ \mathsf{Arr_2} = [a_{(2,0)}, a_{(2,1)}, a_{(2,2)}, \dots, a_{(2,n-1)}], \\  \mathsf{Poly}_\mathsf{Arr_1}=\mathsf{FFT.Interp}(\omega,\mathsf{Arr_1}), \\ \mathsf{Poly}_\mathsf{Arr_2}=\mathsf{FFT.Interp}(\omega,\mathsf{Arr_2}), \\ K_\mathsf{Arr_1}=\mathsf{KZG.Commit}(\mathsf{Poly}_\mathsf{Arr_1}),\\ K_\mathsf{Arr_2}=\mathsf{KZG.Commit}(\mathsf{Poly}_\mathsf{Arr_2}), \end{array} \right\} $
+$ \mathcal{R}_{\mathtt{add3}} := \left\{ \begin{array}{l} (K_\mathsf{Arr_1},K_\mathsf{Arr2}) \end{array} \middle | \begin{array}{l} \mathsf{Arr_1} = [a_{(1,0)}, a_{(1,1)}, a_{(1,2)}, \dots, a_{(1,n-1)}],\\ \mathsf{Arr_2} = [a_{(2,0)}, a_{(2,1)}, a_{(2,2)}, \dots, a_{(2,n-1)}], \\  \mathsf{Poly}_\mathsf{Arr_1}=\mathsf{FFT.Interp}(\omega,\mathsf{Arr_1}), \\ \mathsf{Poly}_\mathsf{Arr_2}=\mathsf{FFT.Interp}(\omega,\mathsf{Arr_2}), \\ K_\mathsf{Arr_1}=\mathsf{KZG.Commit}(\mathsf{Poly}_\mathsf{Arr_1}),\\ K_\mathsf{Arr_2}=\mathsf{KZG.Commit}(\mathsf{Poly}_\mathsf{Arr_2}), \end{array} \right\} $
 
 ## Intuition
 
-The prover ($\mathcal{P}$) holds two arrays $\mathsf{Arr_1}$ and $\mathsf{Arr_2}$ of $n$ integers from $\mathbb{Z}_q$: $[a_0, a_1, a_2, \dots, a_{n-1}]$. It will produce a succinct (independent of $n$) proof that they have the same undisclosed product. The prover will encode the two arrays into polynomials, $\mathsf{Poly}_\mathsf{Arr_1}$ and $\mathsf{Poly}_\mathsf{Arr_2}$ (using [evaluation points](../background/poly-iop) on the domain $\mathcal{H}_\kappa$) and commit to them as $K_\mathsf{Arr_1}$ and $K_\mathsf{Arr_2}$. The verifier ($\mathcal{V}$) cannot check either array directly (they may contain secret information, and even if they do not, it is too long to check) so the verifier only sees $K_\mathsf{Arr_1}$ and $K_\mathsf{Arr_2}$​.
+The prover ($\mathcal{P}$) holds two arrays $\mathsf{Arr_1}$ and $\mathsf{Arr_2}$ of $n$ integers from $\mathbb{Z}_q$: $[a_0, a_1, a_2, \dots, a_{n-1}]$. It will produce a succinct (independent of $n$) proof that they have the same undisclosed sum. The prover will encode the two arrays into polynomials, $\mathsf{Poly}_\mathsf{Arr_1}$ and $\mathsf{Poly}_\mathsf{Arr_2}$ (using [evaluation points](../background/poly-iop) on the domain $\mathcal{H}_\kappa$) and commit to them as $K_\mathsf{Arr_1}$ and $K_\mathsf{Arr_2}$. The verifier ($\mathcal{V}$) cannot check either array directly (they may contain secret information, and even if they do not, it is too long to check) so the verifier only sees $K_\mathsf{Arr_1}$ and $K_\mathsf{Arr_2}$​.
 
 In order to prove $K_\mathsf{Arr_1}$ and  $K_\mathsf{Arr_2}$ are consistent, the prover will build two helper arrays $\mathsf{Acc_1}$ and $\mathsf{Acc_2}$ called accumulators (or accumulating arrays or incremental arrays). This should not be confused with accumulators from cryptography, which are a concept related to succinct proofs but are distinct. As with $\mathsf{Arr_1}$ and $\mathsf{Arr_2}$, the prover will also encode $\mathsf{Acc_1}$ and $\mathsf{Acc_2}$ as a polynomials and provide a commitment to the verifier of each one. The idea is that the prover will prove a relation between each $\mathsf{Arr}$ and its $\mathsf{Acc}$; and a relation between $\mathsf{Acc_1}$ and $\mathsf{Acc_2}$. Put together, it will imply the correct relation between $\mathsf{Arr_1}$ and $\mathsf{Arr_2}$.
 
-We will illustrate a small numerical example n $\mathbb{Z}_{97}$ of constructing an accumulator $\mathsf{Acc}$ for the array $\mathsf{Arr}= [84,67,11,92,36,67]$. The idea is to create a new array, $\mathsf{Acc}$, that starts the same as $\mathsf{Arr}$ and ends with the product of all entries of $\mathsf{Arr}$, by folding in the integers from $\mathsf{Arr}$ one-by-one with multiplication. Then each value in the new array will depend on only two values, as below. 
+We will illustrate a small numerical example n $\mathbb{Z}_{97}$ of constructing an accumulator $\mathsf{Acc}$ for the array $\mathsf{Arr}= [84,67,11,92,36,67]$. The idea is to create a new array, $\mathsf{Acc}$, that starts the same as $\mathsf{Arr}$ and ends with the sum of all entries of $\mathsf{Arr}$, by folding in the integers from $\mathsf{Arr}$ one-by-one with multiplication. Then each value in the new array will depend on only two values, as below. 
 
 The first value in $\mathsf{Acc}$ will be a copy of the first value from $\mathsf{Arr}$:
 
@@ -26,38 +26,37 @@ The first value in $\mathsf{Acc}$ will be a copy of the first value from $\maths
 
 * $\mathsf{Acc}= [84, \bot,\bot,\bot,\bot,\bot] $
 
-The next value will be the multiplication (mod 97) of: 67 (the value at the same index in $\mathsf{Arr}$) and 84 (the previous value in $\mathsf{Acc}$):
+The next value will be the addition (mod 97) of: 67 (the value at the same index in $\mathsf{Arr}$) and 84 (the previous value in $\mathsf{Acc}$):
 
 * $\mathsf{Arr}= [84,67,11,92,36,67]$
 
-* $ \mathsf{Acc} = [84, (67\cdot84),\bot,\bot,\bot,\bot] = [84, 2,\bot,\bot,\bot,\bot]$ 
+* $ \mathsf{Acc} = [84, (67+84),\bot,\bot,\bot,\bot] = [84, 54,\bot,\bot,\bot,\bot]$ 
 
-The next value will be the multiplication of: 11 (the value at the same index in $\mathsf{Arr}$) and 2 (the previous value in $\mathsf{Acc}$):
+The next value will be the addition of: 11 (the value at the same index in $\mathsf{Arr}$) and 2 (the previous value in $\mathsf{Acc}$):
 
 * $\mathsf{Arr}= [84,67,11,92,36,67]$
-* $ \mathsf{Acc} = [84, 2,(11\cdot2),\bot,\bot,\bot] = [84,2,22,\bot,\bot,\bot]$ 
-* $ \mathsf{Acc} = [84, 2,22,(92\cdot22),\bot,\bot] = [84,2,22,84,\bot,\bot]$ 
-* $ \mathsf{Acc} = [84, 2,22,84,(36\cdot84),\bot] = [84,2,22,84,17,\bot]$ 
-* $ \mathsf{Acc} = [84,2,22,84,17,(67\cdot17)] = [84, 2, 22, 84, 17, 72]$ 
+* $ \mathsf{Acc} = [84, 54,(11+54),\bot,\bot,\bot] = [84,54,65,\bot,\bot,\bot]$ 
+* $ \mathsf{Acc} = [84, 54, 65,(92+65),\bot,\bot] = [84,54,65, 60,\bot,\bot]$ 
+* $ \mathsf{Acc} = [84,54,65, 60,(36 + 60),\bot] = [84,54,65, 60, 96,\bot]$ 
+* $ \mathsf{Acc} = [84,54,65, 60, 96, (67+96)] = [84,54,65, 60, 96, 66]$ 
+* $\mathsf{Sum}_\mathsf{Arr}=66$
 
-Notice the last value in $\mathsf{Acc}$ is the product of all the entries in $\mathsf{Arr}$. The prover wants to show five constraints:
+Notice the last value in $\mathsf{Acc}$ is $\mathsf{Sum_\mathsf{Arr}}$. The prover wants to show three constraints:
 
-1. The first value in $\mathsf{Acc_1}$ matches the first value in $\mathsf{Arr_1}$ 
-2. The first value in $\mathsf{Acc_2}$ matches the first value in $\mathsf{Arr_2}$
-3. The rest of the values in $\mathsf{Acc}_1$ are of the form $\mathsf{Acc_1}[i]=\mathsf{Arr_1}[i]\cdot\mathsf{Acc_1}[i-1]$​ 
-4. The rest of the values in $\mathsf{Acc}_2$ are of the form $\mathsf{Acc_2}[i]=\mathsf{Arr_2}[i]\cdot\mathsf{Acc_2}[i-1]$ 
-5. The last value in $\mathsf{Acc_1}$ matches the last value in $\mathsf{Acc_2}$
+1. The first value in $\mathsf{Acc}$ matches the first value in $\mathsf{Arr}$,
+2. The rest of the values in $\mathsf{Acc}$ are of the form $\mathsf{Acc}[i]=\mathsf{Arr}[i]+\mathsf{Acc}[i-1]$,
+3. The last value in $\mathsf{Acc}$ matches $\mathsf{Sum}_\mathsf{Arr}$.
 
-If all five constraints are true, then entries of $\mathsf{Arr_1}$ and $\mathsf{Arr_2}$ have the same product.
+If all three constraints are true, then $\mathsf{Sum}_\mathsf{Arr}$ is the sum of the elements of $\mathsf{Arr}$. 
 
-Last, while it is not necessary to do, it is often convenient to hold the the value of the product at the start of the array $\mathsf{Acc}$ instead of the end. For this reason, the mathematical explaination below will construct $\mathsf{Acc}$ "backwards" (or right-to-left) from the above example, where the last value of $\mathsf{Acc}$ matches the last value of $\mathsf{Arr}$, the values are folded in from right to left, and the first (leftmost) value of $\mathsf{Acc}$ is the product of all entries:
+Last, while it is not necessary to do, it is often convenient to hold the the value $\mathsf{Sum}_\mathsf{Arr}$ at the start of the array $\mathsf{Acc}$ instead of the end. For this reason, the mathematical explaination below will construct $\mathsf{Acc}$ "backwards" (or right-to-left) from the above example, where the last value of $\mathsf{Acc}$ matches the last value of $\mathsf{Arr}$, the values are folded in from right to left, and the first (leftmost) value of $\mathsf{Acc}$ is $\mathsf{Sum}_\mathsf{Arr}$:
 
 * $\mathsf{Arr}= [84,67,11,92,36,67]$
 * $ \mathsf{Acc} = [\bot, \bot, \bot, \bot, \bot, 67]$ 
-* $ \mathsf{Acc} = [\bot, \bot, \bot, \bot, 84, 67]$ 
+* $ \mathsf{Acc} = [\bot, \bot, \bot, \bot, 6, 67]$ 
 * $\ldots$
-* $ \mathsf{Acc} = [72, 84, 36, 65, 84, 67]$ 
-* and the product of all entries in $\mathsf{Arr}$ is 72
+* $ \mathsf{Acc} = [66, 79, 12, 1, 6, 67]$ 
+* $\mathsf{Sum}_\mathsf{Arr}=66$
 
 ## Protocol Details
 
@@ -67,26 +66,26 @@ Last, while it is not necessary to do, it is often convenient to hold the the va
 * $\mathcal{P}$ holds an array $\mathsf{Arr_2} = [a_{(2,0)}, a_{(2,1)}, a_{(2,2)}, \dots, a_{(2,n-1)}]$ of $n$ integers ($a_{(2,i)} \in \mathbb{Z}_q$)
 * $\mathcal{P}$ computes array $\mathsf{Acc_j}$ as follows for $j \in [1,2]$:
   * $\mathsf{Acc_j}[n-1]\leftarrow\mathsf{Arr_j}[n-1]$
-  * $\mathsf{Acc_j}[i]\leftarrow\mathsf{Arr_j}[i]\cdot\mathsf{Acc_j}[i+1]$ for $i$ from $n-2$ to 0
+  * $\mathsf{Acc_j}[i]\leftarrow\mathsf{Arr_j}[i]+\mathsf{Acc_j}[i+1]$ for $i$ from $n-2$ to 0
 
 ### Polynomial Level
 
-We assume arrays $\mathsf{Arr_1}$, $\mathsf{Arr_2}$, $\mathsf{Acc_1}$ and $\mathsf{Acc_2}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 1 (which will not change the product).
+We assume arrays $\mathsf{Arr_1}$, $\mathsf{Arr_2}$, $\mathsf{Acc_1}$ and $\mathsf{Acc_2}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 0 (which will not change the sum).
 
 Recall the five constraints we want to prove: 
 
 1. The first value in $\mathsf{Acc_1}$ matches the first value in $\mathsf{Arr_1}$ 
 2. The first value in $\mathsf{Acc_2}$ matches the first value in $\mathsf{Arr_2}$
-3. The rest of the values in $\mathsf{Acc}_1$ are of the form $\mathsf{Acc_1}[i]=\mathsf{Arr_1}[i]\cdot\mathsf{Acc_1}[i-1]$​ 
-4. The rest of the values in $\mathsf{Acc}_2$ are of the form $\mathsf{Acc_2}[i]=\mathsf{Arr_2}[i]\cdot\mathsf{Acc_2}[i-1]$ 
+3. The rest of the values in $\mathsf{Acc}_1$ are of the form $\mathsf{Acc_1}[i]=\mathsf{Arr_1}[i]+\mathsf{Acc_1}[i-1]$​ 
+4. The rest of the values in $\mathsf{Acc}_2$ are of the form $\mathsf{Acc_2}[i]=\mathsf{Arr_2}[i]+\mathsf{Acc_2}[i-1]$ 
 5. The last value in $\mathsf{Acc_1}$ matches the last value in $\mathsf{Acc_2}$
 
 In polynomial form, the constraints are:
 
 1. For $X=w^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc_1}(X)=\mathsf{Poly}_\mathsf{Arr_1}(X)$​,
 2. For $X=w^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc_2}(X)=\mathsf{Poly}_\mathsf{Arr_2}(X)$,
-3. For all $X$ except $X=\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc_1}(X)=\mathsf{Poly}_\mathsf{Arr_1}(X)\cdot\mathsf{Poly}_\mathsf{Acc_1}(\omega\cdot X)$​ 
-4. For all $X$ except $X=\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc_2}(X)=\mathsf{Poly}_\mathsf{Arr_2}(X)\cdot\mathsf{Poly}_\mathsf{Acc_2}(\omega\cdot X)$ 
+3. For all $X$ except $X=\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc_1}(X)=\mathsf{Poly}_\mathsf{Arr_1}(X)+\mathsf{Poly}_\mathsf{Acc_1}(\omega\cdot X)$​ 
+4. For all $X$ except $X=\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc_2}(X)=\mathsf{Poly}_\mathsf{Arr_2}(X)+\mathsf{Poly}_\mathsf{Acc_2}(\omega\cdot X)$ 
 5. For $X=w^0$: $\mathsf{Poly}_\mathsf{Acc_1}(X)=\mathsf{Poly}_\mathsf{Acc_2}(X)$
 
 In constraint 2 and 3, $\mathsf{Poly}_\mathsf{Acc}(\omega\cdot X)$ can also be conceptualized as <span style="border-style:dotted;border-width: 2px;"> [rotate](./rotate)</span> applied to $\mathsf{Poly}_\mathsf{Acc}(X)$ by one element (rightward in the array view). Also note that constraint 2 and 3 do not hold at $X=\omega^{\kappa-1}$ because this value is defined by constraint 1 (for the last value of $X$, the "next" value, $\omega X$, wraps back to the first element of the array which is a boundary condition).
@@ -95,16 +94,16 @@ We adjust each of these constraints to show an equality with 0:
 
 1. For $X=w^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc_1}(X)-\mathsf{Poly}_\mathsf{Arr_1}(X)=0$​,
 2. For $X=w^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc_2}(X)-\mathsf{Poly}_\mathsf{Arr_2}(X)=0$,
-3. For all $X$ except $X=\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc_1}(X)-\mathsf{Poly}_\mathsf{Arr_1}(X)\cdot\mathsf{Poly}_\mathsf{Acc_1}(\omega\cdot X)=0$​ 
-4. For all $X$ except $X=\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc_2}(X)-\mathsf{Poly}_\mathsf{Arr_2}(X)\cdot\mathsf{Poly}_\mathsf{Acc_2}(\omega\cdot X)=0$ 
+3. For all $X$ except $X=\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc_1}(X)-\mathsf{Poly}_\mathsf{Arr_1}(X)+\mathsf{Poly}_\mathsf{Acc_1}(\omega\cdot X)=0$​ 
+4. For all $X$ except $X=\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc_2}(X)-\mathsf{Poly}_\mathsf{Arr_2}(X)+\mathsf{Poly}_\mathsf{Acc_2}(\omega\cdot X)=0$ 
 5. For $X=w^0$: $\mathsf{Poly}_\mathsf{Acc_1}(X)-\mathsf{Poly}_\mathsf{Acc_2}(X)=0$
 
 Next we take care of the "for $X$" conditions by zeroing out the rest of the polynomial that is not zero. See the gadget <span style="border-style:dotted;border-width: 2px;"> [zero1](./zero1)</span> for more on why this works.
 
 1. $\mathsf{Poly}_\mathsf{Vanish1}(X)=(\mathsf{Poly}_\mathsf{Acc_1}(X)-\mathsf{Poly}_\mathsf{Arr_1}(X))\cdot\frac{(X^\kappa-1)}{(X-\omega^{\kappa-1})}=0$​,
 2. $\mathsf{Poly}_\mathsf{Vanish2}(X)=(\mathsf{Poly}_\mathsf{Acc_2}(X)-\mathsf{Poly}_\mathsf{Arr_2}(X))\cdot\frac{(X^\kappa-1)}{(X-\omega^{\kappa-1})}=0$,
-3. $\mathsf{Poly}_\mathsf{Vanish3}(X)=(\mathsf{Poly}_\mathsf{Acc_1}(X)-\mathsf{Poly}_\mathsf{Arr_1}(X)\cdot\mathsf{Poly}_\mathsf{Acc_1}(\omega\cdot X))\cdot(X-\omega^{\kappa-1})=0$​ 
-4. $\mathsf{Poly}_\mathsf{Vanish4}(X)=(\mathsf{Poly}_\mathsf{Acc_2}(X)-\mathsf{Poly}_\mathsf{Arr_2}(X)\cdot\mathsf{Poly}_\mathsf{Acc_2}(\omega\cdot X))\cdot(X-\omega^{\kappa-1})=0$ 
+3. $\mathsf{Poly}_\mathsf{Vanish3}(X)=(\mathsf{Poly}_\mathsf{Acc_1}(X)-(\mathsf{Poly}_\mathsf{Arr_1}(X)+\mathsf{Poly}_\mathsf{Acc_1}(\omega\cdot X)))\cdot(X-\omega^{\kappa-1})=0$​ 
+4. $\mathsf{Poly}_\mathsf{Vanish4}(X)=(\mathsf{Poly}_\mathsf{Acc_2}(X)-(\mathsf{Poly}_\mathsf{Arr_2}(X)+\mathsf{Poly}_\mathsf{Acc_2}(\omega\cdot X)))\cdot(X-\omega^{\kappa-1})=0$ 
 5. $\mathsf{Poly}_\mathsf{Vanish5}(X)=(\mathsf{Poly}_\mathsf{Acc_1}(X)-\mathsf{Poly}_\mathsf{Acc_2}(X)\cdot\frac{(X^\kappa-1)}{(X-\omega^0)}=0$
 
 These equations are true for every value of $X \in \mathcal{H}_\kappa$ (but not necessarily true outside of these values). To show this, we divide each polynomial by  $X^\kappa - 1$, which is a minimal vanishing polynomial for $\mathcal{H}_\kappa$ that does not require interpolation to create. If the quotients are polynomials (and not rational functions), then $\mathsf{Poly}_\mathsf{Vanish1}(X)$, $\mathsf{Poly}_\mathsf{Vanish2}(X)$,  $\mathsf{Poly}_\mathsf{Vanish3}(X)$,  $\mathsf{Poly}_\mathsf{Vanish4}(X)$, and $\mathsf{Poly}_\mathsf{Vanish5}(X)$ must be vanishing on $\mathcal{H}_\kappa$ too. Specifically, the prove computes,
@@ -160,8 +159,8 @@ To check the proof, the verifier uses the transcript to construct the value $Y_\
 
 * $Y_\mathsf{Vanish1}= (\mathsf{Poly}_\mathsf{Acc_1}(\zeta)-\mathsf{Poly}_\mathsf{Arr_1}(\zeta))\cdot\frac{(\zeta^\kappa-1)}{(\zeta-\omega^{\kappa-1})}$
 * $Y_\mathsf{Vanish2}= (\mathsf{Poly}_\mathsf{Acc_2}(\zeta)-\mathsf{Poly}_\mathsf{Arr_2}(\zeta))\cdot\frac{(\zeta^\kappa-1)}{(\zeta-\omega^{\kappa-1})}$
-* $Y_\mathsf{Vanish3}=(\mathsf{Poly}_\mathsf{Acc_1}(\zeta)-\mathsf{Poly}_\mathsf{Arr_1}(\zeta)\cdot\mathsf{Poly}_\mathsf{Acc_1}(\omega\cdot \zeta))\cdot(\zeta-\omega^{\kappa-1})$
-* $Y_\mathsf{Vanish4}= (\mathsf{Poly}_\mathsf{Acc_2}(\zeta)-\mathsf{Poly}_\mathsf{Arr_2}(\zeta)\cdot\mathsf{Poly}_\mathsf{Acc_2}(\omega\cdot \zeta))\cdot(\zeta-\omega^{\kappa-1})$
+* $Y_\mathsf{Vanish3}=(\mathsf{Poly}_\mathsf{Acc_1}(\zeta)-(\mathsf{Poly}_\mathsf{Arr_1}(\zeta)+\mathsf{Poly}_\mathsf{Acc_1}(\omega\cdot \zeta)))\cdot(\zeta-\omega^{\kappa-1})$
+* $Y_\mathsf{Vanish4}= (\mathsf{Poly}_\mathsf{Acc_2}(\zeta)-(\mathsf{Poly}_\mathsf{Arr_2}(\zeta)+\mathsf{Poly}_\mathsf{Acc_2}(\omega\cdot \zeta)))\cdot(\zeta-\omega^{\kappa-1})$
 * $Y_\mathsf{Vanish5}= (\mathsf{Poly}_\mathsf{Acc_1}(\zeta)-\mathsf{Poly}_\mathsf{Acc_2}(\zeta)\cdot\frac{(\zeta^\kappa-1)}{(\zeta-\omega^0)}$
 * $Y_\mathsf{Zero}=Y_\mathsf{Vanish1} + \rho Y_\mathsf{Vanish2} + \rho^2 Y_\mathsf{Vanish3} + \rho^3 Y_\mathsf{Vanish4} + \rho^4 Y_\mathsf{Vanish5}- Q(\zeta)\cdot (\zeta^n - 1)$
 
@@ -193,7 +192,7 @@ We prove knowledge soundness in the Algebraic Group Model (AGM). To do so, we mu
 
    i) $V$ accepts at the end of the protocol
 
-   ii) $\prod_{i = 0}^{n-1} \mathsf{Arr_1}[i]\neq\prod_{i = 0}^{n-1} \mathsf{Arr_2}[i]$
+   ii) $\sum_{i = 0}^{n-1} \mathsf{Arr_1}[i]\neq\sum_{i = 0}^{n-1} \mathsf{Arr_2}[i]$
 
 Our proof is as follows:
 

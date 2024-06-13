@@ -18,7 +18,7 @@ The prover ($\mathcal{P}$) holds an array $\mathsf{Arr} = [a_0, a_1, a_2, \dots,
 
 In order to prove $K_\mathsf{Arr}$ and  $\mathsf{Sum}_\mathsf{Arr}$ are consistent, the prover will build a helper array $\mathsf{Acc}_\mathsf{Arr}$ called an accumulator (or accumulating array or incremental array). This should not be confused with accumulators from cryptography, which are a concept related to succinct proofs but are distinct. As with $\mathsf{Arr}$, the prover will also encode $\mathsf{Acc}$ as a polynomial and provide a commitment of it to the verifier. The idea is that the prover will prove a relation between $\mathsf{Arr}$ and $\mathsf{Acc}$; and a relation between $\mathsf{Acc}$ and $\mathsf{Sum_\mathsf{Arr}}$. Put together, it will imply the correct relation between $\mathsf{Arr}$ and $\mathsf{Sum_\mathsf{Arr}}$.
 
-Consider a small numeric example in $\mathbb{Z}_{97}$ where  $\mathsf{Arr}= [84,67,11,92,36,67]$ and $\mathsf{Sum}_\mathsf{Arr}=72$. The first idea is to get $\mathsf{Sum}_\mathsf{Arr}$ into an array. Say, we just append it: $\mathsf{Arr}''= [84,67,11,92,36,67,72] $. How does the prover show $\mathsf{Arr}''$ is correct? The last value of the array depends on every single element that precedes it, which will be a complex constraint to prove. 
+Consider a small numeric example in $\mathbb{Z}_{97}$ where  $\mathsf{Arr}= [84,67,11,92,36,67]$ and $\mathsf{Sum}_\mathsf{Arr}=66$. The first idea is to get $\mathsf{Sum}_\mathsf{Arr}$ into an array. Say, we just append it: $\mathsf{Arr}''= [84,67,11,92,36,67,66] $. How does the prover show $\mathsf{Arr}''$ is correct? The last value of the array depends on every single element that precedes it, which will be a complex constraint to prove. 
 
 An alternative idea is to create a new array that starts the same as $\mathsf{Arr}$ and ends up at $\mathsf{Sum}_\mathsf{Arr}$ by folding in the integers from $\mathsf{Arr}$ one-by-one with addition. Then each value in the new array will depend on only two values, as below. 
 
@@ -32,16 +32,16 @@ The next value will be the addition (mod 97) of: 67 (the value at the same index
 
 * $\mathsf{Arr}= [84,67,11,92,36,67]$
 
-* $ \mathsf{Acc} = [84, (67+84),\bot,\bot,\bot,\bot] = [84, 2,\bot,\bot,\bot,\bot]$ 
+* $ \mathsf{Acc} = [84, (67+84),\bot,\bot,\bot,\bot] = [84, 54,\bot,\bot,\bot,\bot]$ 
 
 The next value will be the addition of: 11 (the value at the same index in $\mathsf{Arr}$) and 2 (the previous value in $\mathsf{Acc}$):
 
 * $\mathsf{Arr}= [84,67,11,92,36,67]$
-* $ \mathsf{Acc} = [84, 2,(11+2),\bot,\bot,\bot] = [84,2,22,\bot,\bot,\bot]$ 
-* $ \mathsf{Acc} = [84, 2,22,(92+22),\bot,\bot] = [84,2,22,84,\bot,\bot]$ 
-* $ \mathsf{Acc} = [84, 2,22,84,(36+84),\bot] = [84,2,22,84,17,\bot]$ 
-* $ \mathsf{Acc} = [84,2,22,84,17,(67+17)] = [84, 2, 22, 84, 17, 72]$ 
-* $\mathsf{Sum}_\mathsf{Arr}=72$
+* $ \mathsf{Acc} = [84, 54,(11+54),\bot,\bot,\bot] = [84,54,65,\bot,\bot,\bot]$ 
+* $ \mathsf{Acc} = [84, 54, 65,(92+65),\bot,\bot] = [84,54,65, 60,\bot,\bot]$ 
+* $ \mathsf{Acc} = [84,54,65, 60,(36 + 60),\bot] = [84,54,65, 60, 96,\bot]$ 
+* $ \mathsf{Acc} = [84,54,65, 60, 96, (67+96)] = [84,54,65, 60, 96, 66]$ 
+* $\mathsf{Sum}_\mathsf{Arr}=66$
 
 Notice the last value in $\mathsf{Acc}$ is $\mathsf{Sum_\mathsf{Arr}}$. The prover wants to show three constraints:
 
@@ -55,10 +55,10 @@ Last, while it is not necessary to do, it is often convenient to hold the the va
 
 * $\mathsf{Arr}= [84,67,11,92,36,67]$
 * $ \mathsf{Acc} = [\bot, \bot, \bot, \bot, \bot, 67]$ 
-* $ \mathsf{Acc} = [\bot, \bot, \bot, \bot, 84, 67]$ 
+* $ \mathsf{Acc} = [\bot, \bot, \bot, \bot, 6, 67]$ 
 * $\ldots$
-* $ \mathsf{Acc} = [72, 84, 36, 65, 84, 67]$ 
-* $\mathsf{Sum}_\mathsf{Arr}=72$
+* $ \mathsf{Acc} = [66, 79, 12, 1, 6, 67]$ 
+* $\mathsf{Sum}_\mathsf{Arr}=66$
 
 ## Protocol Details
 
@@ -178,7 +178,7 @@ Finally, if the constraint system is true, the following constraint will be true
 
      i) $V$ accepts at the end of the protocol
 
-     ii) $\mathsf{Prod}_\mathsf{Arr}\neq\prod_{i = 0}^{n-1} \mathsf{Arr}[i]$
+     ii) $\mathsf{Sum}_\mathsf{Arr}\neq\sum_{i = 0}^{n-1} \mathsf{Arr}[i]$
 
   Our proof is as follows:
 
@@ -192,6 +192,6 @@ Finally, if the constraint system is true, the following constraint will be true
 
   We prove that the above protocol is zero-knowledge when $\mathsf{PolyCommit}_\mathsf{Ped}$ (from the KZG paper) is used for the polynomial commitments. We do so by constructing a probabilistic polynomial time simulator $S$ which, for every (possibly malicious) verifier $V, can output a view of the execution of the protocol that is indistinguishable from the view produced by the real execution of the program.
 
-  The simulator $S$ generates an array $\mathsf{Arr'}$  whose product is equal to the disclosed value $\mathsf{Prod}_\mathsf{Arr}$ (this array could just have $\mathsf{Prod}_\mathsf{Arr}$ in one entry, and $1$'s elsewhere), then follows the same steps a prover would to prove the product of this array. So, $S$ computes the accumulator $\mathsf{Acc'}$ and interpolates the two arrays into their respective polynomials, $\mathsf{Poly}_\mathsf{Acc}(X)$ and $\mathsf{Poly}_\mathsf{Arr}(X)$. It computes $Q(X)$ using  $\mathsf{Poly}_\mathsf{Acc}(X)$ and $\mathsf{Poly}_\mathsf{Arr}(X)$ and the random challenge point $\rho'$ (by strong Fiat-Shamir). $A$ commits to each of these three polynomials (and writes the commitments to the transcript). Then, it generates the random challenge $\zeta'$ (once again this is by strong Fiat-Shamir). It creates opening proofs for $\mathsf{Poly}_\mathsf{Acc}(\zeta'), \space \mathsf{Poly}_\mathsf{Arr}(\zeta'), \space Q(\zeta')$, and $\mathsf{Poly}_\mathsf{Acc}(\zeta' \cdot \omega)$, and writes these to the transcript as well. Since $S$ knows each of the above polynomials, it can honestly compute this step and the proof will be accepted by $V$. The transcript it generates this way will be indistinguishable from a transcript generated from a real execution, since $\mathsf{PolyCommit}_\mathsf{Ped}$ has the property of Indistinguishability of Commitments due to the randomization by $h^{\hat{\phi}(x)}$. 
+  The simulator $S$ generates an array $\mathsf{Arr'}$  whose product is equal to the disclosed value $\mathsf{Sum}_\mathsf{Arr}$ (this array could just have $\mathsf{Prod}_\mathsf{Summ}$ in one entry, and $0$'s elsewhere), then follows the same steps a prover would to prove the sum of this array. So, $S$ computes the accumulator $\mathsf{Acc'}$ and interpolates the two arrays into their respective polynomials, $\mathsf{Poly}_\mathsf{Acc}(X)$ and $\mathsf{Poly}_\mathsf{Arr}(X)$. It computes $Q(X)$ using  $\mathsf{Poly}_\mathsf{Acc}(X)$ and $\mathsf{Poly}_\mathsf{Arr}(X)$ and the random challenge point $\rho'$ (by strong Fiat-Shamir). $A$ commits to each of these three polynomials (and writes the commitments to the transcript). Then, it generates the random challenge $\zeta'$ (once again this is by strong Fiat-Shamir). It creates opening proofs for $\mathsf{Poly}_\mathsf{Acc}(\zeta'), \space \mathsf{Poly}_\mathsf{Arr}(\zeta'), \space Q(\zeta')$, and $\mathsf{Poly}_\mathsf{Acc}(\zeta' \cdot \omega)$, and writes these to the transcript as well. Since $S$ knows each of the above polynomials, it can honestly compute this step and the proof will be accepted by $V$. The transcript it generates this way will be indistinguishable from a transcript generated from a real execution, since $\mathsf{PolyCommit}_\mathsf{Ped}$ has the property of Indistinguishability of Commitments due to the randomization by $h^{\hat{\phi}(x)}$. 
 
   - Could also define a simulator knows the trapdoor $\tau$ and thus can create a passing witness for any commitment. The proof for add1 is done in this style, but with small alterations would work here as well (and vice versa for this style of proof working for add1)
