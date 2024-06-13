@@ -21,3 +21,4 @@ jobs:
           githubToken: ${{ secrets.BARRY }}
           hugoVersion: 0.126.1
           branch: host
+          cname: plonkbook.org
