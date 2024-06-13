@@ -1,14 +1,14 @@
 {
   "name": "Handbook",
   "short_name": "Handbook",
-  "start_url": "/2024-Gadgets/",
-  "scope": "/2024-Gadgets/",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
   "icons": [
     {
-      "src": "/2024-Gadgets/favicon.svg",
+      "src": "/favicon.svg",
       "sizes": "512x512"
     }
   ]
