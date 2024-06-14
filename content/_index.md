@@ -17,7 +17,7 @@ type: docs
       title = {Plonkbook: A Handbook for Poly-IOP Gadgets},
       howpublished = {GitHub Pages},
       year = {2024},
-      url = {https://madibagroup.github.io/2024-Gadgets}
+      url = {https://www.plonkbook.org}
 }
 ```
 
@@ -27,7 +27,7 @@ type: docs
 
 The zoo of zk-SNARKs is complex to navigate and always changing. Groth16 (by Jens Groth in 2016) was an early protocol that was elegant, explainable, and very performant. A lot of educational resources concentrated on explaining it over its other contemporaries. However a main drawback of Groth16 is a trusted setup that cannot be shared between other people doing Groth16 proofs (unless if they are proving different inputs to the exact same function). Shareable (universal) trusted setups came in vogue. Plonk (by Ariel Gabizon, Zachary J. Williamson, & Oana Ciobotaru in 2019) has inherited the throne from Groth16 in terms of being one of the most popular zk-SNARKs to explain.
 
-Is Plonk the "best" SNARK in 2024? By a lot of measures, it is not. Faster (both asymptotically and concretely) prover operations can be found elsewhere. Proof size and verifier time can be squeezed more than Plonk. Trusted setups can be abandoned altogether. Yet Plonk is *pretty good*. Importantly, it is also *pretty understandable*. And it is *pretty flexible*. For these reasons, Plonk is a great place to start when you are learning about SNARKs and when designing a custom protocol for proving something directly—not as a circuit on top of Plonk but using the same building blocks (or "gadgets") that Plonk itself uses. We hope you find this *Plonkbook* helpful as a reference guide to various gadgets you can use.
+Is Plonk the "best" SNARK in 2024? By a lot of measures, it is not. Faster (both asymptotically and concretely) prover operations can be found elsewhere. Proof size and verifier time can be squeezed more than Plonk. Trusted setups can be abandoned altogether. Yet Plonk is *pretty good*. Importantly, it is also *pretty understandable*. And it is *pretty flexible*. For these reasons, Plonk is a great place to start when you are learning about SNARKs and when designing a custom protocol for proving something directly—not as a circuit on top of Plonk but using the same building blocks (or "gadgets") that Plonk itself uses.
 
 
 
