@@ -36,4 +36,71 @@ Unlike halo2, Plookup requires only one auxiliary vector, $\mathsf{S}$, where $\
 
 ### halo2
 
+#### Array Level
+
+* $\mathcal{P}$ and $\mathcal{V}$ are given a public table $\mathsf{T}$
+* $\mathcal{P}$ holds an array $\mathsf{Arr}=[a_0,a_1,a_2,\dots,a_{n-1}]$ of $n$ integers ($a_i\in\mathbb{Z}_q$)
+* $\mathcal{P}$ computes an array $\mathsf{Arr}^\prime=[a_0^\prime,a_1^\prime,a_2^\prime,\dots,a_{n-1}^\prime]$ of $n$ integers ($a_i^\prime\in\mathbb{Z}_q$) such that:
+    * $\mathsf{Arr}^\prime$ is a permutation of $\mathsf{Arr}$ and sorted in ascending or descending
+* $\mathcal{P}$ computes an array $\mathsf{T}^\prime$ such that:
+    * $\mathsf{T}^\prime$ is a permutation of $\mathsf{T}$ and sorted by $\mathsf{Arr}^\prime$
+* $\mathsf{Arr}^\prime$ and $\mathsf{T}^\prime$ have the following relations:
+    * $\mathsf{Arr}^\prime[0]=\mathsf{T}^\prime[0]$
+    * $\mathsf{Arr}^\prime[i]=\mathsf{T}^\prime[i]\mid\mathsf{Arr}^\prime[i-1],i\ne{0}$
+
+#### Polynomial Level
+
+We assume arrays $\mathsf{Arr}$, $\mathsf{Arr}^\prime$, $\mathsf{T}$, and $\mathsf{T}^\prime$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 1 (which will not change the product).
+
+Recall the four constraints we want to prove:
+1. $\mathsf{Arr}^\prime$ is a permutation of $\mathsf{Arr}$
+2. $\mathsf{T}^\prime$ is a permutation of $\mathsf{T}$
+3. The first value in $\mathsf{Arr}^\prime$ equals to the first value in $\mathsf{T}^\prime$
+4. The rest of the values in $\mathsf{Arr}^\prime$ are of the form $\mathsf{Arr}^\prime[i]=\mathsf{T}^\prime[i]\mid\mathsf{Arr}^\prime[i-1],i\ne{0}$
+
+In polynomial form, the constraints are ($\alpha,\beta$ are challenges from $\mathcal{V}$):
+1. $\prod[\alpha-\mathsf{Poly}_{\mathsf{Arr}}(X)]=\prod[\alpha-\mathsf{Poly}_{\mathsf{Arr}^\prime}(X)]$
+2. $\prod[\beta-\mathsf{Poly}_{\mathsf{T}}(X)]=\prod[\beta-\mathsf{Poly}_{\mathsf{T}^\prime}(X)]$
+3. For $X=\omega^0$: $\mathsf{Poly}_{\mathsf{Arr}^\prime}(X)=\mathsf{Poly}_{\mathsf{T}^\prime}(X)$
+4. For all $X\in\mathcal{H}_\kappa\setminus{\omega^0}$: $[\mathsf{Poly}_{\mathsf{Arr}^\prime}(X)-\mathsf{Poly}_{\mathsf{T}^\prime}(X)]\cdot[\mathsf{Poly}_{\mathsf{Arr}^\prime}(X)-\mathsf{Poly}_{\mathsf{Arr}^\prime}(X\cdot\omega^{-1})]=0$
+
+We take care of the "for $X$" conditions by zeroing out the rest of the polynomial that is not zero. See the gadget <span style="border-style:dotted;border-width: 2px;"> [zero1](./zero1)</span> for more on why this works.
+
+1. $\mathsf{Poly}_\mathsf{Vanish1}(X)=\prod[\alpha-\mathsf{Poly}_{\mathsf{Arr}}(X)]-\prod[\alpha-\mathsf{Poly}_{\mathsf{Arr}^\prime}(X)]=0$
+2. $\mathsf{Poly}_\mathsf{Vanish2}(X)=\prod[\beta-\mathsf{Poly}_{\mathsf{T}}(X)]-\prod[\beta-\mathsf{Poly}_{\mathsf{T}^\prime}(X)]=0$
+3. $\mathsf{Poly}_\mathsf{Vanish3}(X)=[\mathsf{Poly}_{\mathsf{Arr^\prime}}(X)-\mathsf{Poly}_{\mathsf{T^\prime}}(X)]\cdot\frac{X^\kappa-1}{X-\omega^0}=0$
+4. $\mathsf{Poly}_\mathsf{Vanish4}(X)=[\mathsf{Poly}_{\mathsf{Arr}^\prime}(X)-\mathsf{Poly}_{\mathsf{T}^\prime}(X)]\cdot[\mathsf{Poly}_{\mathsf{Arr}^\prime}(X)-\mathsf{Poly}_{\mathsf{Arr}^\prime}(X\cdot\omega^{-1})]\cdot(X-\omega^0)=0$
+
+Instead of proving $\mathsf{Poly}_\mathsf{Vanish1}$ and $\mathsf{Poly}_\mathsf{Vanish2}$ are vanishing through two [permutation]() checks, we can construct an accumulator $\mathsf{Poly}_\mathsf{Z}$ to make it more efficient (the domain needs to be expanded to $2\kappa$, denoted by $k$):
+* $\mathsf{Poly}_\mathsf{Z}(\omega^0)=\mathsf{Poly}_\mathsf{Z}(\omega^{k-1})=1$
+* For all $X\in\mathcal{H}_\kappa\setminus{\omega^{k-1}}$: $\mathsf{Poly}_\mathsf{Z}(X\cdot\omega)=\mathsf{Poly}_\mathsf{Z}(X)\cdot\frac{[\mathsf{Poly}_\mathsf{Arr}(X)+\alpha]\cdot[\mathsf{Poly}_\mathsf{T}(X)+\beta]}{[\mathsf{Poly}_\mathsf{Arr^\prime}(X)+\alpha]\cdot[\mathsf{Poly}_\mathsf{T^\prime}(X)+\beta]}$
+
+Now we have the new $\mathsf{Poly}_\mathsf{Vanish1}$ and $\mathsf{Poly}_\mathsf{Vanish2}$:
+1. $\mathsf{Poly}_\mathsf{Vanish1}=[\mathsf{Poly}_\mathsf{Z}(X)-1]\cdot\frac{X^k-1}{(X-\omega^0)\cdot(X-\omega^{k-1})}=0$
+2. $\mathsf{Poly}_\mathsf{Vanish2}=\{\mathsf{Poly}_\mathsf{Z}(X\cdot\omega)\cdot[\mathsf{Poly}_\mathsf{Arr^\prime}(X)+\alpha]\cdot[\mathsf{Poly}_\mathsf{T^\prime}(X)+\beta]-\mathsf{Poly}_\mathsf{Z}(X)\cdot[\mathsf{Poly}_\mathsf{Arr}(X)+\alpha]\cdot[\mathsf{Poly}_\mathsf{T}(X)+\beta]\}\cdot(X-\omega^{k-1})=0$
+
+These equations are true for every value of $X \in \mathcal{H}_k$ (but not necessarily true outside of these values). To show this, we divide each polynomial by  $X^k - 1$, which is a minimal vanishing polynomial for $\mathcal{H}_k$ that does not require interpolation to create. If the quotients are polynomials (and not rational functions), then $\mathsf{Poly}_\mathsf{Vanish1}(X)$, $\mathsf{Poly}_\mathsf{Vanish2}(X)$, $\mathsf{Poly}_\mathsf{Vanish3}(X)$, and $\mathsf{Poly}_\mathsf{Vanish4}(X)$ must be vanishing on $\mathcal{H}_k$ too. Specifically, the prover computes,
+
+1. $Q_1(X) = \frac{\mathsf{Poly}_\mathsf{Vanish1}(X)}{X^k - 1}$
+2. $Q_2(X) = \frac{\mathsf{Poly}_\mathsf{Vanish2}(X)}{X^k - 1}$
+3. $Q_3(X) = \frac{\mathsf{Poly}_\mathsf{Vanish3}(X)}{X^k - 1}$
+4. $Q_4(X) = \frac{\mathsf{Poly}_\mathsf{Vanish4}(X)}{X^k - 1}$
+
+Then we can easily construct the following zero polynomials for any point as long as $Q$ exists:
+
+1. $W_1(X)=\mathsf{Poly}_\mathsf{Vanish1}(X)-Q_1(X)\cdot(X^k-1)=0$
+2. $W_2(X)=\mathsf{Poly}_\mathsf{Vanish2}(X)-Q_2(X)\cdot(X^k-1)=0$
+3. $W_3(X)=\mathsf{Poly}_\mathsf{Vanish3}(X)-Q_3(X)\cdot(X^k-1)=0$
+4. $W_4(X)=\mathsf{Poly}_\mathsf{Vanish4}(X)-Q_4(X)\cdot(X^k-1)=0$
+
+Instead of proving the four polynomials are zero polynomials one by one, we can linearly combine the four polynomials with a random challenge $\rho$ sent by $\mathcal{V}$ to compute:
+* $W(X)=W_1(X)+\rho\cdot{W_2(X)}+\rho^2\cdot{W_3(X)}+\rho^3\cdot{W_4(X)}=0$
+
+When $W_1,W_2,W_3,W_4$ are zero polynomials, $W$ is also a zero polynomial with high probability. Again, if and only if $W$ is a zero polynomial, $Q(X)=W(X)/(X^k-1)$ exists.
+
+Ultimately the halo2 lookup argument will satisfy the following constraints at the Commitment Level:
+1. Show $Q(X),Q_1(X),Q_2(X),Q_3(X),Q_4(X)$ exist
+2. Show $W(X)$ is correctly constructed from $\mathsf{Poly}_\mathsf{Z}(X)$,  $\mathsf{Poly}_\mathsf{Arr}(X)$, $\mathsf{Poly}_\mathsf{T}(X)$, $\mathsf{Poly}_\mathsf{Arr^\prime}(X)$, and $\mathsf{Poly}_\mathsf{T^\prime}(X)$
+3. Show $W(X)$ is a zero polynomial
+
 ### Plookup
