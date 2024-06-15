@@ -101,4 +101,45 @@ Ultimately the halo2 lookup argument will satisfy the following constraints at t
 2. Show $\mathsf{Poly}_\mathsf{Zero}(X)$ is correctly constructed from $\mathsf{Poly}_\mathsf{Z}(X)$,  $\mathsf{Poly}_\mathsf{Arr}(X)$, $\mathsf{Poly}_\mathsf{T}(X)$, $\mathsf{Poly}_\mathsf{Arr^\prime}(X)$, and $\mathsf{Poly}_\mathsf{T^\prime}(X)$
 3. Show $\mathsf{Poly}_\mathsf{Zero}(X)$ is a zero polynomial
 
+#### Commitment Level
+
+The verifier will never see the arrays or polynomials themselves. They are undisclosed because they either (i) contain private data or (ii) are too large to examine and maintain a succinct proof system. Instead, the prover will use commitments.
+
+The prover will write the following commitments to the transcript:
+
+* $K_\mathsf{Z}=\mathsf{KZG.Commit}(\mathsf{Poly}_\mathsf{Z}(X))$
+* $K_\mathsf{Arr}=\mathsf{KZG.Commit}(\mathsf{Poly}_\mathsf{Arr}(X))$
+* $K_\mathsf{T}=\mathsf{KZG.Commit}(\mathsf{Poly}_\mathsf{T}(X))$
+* $K_\mathsf{Arr^\prime}=\mathsf{KZG.Commit}(\mathsf{Poly}_\mathsf{Arr^\prime}(X))$
+* $K_\mathsf{T^\prime}=\mathsf{KZG.Commit}(\mathsf{Poly}_\mathsf{T^\prime}(X))$
+
+The prover will generate a random challenge evaluation point (using strong Fiat-Shamir) on the polynomial that is outside of $\mathcal{H}_k$. Call this point $\rho$. It will be used by the prover to create polynomial $Q(X)$ (see above) and the prover will write to the transcript: 
+
+* $\rho$
+* $K_Q=\mathsf{KZG.Commit}(Q(X))$
+
+The prover will generate a second random challenge evaluation point (using strong Fiat-Shamir) on the polynomial that is outside of $\mathcal{H}_k$. Call this point $\zeta$. The prover will write the three points and opening proofs to the transcript:
+
+* $\zeta$
+* $\mathsf{Poly}_\mathsf{Z}(\zeta)=\mathsf{KZG.Open}(K_\mathsf{Z},\zeta)$
+* $\mathsf{Poly}_\mathsf{Z}(\zeta\omega)=\mathsf{KZG.Open}(K_\mathsf{Z},\zeta\omega)$
+* $\mathsf{Poly}_\mathsf{Arr}(\zeta)=\mathsf{KZG.Open}(K_\mathsf{Arr},\zeta)$
+* $\mathsf{Poly}_\mathsf{Arr^\prime}(\zeta)=\mathsf{KZG.Open}(K_\mathsf{Arr^\prime},\zeta)$
+* $\mathsf{Poly}_\mathsf{Arr^\prime}(\zeta\omega^{-1})=\mathsf{KZG.Open}(K_\mathsf{Arr^\prime},\zeta\omega^{-1})$
+* $\mathsf{Poly}_\mathsf{T}(\zeta)=\mathsf{KZG.Open}(K_\mathsf{T},\zeta)$
+* $\mathsf{Poly}_\mathsf{T^\prime}(\zeta)=\mathsf{KZG.Open}(K_\mathsf{T^\prime},\zeta)$
+* $Q(\zeta)=\mathsf{KZG.Open}(K_Q,\zeta)$
+
+To check the proof, the verifier uses the transcript to construct the value $Y_\mathsf{Zero}$ as follows:
+
+* $Y_\mathsf{Vanish1}=[\mathsf{Poly}_\mathsf{Z}(\zeta)-1]\cdot\frac{(\zeta^k-1)}{(\zeta-\omega^0)\cdot(\zeta-\omega^{k-1})}$
+* $Y_\mathsf{Vanish2}=\{\mathsf{Poly}_\mathsf{Z}(\zeta\omega)\cdot[\mathsf{Poly}_\mathsf{Arr^\prime}(\zeta)+\alpha]\cdot[\mathsf{Poly}_\mathsf{T^\prime}(\zeta)+\beta]-\mathsf{Poly}_\mathsf{Z}(\zeta)\cdot[\mathsf{Poly}_\mathsf{Arr}(\zeta)+\alpha]\cdot[\mathsf{Poly}_\mathsf{T}(\zeta)+\beta]\}\cdot(\zeta-\omega^{k-1})$
+* $Y_\mathsf{Vanish3}=[\mathsf{Poly}_{\mathsf{Arr^\prime}}(\zeta)-\mathsf{Poly}_{\mathsf{T^\prime}}(\zeta)]\cdot\frac{\zeta^k-1}{\zeta-\omega^0}$
+* $Y_\mathsf{Vanish4}=[\mathsf{Poly}_{\mathsf{Arr}^\prime}(\zeta)-\mathsf{Poly}_{\mathsf{T}^\prime}(\zeta)]\cdot[\mathsf{Poly}_{\mathsf{Arr}^\prime}(\zeta)-\mathsf{Poly}_{\mathsf{Arr}^\prime}(\zeta\omega^{-1})]\cdot(\zeta-\omega^0)$
+* $Y_\mathsf{Zero}=Y_\mathsf{Vanish1}+\rho\cdot{Y_\mathsf{Vanish2}}+\rho^2\cdot{Y_\mathsf{Vanish3}}+\rho^3\cdot{Y_\mathsf{Vanish4}}-Q(\zeta)\cdot(\zeta^k - 1)$
+
+Finally, if the constraint system is true, the following constraint will be true (and will be false otherwise with overwhelming probability, due to the Schwartz-Zippel lemma on $\rho$ and $\zeta$) :
+
+* $Y_\mathsf{Zero}\overset{?}{=}0$
+
 ### Plookup
