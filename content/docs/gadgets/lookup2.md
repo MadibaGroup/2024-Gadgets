@@ -86,21 +86,19 @@ These equations are true for every value of $X \in \mathcal{H}_k$ (but not neces
 3. $Q_3(X) = \frac{\mathsf{Poly}_\mathsf{Vanish3}(X)}{X^k - 1}$
 4. $Q_4(X) = \frac{\mathsf{Poly}_\mathsf{Vanish4}(X)}{X^k - 1}$
 
-Then we can easily construct the following zero polynomials for any point as long as $Q$ exists:
-
-1. $W_1(X)=\mathsf{Poly}_\mathsf{Vanish1}(X)-Q_1(X)\cdot(X^k-1)=0$
-2. $W_2(X)=\mathsf{Poly}_\mathsf{Vanish2}(X)-Q_2(X)\cdot(X^k-1)=0$
-3. $W_3(X)=\mathsf{Poly}_\mathsf{Vanish3}(X)-Q_3(X)\cdot(X^k-1)=0$
-4. $W_4(X)=\mathsf{Poly}_\mathsf{Vanish4}(X)-Q_4(X)\cdot(X^k-1)=0$
-
 Instead of proving the four polynomials are zero polynomials one by one, we can linearly combine the four polynomials with a random challenge $\rho$ sent by $\mathcal{V}$ to compute:
-* $W(X)=W_1(X)+\rho\cdot{W_2(X)}+\rho^2\cdot{W_3(X)}+\rho^3\cdot{W_4(X)}=0$
+* $W(X)=\mathsf{Poly}_\mathsf{Vanish1}(X)+\rho\cdot{\mathsf{Poly}_\mathsf{Vanish2}(X)}+\rho^2\cdot{\mathsf{Poly}_\mathsf{Vanish3}(X)}+\rho^3\cdot{\mathsf{Poly}_\mathsf{Vanish4}(X)}=0$
 
-When $W_1,W_2,W_3,W_4$ are zero polynomials, $W$ is also a zero polynomial with high probability. Again, if and only if $W$ is a zero polynomial, $Q(X)=W(X)/(X^k-1)$ exists.
+When $\mathsf{Poly}_\mathsf{Vanish1}(X),\mathsf{Poly}_\mathsf{Vanish2}(X),\mathsf{Poly}_\mathsf{Vanish3}(X),\mathsf{Poly}_\mathsf{Vanish4}(X)$ are vanishing on the domain $\mathcal{H}_k$, $W(X)$ is also vanishing with high probability. Again, if and only if $W(X)$ is vanishing over the field $\mathcal{H}_k$, $Q(X)=W(X)/(X^k-1)$ exists.
+
+By rearranging, we can get $\mathsf{Poly}_\mathsf{Zero}(X)$ as a true zero polynomial (zero at every value both in $\mathcal{H}_\kappa$ and outside of it):
+$$
+\mathsf{Poly}_\mathsf{Zero}(X)=\mathsf{Poly}_\mathsf{Vanish1}(X)+\rho\cdot\mathsf{Poly}_\mathsf{Vanish2}(X)+\rho^2\cdot\mathsf{Poly}_\mathsf{Vanish3}(X)+\rho^3\cdot\mathsf{Poly}_\mathsf{Vanish4}(X)-Q(X)\cdot(X^n-1)=0
+$$
 
 Ultimately the halo2 lookup argument will satisfy the following constraints at the Commitment Level:
-1. Show $Q(X),Q_1(X),Q_2(X),Q_3(X),Q_4(X)$ exist
-2. Show $W(X)$ is correctly constructed from $\mathsf{Poly}_\mathsf{Z}(X)$,  $\mathsf{Poly}_\mathsf{Arr}(X)$, $\mathsf{Poly}_\mathsf{T}(X)$, $\mathsf{Poly}_\mathsf{Arr^\prime}(X)$, and $\mathsf{Poly}_\mathsf{T^\prime}(X)$
-3. Show $W(X)$ is a zero polynomial
+1. Show $Q(X)$ exists
+2. Show $\mathsf{Poly}_\mathsf{Zero}(X)$ is correctly constructed from $\mathsf{Poly}_\mathsf{Z}(X)$,  $\mathsf{Poly}_\mathsf{Arr}(X)$, $\mathsf{Poly}_\mathsf{T}(X)$, $\mathsf{Poly}_\mathsf{Arr^\prime}(X)$, and $\mathsf{Poly}_\mathsf{T^\prime}(X)$
+3. Show $\mathsf{Poly}_\mathsf{Zero}(X)$ is a zero polynomial
 
 ### Plookup
