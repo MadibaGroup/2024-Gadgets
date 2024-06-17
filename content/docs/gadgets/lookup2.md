@@ -143,3 +143,61 @@ Finally, if the constraint system is true, the following constraint will be true
 * $Y_\mathsf{Zero}\overset{?}{=}0$
 
 ### Plookup
+
+#### Array Level
+
+* $\mathcal{P}$ and $\mathcal{V}$ are given a public table $\mathsf{T}=[t_0,t_1,t_2,\dots,t_{d-1}]$ of $d$ integers ($t_i\in\mathbb{Z}_q$)
+* $\mathcal{P}$ holds an array $\mathsf{Arr}=[a_0,a_1,a_2,\dots,a_{n-1}]$ of $n$ integers ($a_i\in\mathbb{Z}_q$)
+* $\mathcal{P}$ constructs an array $\mathsf{S}=(\mathsf{Arr},\mathsf{T})=[s_0,s_1,s_2,\dots,s_{n+d-1}]$ of $n+d$ integers ($s_i\in\mathbb{Z}_q$) such that:
+    * $\mathsf{S}$ is a union set of $\mathsf{Arr}$ and $\mathsf{T}$
+    * $\mathsf{S}$ is sorted by $\mathsf{T}$
+* $\mathsf{Arr}$, $\mathsf{T}$, and $\mathsf{S}$ have the following relations:
+    * For each $i\in[0,d-1]$, there exists a $j\in[0,n+d-1]$ such that $(t_i,t_{i+1})=(s_j,s_{j+1})$
+    * Let $I$ be the set of those $d-1$ indices, and let $I^\prime:=[0,n+d-1]\setminus{I}$. For each $i\in{I^\prime}$, there exists a $j\in[0,n-1]$ such that $s_i=s_{i+1}=a_{j}$
+
+#### Polynomial Level
+
+We assume arrays $\mathsf{Arr}$, $\mathsf{T}$, and $\mathsf{S}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 1 (which will not change the product).
+
+Recall the two constraints we want to prove:
+1. For each $i\in[0,d-1]$, there exists a $j\in[0,n+d-1]$ such that $(t_i,t_{i+1})=(s_j,s_{j+1})$
+2. Let $I$ be the set of those $d-1$ indices, and let $I^\prime:=[0,n+d-1]\setminus{I}$. For each $i\in{I^\prime}$, there exists a $j\in[0,n-1]$ such that $s_i=s_{i+1}=a_{j}$
+
+In polynomial form, the constraints are ($\alpha,\beta$ are challenges from $\mathcal{V}$):
+1. $(1+\beta)^n\prod_{i\le{n}}[\alpha+\mathsf{Poly}_{\mathsf{Arr}}(\omega^i)]\cdot\prod_{i\le{d-1}}[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{T}}(\omega^i)+\beta\mathsf{Poly}_{\mathsf{T}}(\omega^{i+1})]=\prod_{i\le{n+d-1}}[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}}(\omega^i)+\beta\mathsf{Poly}_{\mathsf{S}}(\omega^{i+1})]$
+
+To efficiently prove the above polynomial holds, we can use a similar trick in halo2 lookup by constructing an accumulator :
+* $\mathsf{Poly}_\mathsf{Z}(\omega^0)=\mathsf{Poly}_\mathsf{Z}(\omega^{n+d-1})=1$
+* For $i\in[0,n+d-2]$: $\mathsf{Poly}_\mathsf{Z}(X\omega)=\mathsf{Poly}_\mathsf{Z}(X)\cdot\frac{(1+\beta)[\alpha+\mathsf{Poly}_{\mathsf{Arr}}(X)]\cdot[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{T}}(X)+\beta\mathsf{Poly}_{\mathsf{T}}(X\omega)]}{\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}}(X)+\beta\mathsf{Poly}_{\mathsf{S}}(X\omega)}$
+
+However, the above accumulator does not exist because the degree of the denominator, $\mathsf{Poly}_\mathsf{S}$, is different from $\mathsf{Poly}_\mathsf{Arr}$ and $\mathsf{Poly}_\mathsf{T}$. Thus we have to decompose the denominator to make it have the same iteration as the numerator by halving it. We assume $d=n+1$ for convenience. Then we can compute the accumulator such that:
+* $\mathsf{Poly}_\mathsf{Z}(\omega^0)=\mathsf{Poly}_\mathsf{Z}(\omega^n)=1$
+* For $X\in\mathcal{H}_n\setminus{\omega^n}$: $\mathsf{Poly}_\mathsf{Z}(X\omega)=\mathsf{Poly}_\mathsf{Z}(X)\cdot\frac{(1+\beta)[\alpha+\mathsf{Poly}_{\mathsf{Arr}}(X)]\cdot[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{T}}(X)+\beta\mathsf{Poly}_{\mathsf{T}}(X\omega)]}{[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}}(X)+\beta\mathsf{Poly}_{\mathsf{S}}(X\omega)]\cdot[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}}(X\omega^n)+\beta\mathsf{Poly}_{\mathsf{S}}(X\omega^{n+1})]}$
+* For $X=\omega^n$: $\mathsf{Poly}_{\mathsf{S}}(X)=\mathsf{Poly}_{\mathsf{S}}(X\omega^n)$
+
+Similarly, we take care of the "for $X$" conditions by zeroing out the rest of the polynomial that is not zero. See the gadget <span style="border-style:dotted;border-width: 2px;"> [zero1](./zero1)</span> for more on why this works.
+
+1. $\mathsf{Poly}_\mathsf{Vanish1}(X)=[\mathsf{Poly}_{\mathsf{Z}}(X)-1]\cdot\frac{X^n-1}{(X-\omega^0)(X-\omega^n)}=0$
+2. $\displaylines{\mathsf{Poly}_\mathsf{Vanish2}(X)=\{\mathsf{Poly}_\mathsf{Z}(X\omega)\cdot[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}}(X)+\beta\mathsf{Poly}_{\mathsf{S}}(X\omega)]\cdot[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}}(X\omega^n)+\beta\mathsf{Poly}_{\mathsf{S}}(X\omega^{n+1})]-\\\mathsf{Poly}_\mathsf{Z}(X)\cdot(1+\beta)[\alpha+\mathsf{Poly}_{\mathsf{Arr}}(X)]\cdot[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{T}}(X)+\beta\mathsf{Poly}_{\mathsf{T}}(X\omega)]\}\cdot(X-\omega^n)}$
+3. $\mathsf{Poly}_\mathsf{Vanish3}(X)=[\mathsf{Poly}_{\mathsf{S}}(X)-\mathsf{Poly}_{\mathsf{S}}(X\omega^n)]\cdot\frac{X^n-1}{X-\omega^n}=0$
+
+These equations are true for every value of $X\in\mathcal{H}_n$ (but not necessarily true outside of these values). To show this, we divide each polynomial by  $X^n-1$, which is a minimal vanishing polynomial for $\mathcal{H}_n$ that does not require interpolation to create. If the quotients are polynomials (and not rational functions), then $\mathsf{Poly}_\mathsf{Vanish1}(X)$, $\mathsf{Poly}_\mathsf{Vanish2}(X)$, and $\mathsf{Poly}_\mathsf{Vanish3}(X)$ must be vanishing on $\mathcal{H}_n$ too. Specifically, the prover computes,
+
+1. $Q_1(X) = \frac{\mathsf{Poly}_\mathsf{Vanish1}(X)}{X^n - 1}$
+2. $Q_2(X) = \frac{\mathsf{Poly}_\mathsf{Vanish2}(X)}{X^n - 1}$
+3. $Q_3(X) = \frac{\mathsf{Poly}_\mathsf{Vanish3}(X)}{X^n - 1}$
+
+Instead of proving the three polynomials are zero polynomials one by one, we can linearly combine the three polynomials with a random challenge $\rho$ sent by $\mathcal{V}$ to compute:
+* $W(X)=\mathsf{Poly}_\mathsf{Vanish1}(X)+\rho\cdot{\mathsf{Poly}_\mathsf{Vanish2}(X)}+\rho^2\cdot{\mathsf{Poly}_\mathsf{Vanish3}(X)}=0$
+
+When $\mathsf{Poly}_\mathsf{Vanish1}(X),\mathsf{Poly}_\mathsf{Vanish2}(X),\mathsf{Poly}_\mathsf{Vanish3}(X)$ are vanishing on the domain $\mathcal{H}_n$, $W(X)$ is also vanishing with high probability. Again, if and only if $W(X)$ is vanishing over the field $\mathcal{H}_n$, $Q(X)=W(X)/(X^n-1)$ exists.
+
+By rearranging, we can get $\mathsf{Poly}_\mathsf{Zero}(X)$ as a true zero polynomial (zero at every value both in $\mathcal{H}_n$ and outside of it):
+$$
+\mathsf{Poly}_\mathsf{Zero}(X)=\mathsf{Poly}_\mathsf{Vanish1}(X)+\rho\cdot\mathsf{Poly}_\mathsf{Vanish2}(X)+\rho^2\cdot\mathsf{Poly}_\mathsf{Vanish3}(X)-Q(X)\cdot(X^n-1)=0
+$$
+
+Ultimately the Plookup will satisfy the following constraints at the Commitment Level:
+1. Show $Q(X)$ exists
+2. Show $\mathsf{Poly}_\mathsf{Zero}(X)$ is correctly constructed from $\mathsf{Poly}_\mathsf{Z}(X)$,  $\mathsf{Poly}_\mathsf{Arr}(X)$, $\mathsf{Poly}_\mathsf{T}(X)$, and $\mathsf{Poly}_\mathsf{S}(X)$
+3. Show $\mathsf{Poly}_\mathsf{Zero}(X)$ is a zero polynomial
