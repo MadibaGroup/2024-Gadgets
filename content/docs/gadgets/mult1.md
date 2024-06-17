@@ -43,7 +43,7 @@ We adjust the constraints to show an equality with 0:
 
 1. For all $X$ from $\omega^0$ to $\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Vanish}(X)=\mathsf{Poly}_\mathsf{Arr_3}(X)-\mathsf{Poly}_\mathsf{Arr_1}(X)\cdot\mathsf{Poly}_\mathsf{Arr_2}(X)=0$ 
 
-This equation is true for every value of $X \in \mathcal{H}_\kappa$ (but not necessarily true outside of these values). To show this, we divide each polynomial by  $X^\kappa - 1$, which is a minimal vanishing polynomial for $\mathcal{H}_\kappa$ that does not require interpolation to create. If the quotients are polynomials (and not rational functions), then $\mathsf{Poly}_\mathsf{Vanish}(X)$ must be vanishing on $\mathcal{H}_\kappa$ too. Specifically, the prover computes:
+This equation is true for every value of $X \in \mathcal{H}_\kappa$ (but not necessarily true outside of these values). To show this, we divide the polynomial by  $X^\kappa - 1$, which is a minimal vanishing polynomial for $\mathcal{H}_\kappa$ that does not require interpolation to create. If the quotient is polynomial (and not a rational function), then $\mathsf{Poly}_\mathsf{Vanish}(X)$ must be vanishing on $\mathcal{H}_\kappa$ too. Specifically, the prover computes:
 
 1. $Q(X) = \frac{\mathsf{Poly}_\mathsf{Vanish}(X)}{X^\kappa - 1}$
 
@@ -69,7 +69,7 @@ The prover will write the following commitments to the transcript:
 
 * $K_Q=\mathsf{KZG.Commit}(Q(X))$
 
-The prover will generate a random challenge evaluation point (using strong Fiat-Shamir) on the polynomial that is outside of $\mathcal{H}_\kappa$. Call this point $\zeta$. The prover will write the three points and opening proofs to the transcript:
+The prover will generate a random challenge evaluation point (using strong Fiat-Shamir) on the polynomial that is outside of $\mathcal{H}_\kappa$. Call this point $\zeta$. The prover will write the point and opening proofs to the transcript:
 
 * $\zeta$
 * $\mathsf{Poly}_\mathsf{Arr_1}(\zeta)=\mathsf{KZG.Open}(K_\mathsf{Arr_1},\zeta)$
@@ -102,36 +102,34 @@ Any honest prover can do the computations explained above and create an acceptin
 
 ### Soundness
 
-We prove knowledge soundness in the Algebraic Group Model (AGM). To do so, we must prove that there exists an efficient extractor $E$ such that for any algebraic adversary $A$ the probability of $A$ winning the following game is $\mathsf{negl}(\lambda)$.
+We prove knowledge soundness in the Algebraic Group Model (AGM). To do so, we must prove that there exists an efficient extractor $\mathcal{E}$ such that for any algebraic adversary $\mathcal{A}$ the probability of $\mathcal{A}$ winning the following game is $\mathsf{negl}(\lambda)$.
 
-1. Given $[g, g^\tau, g^{\tau^2}, \dots,g^{\tau^{n-1}}]$ $A$ outputs commitments to $\mathsf{Poly}_\mathsf{Arr1}(X)$, $\mathsf{Poly}_\mathsf{Arr2}(X)$, $\mathsf{Poly}_\mathsf{Arr3}(X)$, $Q$.
+1. Given $[g, g^\tau, g^{\tau^2}, \dots,g^{\tau^{n-1}}]$ $\mathcal{A}$ outputs commitments to $\mathsf{Poly}_\mathsf{Arr1}(X)$, $\mathsf{Poly}_\mathsf{Arr2}(X)$, $\mathsf{Poly}_\mathsf{Arr3}(X)$, $Q$.
 
-2. $E$, given access to $A$'s outputs from the previous step, outputs $\mathsf{Poly}_\mathsf{Arr1}(X)$, $\mathsf{Poly}_\mathsf{Arr2}(X)$, $\mathsf{Poly}_\mathsf{Arr3}(X)$, $Q$.
+2. $\mathcal{E}$, given access to $\mathcal{A}$'s outputs from the previous step, outputs $\mathsf{Poly}_\mathsf{Arr1}(X)$, $\mathsf{Poly}_\mathsf{Arr2}(X)$, $\mathsf{Poly}_\mathsf{Arr3}(X)$, $Q$.
 
-3. $A$ plays the part of the prover in showing that $Y_{\mathsf{Zero}}$ is zero at a random challenge $\zeta$
+3. $\mathcal{A}$ plays the part of the prover in showing that $Y_{\mathsf{Zero}}$ is zero at a random challenge $\zeta$
 
-4. $A$ wins if: 
+4. $\mathcal{A}$ wins if: 
 
-   i) $V$ accepts at the end of the protocol
+   i) $\mathcal{V}$ accepts at the end of the protocol
 
    ii) $\mathsf{Arr}_3\neq \mathsf{Arr}_1 \cdot \mathsf{Arr}_2$
 
 Our proof is as follows:
 
-For the second win condition to be fulfilled, the constraint must not hold for at least one index of the arrays. But then $\mathsf{Poly}_\mathsf{Vanish}(X)$ is not vanishing on $\mathcal{H}_\kappa$, so $Q(X)$ is not a polynomial (it is a rational function). This means that $A$ cannot calcuated the correct commitment value $g^{Q(\tau)}$ without solving the t-SDH. Thus, $A$ chooses an arbitrary value for $Q(\tau)$ and sends $K_Q = g^{Q(\tau)}$. It also sends commitments to  $\mathsf{Poly}_\mathsf{Arr1}(X)$, $\mathsf{Poly}_\mathsf{Arr2}(X)$, and $\mathsf{Poly}_\mathsf{Arr3}(X)$. Each commitment $A$ has outputted is a linear combination of the elements in $[g, g^\tau, g^{\tau^2}, \dots,g^{\tau^{n-1}}]$. $E$ is given these coefficients (since $A$ is an algebraic adversary) so $E$ can output the original polynomials.
+For the second win condition to be fulfilled, the constraint must not hold for at least one index of the arrays. But then $\mathsf{Poly}_\mathsf{Vanish}(X)$ is not vanishing on $\mathcal{H}_\kappa$, so $Q(X)$ is not a polynomial (it is a rational function). This means that $\mathcal{A}$ cannot calcuated the correct commitment value $g^{Q(\tau)}$ without solving the t-SDH. Thus, $\mathcal{A}$ chooses an arbitrary value for $Q(\tau)$ and sends $K_Q = g^{Q(\tau)}$. It also sends commitments to  $\mathsf{Poly}_\mathsf{Arr1}(X)$, $\mathsf{Poly}_\mathsf{Arr2}(X)$, and $\mathsf{Poly}_\mathsf{Arr3}(X)$. Each commitment $\mathcal{A}$ has outputted is a linear combination of the elements in $[g, g^\tau, g^{\tau^2}, \dots,g^{\tau^{n-1}}]$. $\mathcal{E}$ is given these coefficients (since $\mathcal{A}$ is an algebraic adversary) so $\mathcal{E}$ can output the original polynomials.
 
-$A$ then obtains the random challenge $\zeta$ (using strong Fiat-Shamir). By the binding property of KZG commitments, $\mathsf{Poly}_\mathsf{Arr1}(\zeta)$,  $\mathsf{Poly}_\mathsf{Arr2}(\zeta)$, and $\mathsf{Poly}_\mathsf{Arr3}(\zeta)$ can only feasibliy be opened to one value each. For $A$ to have the verifier accept, they must send a proof that $Q(\zeta)$ opens to $Q(\zeta) = \frac{Y_\mathsf{Vanish1}}{(\zeta^n - 1)}$. This means being able to send $g^{q(\tau)}$ where $q(\tau) = \frac{Q(\tau) - Q(\zeta)}{\tau - \zeta}$ and $Q(\zeta) = \frac{Y_\mathsf{Vanish1}}{(\zeta^n - 1)}$. Since $Q(\tau)$ and $Q(\zeta)$ are known, this implies knowing $g^{\frac{1}{\tau - \zeta}}$. Thus the prover would have found $\langle\zeta,g^{\frac{1}{\tau - \zeta}}\rangle$, which is the t-SDH problem. We have shown that creating an accepting proof reduces to the t-SDH, so $A$'s probability of success is negligible.
-
-- Should I show how using with the ability described above $P$ would enable one to construct an algortihm that break t-BSDH?
+$\mathcal{A}$ then obtains the random challenge $\zeta$ (using strong Fiat-Shamir). By the binding property of KZG commitments, $\mathsf{Poly}_\mathsf{Arr1}(\zeta)$,  $\mathsf{Poly}_\mathsf{Arr2}(\zeta)$, and $\mathsf{Poly}_\mathsf{Arr3}(\zeta)$ can only feasibliy be opened to one value each. For $\mathcal{A}$ to have the verifier accept, they must send a proof that $Q(\zeta)$ opens to $Q(\zeta) = \frac{Y_\mathsf{Vanish1}}{(\zeta^n - 1)}$. This means being able to send $g^{q(\tau)}$ where $q(\tau) = \frac{Q(\tau) - Q(\zeta)}{\tau - \zeta}$ and $Q(\zeta) = \frac{Y_\mathsf{Vanish1}}{(\zeta^n - 1)}$. Since $Q(\tau)$ and $Q(\zeta)$ are known, this implies knowing $g^{\frac{1}{\tau - \zeta}}$. Thus $\mathcal{A}$ would have found $\langle\zeta,g^{\frac{1}{\tau - \zeta}}\rangle$, which is the t-SDH problem. We have shown that creating an accepting proof reduces to the t-SDH, so $\mathcal{A}$'s probability of success is negligible.
 
 ### Zero-Knowledge
 
-We prove that the above protocol is zero-knowledge when $\mathsf{PolyCommit}_\mathsf{Ped}$ (from the KZG paper) is used for the polynomial commitments. We do so by constructing a probabilistic polynomial time simulator $S$ that knows the trapdoor $\tau$, which, for every (possibly malicious) verifier $V$, can output a view of the execution of the protocol that is indistinguishable from the view produced by the real execution of the program.
+We prove that the above protocol is zero-knowledge when $\mathsf{PolyCommit}_\mathsf{Ped}$ (from the KZG paper) is used for the polynomial commitments. We do so by constructing a probabilistic polynomial time simulator $\mathcal{S}$ that knows the trapdoor $\tau$, which, for every (possibly malicious) verifier $\mathcal{V}$, can output a view of the execution of the protocol that is indistinguishable from the view produced by the real execution of the program.
 
-The simulator $S$ choose arbitrary values for ${\mathsf{Poly}_\mathsf{Arr1}(\tau)}$, ${\mathsf{Poly}_\mathsf{Arr2}(\tau)}$, and $\mathsf{Poly}_\mathsf{Arr3}(\tau)$, then computes $g^{\mathsf{Poly}_\mathsf{Arr1}(\tau)}$,  $g^{\mathsf{Poly}_\mathsf{Arr2}(\tau)}$ , and $g^{\mathsf{Poly}_\mathsf{Arr3}(\tau)}$ to output as the commitments $K_\mathsf{Arr1}$, $ K_\mathsf{Arr2}$, and $ K_\mathsf{Arr3}$. $S$ then generates the challenge evaluation pount $\rho$ (by strong Fiat-Shamir) and computes $Q(\tau)$ using $\rho$ and the values they chose for ${\mathsf{Poly}_\mathsf{Arr1}(\tau)}$, ${\mathsf{Poly}_\mathsf{Arr2}(\tau)}$, and $\mathsf{Poly}_\mathsf{Arr3}(\tau)$. $S$ outputs the commitment $K_Q = g^{Q(\tau)}$.
+The simulator $\mathcal{S}$ choose arbitrary values for ${\mathsf{Poly}_\mathsf{Arr1}(\tau)}$, ${\mathsf{Poly}_\mathsf{Arr2}(\tau)}$, and $\mathsf{Poly}_\mathsf{Arr3}(\tau)$, then computes $g^{\mathsf{Poly}_\mathsf{Arr1}(\tau)}$,  $g^{\mathsf{Poly}_\mathsf{Arr2}(\tau)}$ , and $g^{\mathsf{Poly}_\mathsf{Arr3}(\tau)}$ to output as the commitments $K_\mathsf{Arr1}$, $ K_\mathsf{Arr2}$, and $ K_\mathsf{Arr3}$. $\mathcal{S}$ then generates the challenge evaluation point $\rho$ (by strong Fiat-Shamir) and computes $Q(\tau)$ using $\rho$ and the values they chose for ${\mathsf{Poly}_\mathsf{Arr1}(\tau)}$, ${\mathsf{Poly}_\mathsf{Arr2}(\tau)}$, and $\mathsf{Poly}_\mathsf{Arr3}(\tau)$. $\mathcal{S}$ outputs the commitment $K_Q = g^{Q(\tau)}$.
 
-Now, $S$ generates the second random challenge point $\zeta$ (which we assume is not in $\mathcal{H}_\kappa$; if it is in $\mathcal{H}_\kappa$, $S$ simply restarts and runs from the beginning). This is once again by strong Fiat-Shamir. $S$ then create fake opening proofs for ${\mathsf{Poly}_\mathsf{Arr1}(\zeta)}$, ${\mathsf{Poly}_\mathsf{Arr2}(\zeta)}$, and $\mathsf{Poly}_\mathsf{Arr3}(\zeta)$,to arbitrary values. This is done using the knowledge of $\tau$, calculating the respective witness $q(\tau) = \frac{{f(\tau) - f(\zeta)}}{\tau - \zeta}$ for each of the polynomials.
+Now, $\mathcal{S}$ generates the second random challenge point $\zeta$ (which we assume is not in $\mathcal{H}_\kappa$; if it is in $\mathcal{H}_\kappa$, $\mathcal{S}$ simply restarts and runs from the beginning). This is once again by strong Fiat-Shamir. $\mathcal{S}$ then create fake opening proofs for ${\mathsf{Poly}_\mathsf{Arr1}(\zeta)}$, ${\mathsf{Poly}_\mathsf{Arr2}(\zeta)}$, and $\mathsf{Poly}_\mathsf{Arr3}(\zeta)$, to arbitrary values. This is done using the knowledge of $\tau$, calculating the respective witness $q(\tau) = \frac{{f(\tau) - f(\zeta)}}{\tau - \zeta}$ for each of the polynomials.
 
-Finally, $S$ creates a fake opening proof for $Q(\zeta) = \frac{Y_\mathsf{Vanish1}}{(\zeta^n - 1)}$. This is done using knowledge of $\tau$ to calculate an accepting witness $q(\tau)$, as above. This means that $Y_\mathsf{Zero}$ will be zero, and the transcript will be accepted by the verifier. It is indistinguishable from a transcript generates from a real execution, since $\mathsf{PolyCommit}_\mathsf{Ped}$ has the property of Indistinguishability of Commitments due to the randomization by $h^{\hat{\phi}(x)}$. 
+Finally, $\mathcal{S}$ creates a fake opening proof for $Q(\zeta) = \frac{Y_\mathsf{Vanish1}}{(\zeta^n - 1)}$. This is done using knowledge of $\tau$ to calculate an accepting witness $q(\tau)$, as above. This means that $Y_\mathsf{Zero}$ will be zero, and the transcript will be accepted by the verifier. It is indistinguishable from a transcript generates from a real execution, since $\mathsf{PolyCommit}_\mathsf{Ped}$ has the property of Indistinguishability of Commitments due to the randomization by $h^{\hat{\phi}(x)}$. 
 
 - For mult2, the proof is written with a simulator that doesn't know the trapdoor; however, with small alterations the proof for mult2 should apply here and vice versa
