@@ -9,7 +9,9 @@ type: docs
 
 *Contributors: Elizabeth van Oorschot (McGill), Youwei Deng (Concordia), Jeremy Clark (Concordia)*
 
-*Some rights reserved: [cc-by 4.0](https://creativecommons.org/licenses/by/4.0/)*
+*Some rights reserved: [cc-by 4.0](https://creativecommons.org/licenses/by/4.0/)[^1]*
+
+[^1]: With attribution, you are permitted to use the gadgets or proofs as written in your papers, although conference/journal policies might supersede our permission.
 
 ```latex
 @misc{vODC24,
