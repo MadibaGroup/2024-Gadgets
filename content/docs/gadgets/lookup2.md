@@ -152,34 +152,34 @@ Finally, if the constraint system is true, the following constraint will be true
     * $\mathsf{S}$ is a union set of $\mathsf{Arr}$ and $\mathsf{T}$
     * $\mathsf{S}$ is sorted by $\mathsf{T}$
 * $\mathsf{Arr}$, $\mathsf{T}$, and $\mathsf{S}$ have the following relations:
-    * For each $i\in[0,d-1]$, there exists a $j\in[0,n+d-1]$ such that $(t_i,t_{i+1})=(s_j,s_{j+1})$
-    * Let $I$ be the set of those $d-1$ indices, and let $I^\prime:=[0,n+d-1]\setminus{I}$. For each $i\in{I^\prime}$, there exists a $j\in[0,n-1]$ such that $s_i=s_{i+1}=a_{j}$
+    * For each $i\in[0,d-1)$, there exists a $j\in[0,n+d-1)$ such that $(t_i,t_{i+1})=(s_j,s_{j+1})$
+    * Let $I$ be the set of those $d-1$ indices, and let $I^\prime:=[0,n+d-1)\setminus{I}$. For each $i\in{I^\prime}$, there exists a $j\in[0,n)$ such that $s_i=s_{i+1}=a_{j}$
 
 #### Polynomial Level
 
 We assume arrays $\mathsf{Arr}$, $\mathsf{T}$, and $\mathsf{S}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 1 (which will not change the product).
 
 Recall the two constraints we want to prove:
-1. For each $i\in[0,d-1]$, there exists a $j\in[0,n+d-1]$ such that $(t_i,t_{i+1})=(s_j,s_{j+1})$
-2. Let $I$ be the set of those $d-1$ indices, and let $I^\prime:=[0,n+d-1]\setminus{I}$. For each $i\in{I^\prime}$, there exists a $j\in[0,n-1]$ such that $s_i=s_{i+1}=a_{j}$
+1. For each $i\in[0,d-1)$, there exists a $j\in[0,n+d-1)$ such that $(t_i,t_{i+1})=(s_j,s_{j+1})$
+2. Let $I$ be the set of those $d-1$ indices, and let $I^\prime:=[0,n+d-1)\setminus{I}$. For each $i\in{I^\prime}$, there exists a $j\in[0,n)$ such that $s_i=s_{i+1}=a_{j}$
 
 In polynomial form, the constraints are ($\alpha,\beta$ are challenges from $\mathcal{V}$):
-1. $(1+\beta)^n\prod_{i\le{n}}[\alpha+\mathsf{Poly}_{\mathsf{Arr}}(\omega^i)]\cdot\prod_{i\le{d-1}}[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{T}}(\omega^i)+\beta\mathsf{Poly}_{\mathsf{T}}(\omega^{i+1})]=\prod_{i\le{n+d-1}}[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}}(\omega^i)+\beta\mathsf{Poly}_{\mathsf{S}}(\omega^{i+1})]$
+1. $(1+\beta)^n\prod_{i<{n}}[\alpha+\mathsf{Poly}_{\mathsf{Arr}}(\omega^i)]\cdot\prod_{i<{d-1}}[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{T}}(\omega^i)+\beta\mathsf{Poly}_{\mathsf{T}}(\omega^{i+1})]=\prod_{i<{n+d-1}}[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}}(\omega^i)+\beta\mathsf{Poly}_{\mathsf{S}}(\omega^{i+1})]$
 
 To efficiently prove the above polynomial holds, we can use a similar trick in halo2 lookup by constructing an accumulator :
 * $\mathsf{Poly}_\mathsf{Z}(\omega^0)=\mathsf{Poly}_\mathsf{Z}(\omega^{n+d-1})=1$
-* For $i\in[0,n+d-2]$: $\mathsf{Poly}_\mathsf{Z}(X\omega)=\mathsf{Poly}_\mathsf{Z}(X)\cdot\frac{(1+\beta)[\alpha+\mathsf{Poly}_{\mathsf{Arr}}(X)]\cdot[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{T}}(X)+\beta\mathsf{Poly}_{\mathsf{T}}(X\omega)]}{\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}}(X)+\beta\mathsf{Poly}_{\mathsf{S}}(X\omega)}$
+* For $i\in[0,n+d-1)$: $\mathsf{Poly}_\mathsf{Z}(X\omega)=\mathsf{Poly}_\mathsf{Z}(X)\cdot\frac{(1+\beta)[\alpha+\mathsf{Poly}_{\mathsf{Arr}}(X)]\cdot[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{T}}(X)+\beta\mathsf{Poly}_{\mathsf{T}}(X\omega)]}{\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}}(X)+\beta\mathsf{Poly}_{\mathsf{S}}(X\omega)}$
 
-However, the above accumulator does not exist because the degree of the denominator, $\mathsf{Poly}_\mathsf{S}$, is different from $\mathsf{Poly}_\mathsf{Arr}$ and $\mathsf{Poly}_\mathsf{T}$. Thus we have to decompose the denominator to make it have the same iteration as the numerator by halving it. We assume $d=n+1$ for convenience. Then we can compute the accumulator such that:
+However, the above accumulator does not exist because the degree of the denominator, $\mathsf{Poly}_\mathsf{S}$, is different from $\mathsf{Poly}_\mathsf{Arr}$ and $\mathsf{Poly}_\mathsf{T}$. Specifically, there are $n$ elements in $\mathsf{Arr}$, $d$ elements in $\mathsf{T}$, but $n+d$ elements in $\mathsf{S}$. Thus we have to decompose the denominator to make it have the same iteration as $\mathsf{Arr}$ and $\mathsf{T}$ do. It is worth noting for the numerator, the left term contains $\mathsf{Poly}_\mathsf{Arr}(X)$ while the right term contains $\mathsf{Poly}_\mathsf{T}(X)$ and $\mathsf{Poly}_\mathsf{T}(X\omega)$. Therefore, it will be convenient to assume $d=n+1$. The order of $\mathsf{S}$ is $2n+1$. To traverse $\mathsf{S}$ in $n$ steps, we can halve it to $\mathsf{S}_\mathsf{l}=[s_0,s_1,\dots,s_{n-1},s_n]$ and $\mathsf{S}_\mathsf{h}=[s_{n},s_{n+1},\dots,s_{2n-1},s_{2n}]$, and prove $\mathsf{S}_\mathsf{l}[n]=\mathsf{S}_\mathsf{h}[0]$. Then we can compute the accumulator such that:
 * $\mathsf{Poly}_\mathsf{Z}(\omega^0)=\mathsf{Poly}_\mathsf{Z}(\omega^n)=1$
-* For $X\in\mathcal{H}_n\setminus{\omega^n}$: $\mathsf{Poly}_\mathsf{Z}(X\omega)=\mathsf{Poly}_\mathsf{Z}(X)\cdot\frac{(1+\beta)[\alpha+\mathsf{Poly}_{\mathsf{Arr}}(X)]\cdot[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{T}}(X)+\beta\mathsf{Poly}_{\mathsf{T}}(X\omega)]}{[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}}(X)+\beta\mathsf{Poly}_{\mathsf{S}}(X\omega)]\cdot[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}}(X\omega^n)+\beta\mathsf{Poly}_{\mathsf{S}}(X\omega^{n+1})]}$
-* For $X=\omega^n$: $\mathsf{Poly}_{\mathsf{S}}(X)=\mathsf{Poly}_{\mathsf{S}}(X\omega^n)$
+* For $X\in\mathcal{H}_n\setminus{\omega^n}$: $\mathsf{Poly}_\mathsf{Z}(X\omega)=\mathsf{Poly}_\mathsf{Z}(X)\cdot\frac{(1+\beta)[\alpha+\mathsf{Poly}_{\mathsf{Arr}}(X)]\cdot[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{T}}(X)+\beta\mathsf{Poly}_{\mathsf{T}}(X\omega)]}{[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}_\mathsf{l}}(X)+\beta\mathsf{Poly}_{\mathsf{S}_\mathsf{l}}(X\omega)]\cdot[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}_\mathsf{h}}(X)+\beta\mathsf{Poly}_{\mathsf{S}_\mathsf{h}}(X\omega)]}$
+* For $X=\omega^n$: $\mathsf{Poly}_{\mathsf{S}_\mathsf{l}}(X)=\mathsf{Poly}_{\mathsf{S}_\mathsf{h}}(X\omega^{n+1})$
 
 Similarly, we take care of the "for $X$" conditions by zeroing out the rest of the polynomial that is not zero. See the gadget <span style="border-style:dotted;border-width: 2px;"> [zero1](./zero1)</span> for more on why this works.
 
 1. $\mathsf{Poly}_\mathsf{Vanish1}(X)=[\mathsf{Poly}_{\mathsf{Z}}(X)-1]\cdot\frac{X^n-1}{(X-\omega^0)(X-\omega^n)}=0$
-2. $\displaylines{\mathsf{Poly}_\mathsf{Vanish2}(X)=\{\mathsf{Poly}_\mathsf{Z}(X\omega)\cdot[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}}(X)+\beta\mathsf{Poly}_{\mathsf{S}}(X\omega)]\cdot[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}}(X\omega^n)+\beta\mathsf{Poly}_{\mathsf{S}}(X\omega^{n+1})]-\\\mathsf{Poly}_\mathsf{Z}(X)\cdot(1+\beta)[\alpha+\mathsf{Poly}_{\mathsf{Arr}}(X)]\cdot[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{T}}(X)+\beta\mathsf{Poly}_{\mathsf{T}}(X\omega)]\}\cdot(X-\omega^n)}$
-3. $\mathsf{Poly}_\mathsf{Vanish3}(X)=[\mathsf{Poly}_{\mathsf{S}}(X)-\mathsf{Poly}_{\mathsf{S}}(X\omega^n)]\cdot\frac{X^n-1}{X-\omega^n}=0$
+2. $\displaylines{\mathsf{Poly}_\mathsf{Vanish2}(X)=\{\mathsf{Poly}_\mathsf{Z}(X\omega)\cdot[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}_\mathsf{l}}(X)+\beta\mathsf{Poly}_{\mathsf{S}_\mathsf{l}}(X\omega)]\cdot[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}_\mathsf{h}}(X)+\beta\mathsf{Poly}_{\mathsf{S}_\mathsf{h}}(X\omega)]-\\\mathsf{Poly}_\mathsf{Z}(X)\cdot(1+\beta)[\alpha+\mathsf{Poly}_{\mathsf{Arr}}(X)]\cdot[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{T}}(X)+\beta\mathsf{Poly}_{\mathsf{T}}(X\omega)]\}\cdot(X-\omega^n)}=0$
+3. $\mathsf{Poly}_\mathsf{Vanish3}(X)=[\mathsf{Poly}_{\mathsf{S}_\mathsf{l}}(X)-\mathsf{Poly}_{\mathsf{S}_\mathsf{h}}(X\omega^{n+1})]\cdot\frac{X^n-1}{X-\omega^n}=0$
 
 These equations are true for every value of $X\in\mathcal{H}_n$ (but not necessarily true outside of these values). To show this, we divide each polynomial by  $X^n-1$, which is a minimal vanishing polynomial for $\mathcal{H}_n$ that does not require interpolation to create. If the quotients are polynomials (and not rational functions), then $\mathsf{Poly}_\mathsf{Vanish1}(X)$, $\mathsf{Poly}_\mathsf{Vanish2}(X)$, and $\mathsf{Poly}_\mathsf{Vanish3}(X)$ must be vanishing on $\mathcal{H}_n$ too. Specifically, the prover computes,
 
@@ -199,5 +199,5 @@ $$
 
 Ultimately the Plookup will satisfy the following constraints at the Commitment Level:
 1. Show $Q(X)$ exists
-2. Show $\mathsf{Poly}_\mathsf{Zero}(X)$ is correctly constructed from $\mathsf{Poly}_\mathsf{Z}(X)$,  $\mathsf{Poly}_\mathsf{Arr}(X)$, $\mathsf{Poly}_\mathsf{T}(X)$, and $\mathsf{Poly}_\mathsf{S}(X)$
+2. Show $\mathsf{Poly}_\mathsf{Zero}(X)$ is correctly constructed from $\mathsf{Poly}_\mathsf{Z}(X)$,  $\mathsf{Poly}_\mathsf{Arr}(X)$, $\mathsf{Poly}_\mathsf{T}(X)$, $\mathsf{Poly}_{\mathsf{S}_\mathsf{l}}(X)$, and $\mathsf{Poly}_{\mathsf{S}_\mathsf{h}}(X)$
 3. Show $\mathsf{Poly}_\mathsf{Zero}(X)$ is a zero polynomial
