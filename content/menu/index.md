@@ -20,6 +20,6 @@ headless: true
 - [shuffle1]({{< relref "/docs/gadgets/shuffle1" >}})
 - [lookup1]({{< relref "/docs/gadgets/lookup1" >}})
 - [lookup2]({{< relref "/docs/gadgets/lookup2" >}})
-
+- [range]({{< relref "/docs/gadgets/range" >}})
 
 <br />
