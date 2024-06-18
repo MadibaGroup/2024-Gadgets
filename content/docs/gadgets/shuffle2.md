@@ -1,25 +1,25 @@
-# Shuffle (Type 1)
+# Shuffle (Type 2)
 
 ## Recap of types
 
 | Type                   | Description                                            | Recap                                                        | This |
 | ---------------------- | ------------------------------------------------------ | :----------------------------------------------------------- | ---- |
-| [shuffle1](./shuffle1) | $\mathsf{Arr}_2=\mathsf{Permute}(\mathsf{Arr}_1)$      | Array $\mathsf{Arr}_2$ is a shuffle of $\mathsf{Arr}_1$ for some undisclosed permutation $\pi$. | ✅    |
-| [shuffle2](./shuffle2) | $\mathsf{Arr}_2=\mathsf{Permute}(\mathsf{Arr}_1 ,\pi)$ | Array $\mathsf{Arr}_2$ is a shuffle of $\mathsf{Arr}_1$ under a disclosed permutation $\pi$. |      |
+| [shuffle1](./shuffle1) | $\mathsf{Arr}_2=\mathsf{Permute}(\mathsf{Arr}_1)$      | Array $\mathsf{Arr}_2$ is a shuffle of $\mathsf{Arr}_1$ for some undisclosed permutation $\pi$. |      |
+| [shuffle2](./shuffle2) | $\mathsf{Arr}_2=\mathsf{Permute}(\mathsf{Arr}_1 ,\pi)$ | Array $\mathsf{Arr}_2$ is a shuffle of $\mathsf{Arr}_1$ under a disclosed permutation $\pi$. | ✅    |
 
 ## Relation
 
-$ \mathcal{R}_{\mathtt{shuffle1}} := \left\{ \begin{array}{l} (K_\mathsf{Arr_1},K_\mathsf{Arr2}) \end{array} \middle | \begin{array}{l} \mathsf{Arr_1} = [a_{(1,0)}, a_{(1,1)}, a_{(1,2)}, \dots, a_{(1,n-1)}],\\ \mathsf{Arr_2} = [a_{(2,0)}, a_{(2,1)}, a_{(2,2)}, \dots, a_{(2,n-1)}], \\  \mathsf{Poly}_\mathsf{Arr_1}=\mathsf{FFT.Interp}(\omega,\mathsf{Arr_1}), \\ \mathsf{Poly}_\mathsf{Arr_2}=\mathsf{FFT.Interp}(\omega,\mathsf{Arr_2}), \\ K_\mathsf{Arr_1}=\mathsf{KZG.Commit}(\mathsf{Poly}_\mathsf{Arr_1}),\\ K_\mathsf{Arr_2}=\mathsf{KZG.Commit}(\mathsf{Poly}_\mathsf{Arr_2}), \end{array} \right\} $
+$\mathcal{R}_{\mathtt{shuffle2}} := \left\{ \begin{array}{l} (K_\mathsf{Arr_1},K_\mathsf{Arr2}, K_\pi) \end{array} \middle | \begin{array}{l} \mathsf{Arr_1} = [a_{(1,0)}, a_{(1,1)}, a_{(1,2)}, \dots, a_{(1,n-1)}],\\ \mathsf{Arr_2} = [a_{(2,0)}, a_{(2,1)}, a_{(2,2)}, \dots, a_{(2,n-1)}], \\ \pi : \mathsf{Arr_1[i]} = \pi(\mathsf{Arr_2[i]}), \\ \mathsf{Poly}_\mathsf{Arr_1}=\mathsf{FFT.Interp}(\omega,\mathsf{Arr_1}), \\ \mathsf{Poly}_\mathsf{Arr_2}=\mathsf{FFT.Interp}(\omega,\mathsf{Arr_2}), \\ \mathsf{Poly_\pi} = \mathsf{Interp}(\mathsf{Arr_1[i]}, \pi(\mathsf{Arr_2[i]})), \\ K_\mathsf{Arr_1}=\mathsf{KZG.Commit}(\mathsf{Poly}_\mathsf{Arr_1}),\\ K_\mathsf{Arr_2}=\mathsf{KZG.Commit}(\mathsf{Poly}_\mathsf{Arr_2}),\\K_\pi = \mathsf{KZG.Commit(Poly_{\pi})} \end{array} \right\}$​
 
 ## Intuition
 
-The prover ($\mathcal{P}$) holds 2 arrays, $\mathsf{Arr_1 }$ and $\mathsf{Arr_2}$, of $n$ integers from $\mathbb{Z}_q$: $[a_0, a_1, a_2, \dots, a_{n-1}]$. It will produce a succinct (independent of $n$) proof that $\mathsf{Arr}_2$ is a shuffle of $\mathsf{Arr}_1$ for some undisclosed permutation $\pi$. The prover will encode the two arrays into polynomials, $\mathsf{Poly}_\mathsf{Arr_1}$ and $\mathsf{Poly}_\mathsf{Arr_2}$ (using [evaluation points](../background/poly-iop) on the domain $\mathcal{H}_\kappa$) and commit to them as $K_\mathsf{Arr_1}$ and $K_\mathsf{Arr_2}$.  The verifier ($\mathcal{V}$) cannot check either array directly (they may contain secret information, and even if they do not, it is too long to check) so the verifier only sees $K_\mathsf{Arr_1}$ and $K_\mathsf{Arr_2}$.
+The prover ($\mathcal{P}$) holds 2 arrays, $\mathsf{Arr_1 }$ and $\mathsf{Arr_2}$, of $n$ integers from $\mathbb{Z}_q$: $[a_0, a_1, a_2, \dots, a_{n-1}]$. It will produce a succinct (independent of $n$) proof that $\mathsf{Arr}_2$ is a shuffle of $\mathsf{Arr}_1$ under the disclosed permutation $\pi$. The prover will encode the two arrays into polynomials, $\mathsf{Poly}_\mathsf{Arr_1}$ and $\mathsf{Poly}_\mathsf{Arr_2}$ (using [evaluation points](../background/poly-iop) on the domain $\mathcal{H}_\kappa$) and commit to them as $K_\mathsf{Arr_1}$ and $K_\mathsf{Arr_2}$.  The verifier ($\mathcal{V}$) cannot check either array directly (they may contain secret information, and even if they do not, it is too long to check) so the verifier only sees $K_\mathsf{Arr_1}$ and $K_\mathsf{Arr_2}$.
 
-One idea to check that $\mathsf{Arr_2}$ is a permutation of $\mathsf{Arr_1}$ might be to compare the product of the entries of the two arrays. If the permutation relation holds, then the products will be equal; however, many arrays can have their entries multiply to the same number, without necessarily containing the same elements. 
+The idea behind this check is that if $(\pi(i), \mathsf{Arr_2}[i]) = (i, \mathsf{Arr_1}[i])$ for all $0 \leq j \leq n-1$, then $\mathsf{Arr}_2=\mathsf{Permute}(\mathsf{Arr}_1 ,\pi)$. To gain some intuition on why this is true, pair up tuples from the left and right hand sides of the equation by matching the first entries. Then, if each pair is equal, it means that $\mathsf{Arr_2}[i] = \mathsf{Arr_1}[\pi(i)]$ for $0 \leq i \leq n-1$. In other words, $\mathsf{Arr}_2=\mathsf{Permute}(\mathsf{Arr}_1 ,\pi)$.
 
-Instead, the prover constructs two new arrays, $\mathsf{Arr_1}'$ and $\mathsf{Arr_2}'$, where $\mathsf{Arr_j}'$ contains the points $ \{r - \mathsf{Arr_j}[i]  \}_{i \in [0, n-1]}$ for $r$ a random field element. Then, a product check is run on these two arrays. One way to understand why this works is to think of it as creating two auxilary polynomials, ${\mathsf{Poly}}_\mathsf{Arr_1'}$ and ${\mathsf{Poly}}_\mathsf{Arr_2'}$, where $\mathsf{Poly}_\mathsf{Arr_j'}(X) = \prod^{n-1}_{i = 1}(X - \mathsf{Arr_j}[i]  )$. If ${\mathsf{Poly}}_\mathsf{Arr_1'}$ = $\mathsf{Poly}_\mathsf{Arr_2'}$, then they have the same factorization. This means that $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$ must contain the same elements (in possibly different orders); in other words, $\mathsf{Arr}_2$ is a permutation of $\mathsf{Arr}_1$. To check this equality, a random challenge point $r$ is generated and the products are checked at that point. If they are equal at that point then (with overwhelming probabiltiy) the polynomials are equal.
+To check that $(\pi(i), \mathsf{Arr_2}[i]) = (i, \mathsf{Arr_1}[i])$ for all $0 \leq j \leq n-1$, we use a similar trick to [shuffle1](./shuffle). The prover constructs two arrays:  $\mathsf{Arr_1'} = \{ r - s\cdot i - \mathsf{Arr_1}[i]\}_{i \in [0, n-1]}$ and $\mathsf{Arr_2'} = \{ r - s\cdot\pi(i) - \mathsf{Arr_2}[i]\}_{i \in [0, n-1]}$ for random field elements $r, s$ and $\mathsf{Poly_\pi}$ the polynomial which is $\pi$ on $\mathcal{H}_\kappa$. Then, a product check is conducted on the two arrays. One way to understand why this works is to think of it as creating two auxilary polynomials, ${\mathsf{Poly}}_\mathsf{Arr_1'}$ and ${\mathsf{Poly}}_\mathsf{Arr_2'}$. Here, $\mathsf{Poly}_\mathsf{Arr_1'}(X) = \prod^{n-1}_{i = 1}(X - Y\cdot i - \mathsf{Arr_1}[i])$  and $\mathsf{Poly}_\mathsf{Arr_2'}(X) = \prod^{n-1}_{i = 1}(X - Y\cdot \pi(i) - \mathsf{Arr_2}[i])$. If ${\mathsf{Poly}}_\mathsf{Arr_1'}$ = $\mathsf{Poly}_\mathsf{Arr_2'}$, then they have the same factorization. This means that $\mathsf{Arr}_1'$ and $\mathsf{Arr}_2'$ must contain the same elements (in possibly different orders). Thus, by our obervation above, $\mathsf{Arr}_2$ is a permutation of $\mathsf{Arr}_1$ under $\pi$. To check the equality of the two auxilary polynomials, random challenge values $r$ and $s$ are generated and the products are checked at that point. If they are equal at that point then (with overwhelming probabiltiy) the polynomials are equal.
 
-In addition to demontrasting the equality of the product of $\mathsf{Arr_1}'$ and $\mathsf{Arr_2}'$, it must also be shown that these two arrays are defined correctly in terms of the original arrays. In other words, it must be shown that $\mathsf{Arr_j}'[i]= r - \mathsf{Arr_j}[i]$. Once this, in addition to the product check, has been done, it has been shown that $\mathsf{Arr}_2$ is a shuffle of $\mathsf{Arr}_1$ for some undisclosed permutation $\pi$. 
+In addition to demontrasting the equality of the product of $\mathsf{Arr_1}'$ and $\mathsf{Arr_2}'$, it must also be shown that these two arrays are defined correctly in terms of the original arrays. In other words, it must be shown that $\mathsf{Arr_1}'[i]= (i, \mathsf{Arr_1}[i])$ and $\mathsf{Arr_2}'[i]= (\pi(i), \mathsf{Arr_2}[i])$. Once this, in addition to the product check, has been done, it has been shown that $\mathsf{Arr}_2$ is a shuffle of $\mathsf{Arr}_1$ under the disclosed permutation $\pi$. 
 
 ## Protocol Details
 
@@ -27,19 +27,25 @@ In addition to demontrasting the equality of the product of $\mathsf{Arr_1}'$ an
 
 * $\mathcal{P}$ holds an array $\mathsf{Arr_1} = [a_{(1,0)}, a_{(1,1)}, a_{(1,2)}, \dots, a_{(1,n-1)}]$ of $n$ integers ($a_{(1,i)} \in \mathbb{Z}_q$)
 * $\mathcal{P}$ holds an array $\mathsf{Arr_2} = [a_{(2,0)}, a_{(2,1)}, a_{(2,2)}, \dots, a_{(2,n-1)}]$ of $n$ integers ($a_{(2,i)} \in \mathbb{Z}_q$)
-* $\mathcal{P}$ computes $\mathsf{Arr_j}'$ as follows for $j \in [1,2]$:
-  * $\mathsf{Arr_j}'[i]= r - \mathsf{Arr_j}[i]$
+* $\mathcal{P}$ computes $\mathsf{Arr_1}'$ as follows:
+  * $\mathsf{Arr_1}'[i]= (i, \mathsf{Arr_1}[i])$
+* $\mathcal{P}$ computes $\mathsf{Arr_2}'$ as follows:
+  * $\mathsf{Arr_2}'[i]= (\pi(i), \mathsf{Arr_2}[i])$
 
 ### Polynomial Level
 
 We assume that $\mathsf{Arr_1}$ and $\mathsf{Arr_2}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the arrays, the arrays can be padded with elements all of value 1 (or any other value, as long as it is the same for both arrays).
 
-Recall the two steps we want to prove: 
+Recall the two components we want to prove. First, the product check: 
 
-1. $\prod^{n-1}_{i=0}\{r - \mathsf{Arr_1[i]}\} = \prod^{n-1}_{i=0}\{r - \mathsf{Arr_2[i]}\}$ 
-2. $\mathsf{Arr_j}'[i]= r - \mathsf{Arr_j}[i]$ for $j \in [1,2]$, $0 \leq 1 \leq n-1$
+$\prod^{n-1}_{i = 1}(r - s\cdot i - \mathsf{Arr_1}[i]) = \prod^{n-1}_{i = 1}(r - s\cdot \pi(i) - \mathsf{Arr_2}[i])$​ 
 
-The first step is done as a [mult3](./mult3) product check, and we write the second step as two constraints in polynomial form. From this point on we focus on the polynomial details of the second step.
+As well as the two constraints:
+
+1. $\mathsf{Arr_1}'[i]= (i, \mathsf{Arr_1}[i])$
+2. $\mathsf{Arr_2}'[i]= (\pi(i), \mathsf{Arr_2}[i])$
+
+The first component is done as a [mult3](./mult3) product check, and we write the component in polynomial form. From this point on we focus on the polynomial details of the second component.
 
 1. For all $X$ from $\omega^0$ to $\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Arr_1'}(X) = (r - \mathsf{Poly}_\mathsf{Arr_1}(X))$ 
 2. For all $X$ from $\omega^0$ to $\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Arr_2'}(X) = (r - \mathsf{Poly}_\mathsf{Arr_2}(X))$ 
