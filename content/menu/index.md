@@ -11,6 +11,7 @@ headless: true
 
 - [zero1]({{< relref "/docs/gadgets/zero1" >}})
 - [zero2]({{< relref "/docs/gadgets/zero2" >}})
+- [rotate]({{< relref "/docs/gadgets/rotate" >}})
 - [add1]({{< relref "/docs/gadgets/add1" >}})
 - [add2]({{< relref "/docs/gadgets/add2" >}})
 - [add3]({{< relref "/docs/gadgets/add3" >}})
