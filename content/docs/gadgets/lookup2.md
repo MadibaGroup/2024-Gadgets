@@ -243,3 +243,40 @@ To check the proof, the verifier uses the transcript to construct the value $Y_\
 Finally, if the constraint system is true, the following constraint will be true (and will be false otherwise with overwhelming probability, due to the Schwartz-Zippel lemma on $\rho$ and $\zeta$) :
 
 * $Y_\mathsf{Zero}\overset{?}{=}0$
+
+## Security Proof
+
+### halo2
+
+#### Completeness
+
+Any honest prover can do the computations explained above and create an accepting proof.
+
+#### Soundness
+
+We prove knowledge soundness in the Algebraic Group Model (AGM). To do so, we must prove that there exists an efficient extractor $\mathcal{E}$ such that for any algebraic adversary $\mathcal{A}$ the probability of $\mathcal{A}$ winning the following game is $\mathsf{negl}(\lambda)$.
+
+1. Given $[g,g^\tau,g^{\tau^2},\dots,g^{\tau^{n-1}}]$, $\mathcal{A}$ outputs commitments to $\mathsf{Poly}_\mathsf{Arr}(X)$, $\mathsf{Poly}_\mathsf{Arr^\prime}(X)$, $\mathsf{Poly}_\mathsf{T}(X)$, $\mathsf{Poly}_\mathsf{T^\prime}(X)$, $Q$
+2. $\mathcal{E}$, given access to $\mathcal{A}$'s outputs from the previous step, outputs $\mathsf{Poly}_\mathsf{Arr}(X)$, $\mathsf{Poly}_\mathsf{Arr^\prime}(X)$, $\mathsf{Poly}_\mathsf{T}(X)$, $\mathsf{Poly}_\mathsf{T^\prime}(X)$, $Q$
+3. $\mathcal{A}$ plays the part of the prover in showing that $Y_\mathsf{Zero}$ is zero at a random challenge $\zeta$
+4. $\mathcal{A}$ wins if
+    * $\mathcal{V}$ accepts at the end of the protocol
+    * For some $i\in[0,\kappa-1]$, $\mathsf{Arr}[i]\notin\mathsf{T}$
+
+Our proof is as follows:
+
+To make $Y_\mathsf{Zero}$ a zero polynomial, $\mathcal{A}$ has to prove the four vanishing polynomials are correct. For $\mathsf{Poly}_\mathsf{Vanish1}$ and $\mathsf{Poly}_\mathsf{Vanish2}$, the [permutation]() check tells us the probability that $\mathcal{V}$ accepts the proof is negligible if some elements in $\mathsf{Arr}$ are not in $\mathsf{T}$. By the Schwartz-Zippel lemma, we know the probability that $\mathsf{Poly}_\mathsf{Vanish3}$ is vanishing is negligible if $\mathsf{Poly}_\mathsf{Arr^\prime}(\omega^0)\ne\mathsf{Poly}_\mathsf{T^\prime}(\omega^0)$. Therefore, to win the KS game, $\mathcal{A}$ has to prove $\mathsf{Poly}_\mathsf{Vanish4}$ is correct with the winning condition (some elements in $\mathsf{Arr}$ do not appear in $\mathsf{T}$). Assume $\mathsf{Arr}[i^\prime]\notin\mathsf{T},i>0$, to make such $\mathsf{Poly}_\mathsf{Vanish4}$ exist, $\mathsf{Arr}[i^\prime]$ has to equal to $\mathsf{Arr}[i^\prime-1]$. And because $\mathsf{Arr}[i^\prime-1]\ne{\mathsf{T}[i^\prime-1]}$, $\mathsf{Arr}[i^\prime-1]$ has to equal to $\mathsf{Arr}[i^\prime-2]$. Thus, to make the winning condition hold, $\mathsf{Arr}[i^\prime]=\mathsf{Arr}[0]$ must hold, which contradicts to the condition of $\mathsf{Poly}_\mathsf{Vanish3}$, $\mathsf{Arr}[0]=\mathsf{T}[0]$.
+
+#### Zero-Knowledge
+
+Before we prove the above protocol is zero-knowledge, it is worth noting the protocol is different from the lookup argument of halo2 in the real world. Specifically, the real halo2 lookup optimizes the two permutation checks into one and fills the table with some random numbers for the PLONK-based proof system. We refer to the official [halo2 handbook](https://zcash.github.io/halo2/design/proving-system/lookup.html#zero-knowledge-adjustment) to see the details. To prove the above protocol is zero-knowledge, we do so by constructing a probabilistic polynomial time simulator $\mathcal{S}$ which, for every (possibly malicious) verifier $\mathcal{V}$, can output a view of the execution of the protocol that is indistinguishable from the view produced by the real execution of the program.
+
+The simulator $\mathcal{S}$ generates an array $\mathsf{Arr^*}$ by randomly filling it with elements from $\mathsf{T}$, then follows the same steps a prover would prove the lookup argument. $\mathcal{S}$ computes $\mathsf{Arr^{*^\prime}},\mathsf{T^\prime}$ and interpolates the four arrays into their respective polynomials, $\mathsf{Poly}_\mathsf{Arr^*}(X)$, $\mathsf{Poly}_\mathsf{Arr^{*^\prime}}(X)$, $\mathsf{Poly}_\mathsf{T}(X)$, and $\mathsf{Poly}_\mathsf{T^\prime}(X)$. It computes $Q^*(X)$ and finally outputs the commitments to each of these polynomials (and writes the commitments to the transcript). Then, it generates the random challenge $\zeta^*$ (once again this is by strong Fiat-Shamir). It creates opening proofs for $\mathsf{Poly}_\mathsf{Arr^*}(\zeta^*),\mathsf{Poly}_\mathsf{Arr^{*^\prime}}(\zeta^*),Q^*(\zeta^*)$, $\mathsf{Poly}_\mathsf{T}(\zeta^*\omega)$, and $\mathsf{Poly}_\mathsf{T^\prime}(\zeta^*\omega)$, and writes these to the transcript as well. Since $\mathcal{S}$ knows each of the above polynomials, it can honestly compute this step and the proof will be accepted by $\mathcal{V}$. The transcript it generates this way will be indistinguishable from a transcript generated from a real execution, since $\mathsf{PolyCommit}_\mathsf{Ped}$ has the property of Indistinguishability of Commitments due to the randomization by $h^{\hat{\phi}(x)}$.
+
+### Plookup
+
+#### Completeness
+
+#### Soundness  
+
+#### Zero-Knowledge
