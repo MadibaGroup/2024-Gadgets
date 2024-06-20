@@ -277,6 +277,29 @@ The simulator $\mathcal{S}$ generates an array $\mathsf{Arr^*}$ by randomly fill
 
 #### Completeness
 
-#### Soundness  
+Any honest prover can do the computations explained above and create an accepting proof.
+
+#### Soundness
+
+We prove knowledge soundness in the Algebraic Group Model (AGM). To do so, we must prove that there exists an efficient extractor $\mathcal{E}$ such that for any algebraic adversary $\mathcal{A}$ the probability of $\mathcal{A}$ winning the following game is $\mathsf{negl}(\lambda)$.
+
+1. Given $[g,g^\tau,g^{\tau^2},\dots,g^{\tau^{n-1}}]$, $\mathcal{A}$ outputs commitments to $\mathsf{Poly}_\mathsf{Arr}(X)$, $\mathsf{Poly}_\mathsf{T}(X)$, $\mathsf{Poly}_\mathsf{S}(X)$, $Q$
+2. $\mathcal{E}$, given access to $\mathcal{A}$'s outputs from the previous step, outputs $\mathsf{Poly}_\mathsf{Arr}(X)$, $\mathsf{Poly}_\mathsf{T}(X)$, $\mathsf{Poly}_\mathsf{S}(X)$, $Q$
+3. $\mathcal{A}$ plays the part of the prover in showing that $Y_\mathsf{Zero}$ is zero at a random challenge $\zeta$
+4. $\mathcal{A}$ wins if
+    * $\mathcal{V}$ accepts at the end of the protocol
+    * For some $i\in[0,\kappa-1]$, $\mathsf{Arr}[i]\notin\mathsf{T}$
+
+Our proof is as follows:
+
+To make $Y_\mathsf{Zero}$ a zero polynomial, $\mathcal{A}$ has to prove the three vanishing polynomials are correct. It is easy to observe that $\mathsf{Poly}_\mathsf{Vanish1}$ and $\mathsf{Poly}_\mathsf{Vanish3}$ can be constructed even if some elements in $\mathsf{Arr}$ do not appear in $\mathsf{T}$, so we focus on the $\mathsf{Poly}_\mathsf{Vanish2}$. By the soundness of the [product check](), we know $\mathsf{S}$ must be the union set of $\mathsf{Arr}$ and $\mathsf{T}$ if we want to the product of $\mathsf{S}[i]$ equals to the product of $\mathsf{Arr}[i]$ and $\mathsf{T}[i]$. Recall the equation $\mathcal{A}$ needs to prove:
+$$
+(1+\beta)^n\prod_{i<{n}}[\alpha+\mathsf{Poly}_{\mathsf{Arr}}(\omega^i)]\cdot\prod_{i<{d-1}}[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{T}}(\omega^i)+\beta\mathsf{Poly}_{\mathsf{T}}(\omega^{i+1})]=\prod_{i<{n+d-1}}[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}}(\omega^i)+\beta\mathsf{Poly}_{\mathsf{S}}(\omega^{i+1})]
+$$
+Thus, for each $i\in[0,d-1]$, there exists a factor in the right-hand side of the equation equal to $\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{T}}(\omega^i)+\beta\mathsf{Poly}_{\mathsf{T}}(\omega^{i+1})$, which means $\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{T}}(\omega^i)+\beta\mathsf{Poly}_{\mathsf{T}}(\omega^{i+1})=\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}}(\omega^i)+\beta\mathsf{Poly}_{\mathsf{S}}(\omega^{i+1})$. We can get $\mathsf{Poly}_{\mathsf{T}}(\omega^i)=\mathsf{Poly}_{\mathsf{S}}(\omega^i)$ and $\mathsf{Poly}_{\mathsf{T}}(\omega^{i+1})=\mathsf{Poly}_{\mathsf{S}}(\omega^{i+1})$ for $i\in[0,d-1]$. Similarly, we can get $\mathsf{Poly}_{\mathsf{Arr}}(\omega^i)=\mathsf{Poly}_{\mathsf{S}}(\omega^i)=\mathsf{Poly}_{\mathsf{S}}(\omega^{i+1})$ for $i\in[0,n]$. Since $n$ should be equal to or less than $d$, when $\mathsf{Poly}_{\mathsf{Arr}}(\omega^i)=\mathsf{Poly}_{\mathsf{S}}(\omega^i)$, $\mathsf{Poly}_{\mathsf{T}}(\omega^i)=\mathsf{Poly}_{\mathsf{S}}(\omega^i)$ must hold at the same time, which contradicts to the winning assumption. Therefore, the protocol is sound.
 
 #### Zero-Knowledge
+
+To prove the above protocol is zero-knowledge, we do so by constructing a probabilistic polynomial time simulator $\mathcal{S}$ which, for every (possibly malicious) verifier $\mathcal{V}$, can output a view of the execution of the protocol that is indistinguishable from the view produced by the real execution of the program.
+
+The simulator $\mathcal{S}$ generates an array $\mathsf{Arr^*}$ by randomly filling it with elements from $\mathsf{T}$, then follows the same steps a prover would prove the lookup argument. $\mathcal{S}$ computes $\mathsf{S}_\mathsf{l}$, $\mathsf{S}_\mathsf{h}$, and $\mathsf{Z}$ and interpolates the five arrays into their respective polynomials, $\mathsf{Poly}_\mathsf{Arr^*}(X)$, $\mathsf{Poly}_\mathsf{T}(X)$, $\mathsf{Poly}_{\mathsf{S}_\mathsf{l}}(X)$, $\mathsf{Poly}_{\mathsf{S}_\mathsf{h}}(X)$, and $\mathsf{Poly}_{\mathsf{Z}}(X)$. It computes $Q^*(X)$ and finally outputs the commitments to each of these polynomials (and writes the commitments to the transcript). Then, it generates the random challenge $\zeta^*$ (once again this is by strong Fiat-Shamir). It creates opening proofs for $\mathsf{Poly}_\mathsf{Arr^*}(\zeta^*),\mathsf{Poly}_\mathsf{T}(\zeta^*),\mathsf{Poly}_\mathsf{T}(\zeta^*\omega),\mathsf{Poly}_{\mathsf{S}_\mathsf{l}}(\zeta^*),\mathsf{Poly}_{\mathsf{S}_\mathsf{l}}(\zeta^*\omega),\mathsf{Poly}_{\mathsf{S}_\mathsf{h}}(\zeta^*),\mathsf{Poly}_{\mathsf{S}_\mathsf{h}}(\zeta^*\omega),Q^*(\zeta^*),\mathsf{Poly}_\mathsf{Z}(\zeta^*)$, and $\mathsf{Poly}_\mathsf{Z}(\zeta^*\omega)$, and writes these to the transcript as well. Since $\mathcal{S}$ knows each of the above polynomials, it can honestly compute this step and the proof will be accepted by $\mathcal{V}$. The transcript it generates this way will be indistinguishable from a transcript generated from a real execution since $\mathsf{PolyCommit}_\mathsf{Ped}$ has the property of Indistinguishability of Commitments due to the randomization by $h^{\hat{\phi}(x)}$.
