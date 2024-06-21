@@ -95,3 +95,32 @@ To check the proof, the verifier uses the transcript to construct the value $Y_\
 Finally, if the constraint system is true, the following constraint will be true (and will be false otherwise with overwhelming probability, due to the Schwartz-Zippel lemma on $\rho$ and $\zeta$) :
 
 * $Y_\mathsf{Zero}\overset{?}{=}0$
+
+## Security Proof
+
+### Completeness
+
+Any honest prover can do the computations explained above and create an accepting proof.
+
+### Soundness
+
+We prove knowledge soundness in the Algebraic Group Model (AGM). To do so, we must prove that there exists an efficient extractor $\mathcal{E}$ such that for any algebraic adversary $\mathcal{A}$ the probability of $\mathcal{A}$ winning the following game is $\mathsf{negl}(\lambda)$.
+
+1. Given $[g,g^\tau,g^{\tau^2},\dots,g^{\tau^{n-1}}]$, $\mathcal{A}$ outputs commitments to $\mathsf{Poly}_\mathsf{T}(X)$ and $Q$
+2. $\mathcal{E}$, given access to $\mathcal{A}$'s outputs from the previous step, outputs $\mathsf{Poly}_\mathsf{T}(X)$ and $Q$
+3. $\mathcal{A}$ plays the part of the prover in showing that $Y_\mathsf{Zero}$ is zero at a random challenge $\zeta$
+4. $\mathcal{A}$ wins if
+    * $\mathcal{V}$ accepts at the end of the protocol
+    * $\eta\notin[0,r]$
+
+Our proof is as follows:
+
+First, we prove $\eta\ge{0}$. To make $\mathsf{Poly}_\mathsf{Vanish1}$ exist, the last value of $\mathsf{T}$ must be zero or one. From $\mathsf{Poly}_\mathsf{Vanish2}$, it can be observed that $\mathsf{T}[i]\ge\mathsf{T}[i+1]$ for all $i\in[0,\kappa-2]$. Thus, $\mathsf{T}[0]$ is equal to or greater than $\mathsf{T}[\kappa-1]$, i.e., $\eta\ge{0}$.
+
+Second, we prove $\eta\le{r}$. For simplicity, we assume $r$ is the power of two (recall $\kappa=\log_2{r}$). From $\mathsf{Poly}_\mathsf{Vanish2}$, we know $\mathsf{T}[0]$ is less than or equal to $2^\kappa$. Therefore, $\eta\le{r}$.
+
+### Zero-Knowledge
+
+To prove the above protocol is zero-knowledge, we do so by constructing a probabilistic polynomial time simulator $\mathcal{S}$ which, for every (possibly malicious) verifier $\mathcal{V}$, can output a view of the execution of the protocol that is indistinguishable from the view produced by the real execution of the program.
+
+The simulator $\mathcal{S}$ randomly generates an $\eta^*$, then follows the same steps a prover would prove the lookup argument. $\mathcal{S}$ computes $\mathsf{T^*}$ and interpolates $\mathsf{Poly}_\mathsf{T^*}$ from $\mathsf{T^*}$. It computes $Q^*(X)$ and finally outputs the commitments to each of these polynomials (and writes the commitments to the transcript). Then, it generates the random challenge $\zeta^*$ (once again this is by strong Fiat-Shamir). It creates opening proofs for $\mathsf{Poly}_\mathsf{T^*}(\zeta^*),\mathsf{Poly}_\mathsf{T^*}(\zeta^*\omega)$, and $Q^*(\zeta^*)$, and writes these to the transcript as well. Since $\mathcal{S}$ knows each of the above polynomials, it can honestly compute this step and the proof will be accepted by $\mathcal{V}$. The transcript it generates this way will be indistinguishable from a transcript generated from a real execution since $\mathsf{PolyCommit}_\mathsf{Ped}$ has the property of Indistinguishability of Commitments due to the randomization by $h^{\hat{\phi}(x)}$.
