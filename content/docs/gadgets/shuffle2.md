@@ -35,7 +35,7 @@ In addition to demontrasting the equality of the product of $\mathsf{Arr_1}'$ an
 
 ### Polynomial Level
 
-We assume that $\mathsf{Arr_1}$, $\mathsf{Arr_2}$, and $\mathsf{Arr_\pi}[i]$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the arrays, the arrays can be padded with elements all of value 1 (or any other value, as long as it is the same for both arrays).
+We assume that $\mathsf{Arr_1}$, $\mathsf{Arr_2}$, $\mathsf{Arr_\pi}[i]$, $\mathsf{Arr_1'}$, and $\mathsf{Arr_2'}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the arrays, the arrays can be padded with elements all of value 1 (or any other value, as long as it is the same for both arrays).
 
 Recall the two components we want to prove. First, the product check: 
 
@@ -72,7 +72,7 @@ $\mathsf{Poly}_\mathsf{Zero}(X)=\mathsf{Poly}_\mathsf{Vanish1}(X) + \rho \mathsf
 Ultimately the shuffle1 argument will satisfy the following constraints at the Commitment Level:
 
 1. Show $Q(X)$ exists (as a polynomial that evenly divides the divisor)
-2. Show $\mathsf{Poly}_\mathsf{Zero}(X)$ is correctly constructed from $\mathsf{Poly}_\mathsf{Arr}(X)$
+2. Show $\mathsf{Poly}_\mathsf{Zero}(X)$ is correctly constructed from $\mathsf{Poly}_\mathsf{Arr_1}(X)$, $\mathsf{Poly}_\mathsf{Arr_2}(X)$, $\mathsf{Poly_\pi(X)}$, $\mathsf{Poly}_\mathsf{Arr_1'}(X)$, $\mathsf{Poly}_\mathsf{Arr_2'}(X)$
 3. Show $\mathsf{Poly}_\mathsf{Zero}(X)$ is the zero polynomial
 
 In addition, it will show that $\prod^{n-1}_{i = 1}(X - Y\cdot i - \mathsf{Arr_1}[i]) = \prod^{n-1}_{i = 1}(X - Y\cdot \mathsf{Arr_\pi}[i] - \mathsf{Arr_2}[i])$ using a [mult3](./mult3) product check.
@@ -94,6 +94,10 @@ The prover will generate two random challenge evaluation points (using strong Fi
 * $r$
 * $K_\mathsf{Arr_1'}=\mathsf{KZG.Commit}(\mathsf{Poly}_\mathsf{Arr_1'}(X))$
 * $K_\mathsf{Arr_2'}=\mathsf{KZG.Commit}(\mathsf{Poly}_\mathsf{Arr_2'}(X))$
+
+The prover will generate a random challenge evaluation point (using strong Fiat-Shamir) on the polynomial that is outside of $\mathcal{H}_\kappa$. Call this point $\rho$. It will be used by the prover to create polynomial $Q(X)$ (see above) and the prover will write to the transcript: 
+
+* $\rho$
 * $K_Q=\mathsf{KZG.Commit}(Q(X))$
 
 The prover will generate a random challenge evaluation point (using strong Fiat-Shamir) on the polynomials that is outside of $\mathcal{H}_\kappa$. Call this point $\zeta$. The prover will write the point and opening proofs to the transcript:
@@ -130,9 +134,9 @@ Any honest prover can do the computations explained above and create an acceptin
 
 We prove knowledge soundness in the Algebraic Group Model (AGM). We assume soundness of the product check (it is proven in [mult3](./mult3)) and conduct a proof of soundness for the rest of the protocol. To do so, we must prove that there exists an efficient extractor $\mathcal{E}$ such that for any algebraic adversary $\mathcal{A}$ the probability of $\mathcal{A}$ winning the following game is $\mathsf{negl}(\lambda)$.
 
-1. Given $[g, g^\tau, g^{\tau^2}, \dots,g^{\tau^{n-1}}]$ $\mathcal{A}$ outputs commitments to $\mathsf{Poly}_\mathsf{Arr_1}(X)$, $\mathsf{Poly}_\mathsf{Arr_2}(X)$, $\mathsf{Poly_\pi}$, $\mathsf{Poly}_\mathsf{Arr_1'}(X)$, $\mathsf{Poly}_\mathsf{Arr_2'}(X)$, $Q$
+1. Given $[g, g^\tau, g^{\tau^2}, \dots,g^{\tau^{n-1}}]$ $\mathcal{A}$ outputs commitments to $\mathsf{Poly}_\mathsf{Arr_1}(X)$, $\mathsf{Poly}_\mathsf{Arr_2}(X)$, $\mathsf{Poly_\pi}$, $\mathsf{Poly}_\mathsf{Arr_1'}(X)$, $\mathsf{Poly}_\mathsf{Arr_2'}(X)$, $Q(X)$
 
-2. $\mathcal{E}$, given access to $\mathcal{A}$'s outputs from the previous step, outputs $\mathsf{Poly}_\mathsf{Arr_1}(X)$, $\mathsf{Poly}_\mathsf{Arr_2}(X)$, $\mathsf{Poly_\pi}$, $\mathsf{Poly}_\mathsf{Arr_1'}(X)$, $\mathsf{Poly}_\mathsf{Arr_2'}(X)$, $Q$
+2. $\mathcal{E}$, given access to $\mathcal{A}$'s outputs from the previous step, outputs $\mathsf{Poly}_\mathsf{Arr_1}(X)$, $\mathsf{Poly}_\mathsf{Arr_2}(X)$, $\mathsf{Poly_\pi}$, $\mathsf{Poly}_\mathsf{Arr_1'}(X)$, $\mathsf{Poly}_\mathsf{Arr_2'}(X)$, $Q(X)$
 
 3. $\mathcal{A}$ plays the part of the prover in showing that $Y_{\mathsf{Zero}}$ is zero at a random challenge $\zeta$
 
@@ -144,7 +148,7 @@ We prove knowledge soundness in the Algebraic Group Model (AGM). We assume sound
 
 Our proof is as follows:
 
-For the second win condition to be fulfilled, it must be that $(\mathsf{Arr_\pi}[i], \mathsf{Arr_2}[i]) \neq (i, \mathsf{Arr_1}[i])$ for some $i \in [0, n-1]$. But then, $\mathsf{Arr_1'}$ and $\mathsf{Arr_2'}$ contain differing element. This means that $\mathsf{Poly}_\mathsf{Arr_1'}(X) = \prod^{n-1}_{i = 1}(X - Y\cdot i - \mathsf{Arr_1}[i])$  and $\mathsf{Poly}_\mathsf{Arr_2'}(X) = \prod^{n-1}_{i = 1}(X - Y\cdot \mathsf{Arr_\pi}[i] - \mathsf{Arr_2}[i])$ and different polynomials, and thus by the Schwartz-Zippel lemma, there is negligible probability that they are equal at $X=r$ and $Y=2$ for the random challenge $r, s$. Any strategy to increase this probability to greater than negligible means $\mathcal{A}$ must pass in $\mathsf{Arr_j'}$ for $j = 1$ or $j = 2$ that is not defined according to the its corresponding constraint. But then $\mathsf{Poly}_\mathsf{Vanishj}(X)$ is not vanishing on $\mathcal{H}_\kappa$, so $Q(X)$ is not a polynomial (it is a rational function). This means that $\mathcal{A}$ cannot calcuated the correct commitment value $g^{Q(\tau)}$ without solving the t-SDH. Thus, $\mathcal{A}$ chooses an arbitrary value for $Q(\tau)$ and sends $K_Q = g^{Q(\tau)}$. It also sends a commitment to  $\mathsf{Poly}_\mathsf{Arr}(X)$. Both commitments $\mathcal{A}$ has outputted is are linear combinations of the elements in $[g, g^\tau, g^{\tau^2}, \dots,g^{\tau^{n-1}}]$. $\mathcal{E}$ is given these coefficients (since $\mathcal{A}$ is an algebraic adversary) so $\mathcal{E}$ can output the original polynomials.
+For the second win condition to be fulfilled, it must be that $(\mathsf{Arr_\pi}[i], \mathsf{Arr_2}[i]) \neq (i, \mathsf{Arr_1}[i])$ for some $i \in [0, n-1]$. But then, $\mathsf{Arr_1'}$ and $\mathsf{Arr_2'}$ contain differing element. This means that $\mathsf{Poly}_\mathsf{Arr_1'}(X) = \prod^{n-1}_{i = 1}(X - Y\cdot i - \mathsf{Arr_1}[i])$  and $\mathsf{Poly}_\mathsf{Arr_2'}(X) = \prod^{n-1}_{i = 1}(X - Y\cdot \mathsf{Arr_\pi}[i] - \mathsf{Arr_2}[i])$ and different polynomials, and thus by the Schwartz-Zippel lemma, there is negligible probability that they are equal at $X=r$ and $Y=2$ for the random challenge $r, s$. Any strategy to increase this probability to greater than negligible means $\mathcal{A}$ must pass in $\mathsf{Arr_j'}$ for $j = 1$ or $j = 2$ that is not defined according to the its corresponding constraint. But then $\mathsf{Poly}_\mathsf{Vanishj}(X)$ is not vanishing on $\mathcal{H}_\kappa$, so $Q(X)$ is not a polynomial (it is a rational function). This means that $\mathcal{A}$ cannot calcuated the correct commitment value $g^{Q(\tau)}$ without solving the t-SDH. Thus, $\mathcal{A}$ chooses an arbitrary value for $Q(\tau)$ and sends $K_Q = g^{Q(\tau)}$. Before this, it also sends commitments to $\mathsf{Poly}_\mathsf{Arr_1}(X)$, $\mathsf{Poly}_\mathsf{Arr_2}(X)$, $\mathsf{Poly_\pi}$, $\mathsf{Poly}_\mathsf{Arr_1'}(X)$, and $\mathsf{Poly}_\mathsf{Arr_2'}(X)$. All commitments $\mathcal{A}$ has outputted is are linear combinations of the elements in $[g, g^\tau, g^{\tau^2}, \dots,g^{\tau^{n-1}}]$. $\mathcal{E}$ is given these coefficients (since $\mathcal{A}$ is an algebraic adversary) so $\mathcal{E}$ can output the original polynomials.
 
 $\mathcal{A}$ then obtains the random challenge $\zeta$ (using strong Fiat-Shamir). By the binding property of KZG commitments, $\mathsf{Poly}_\mathsf{Arr_1}(\zeta)$, $\mathsf{Poly}_\mathsf{Arr_2}(\zeta)$, $\mathsf{Poly_\pi(\zeta)}$, $\mathsf{Poly}_\mathsf{Arr_1'}(\zeta)$, and $\mathsf{Poly}_\mathsf{Arr_2'}(\zeta)$  can only feasibliy be opened to one value. For $\mathcal{A}$ to have the verifier accept, it must send a proof that $Q(\zeta)$ opens to $Q(\zeta) = \frac{Y_\mathsf{Vanish1} + \rho Y_\mathsf{Vanish2}}{(\zeta^n - 1)}$. This means being able to send $g^{q(\tau)}$ where $q(\tau) = \frac{Q(\tau) - Q(\zeta)}{\tau - \zeta}$ and $Q(\zeta) = \frac{Y_\mathsf{Vanish1} + \rho Y_\mathsf{Vanish2}}{(\zeta^n - 1)}$. Since $Q(\tau)$ and $Q(\zeta)$ are known, this implies knowing $g^{\frac{1}{\tau - \zeta}}$. Thus $\mathcal{A}$ would have found $\langle\zeta,g^{\frac{1}{\tau - \zeta}}\rangle$, which is the t-SDH problem. We have shown that creating an accepting proof reduces to the t-SDH, so $\mathcal{A}$'s probability of success is negligible.
 
