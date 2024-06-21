@@ -25,7 +25,7 @@ Moreover, a Poly-IOP has to satisfy the following properties.
 
 ## Encoding Arrays of Data into Polynomials
 
-Data starts as a array of integers where integers in each slot are between 0 and $q-1$, where $q$ is a large (generally 256 bit) prime number. Recall that we call this set of integers $\mathbb{Z}_q$.
+Data starts as an array of integers where integers in each slot are between 0 and $q-1$, where $q$ is a large (generally 256 bit) prime number. Recall that we call this set of integers $\mathbb{Z}_q$.
 
 | $\mathsf{data}_0$ | $\mathsf{data}_1$ | $\mathsf{data}_2$ | $\mathsf{data}_3$ | $\mathsf{data}_4$ |
 | ----------------- | ----------------- | ----------------- | ----------------- | ----------------- |
@@ -38,7 +38,7 @@ A polynomial in this notation looks like:
 
 The values $c_i$ are called coefficients. Different arrays of data will (depending on how data is encoded, next) result in different coefficients and thus different polynomials. The degree of the polynomial is the largest exponent. So the polynomial above has degree 4 and thus will have 5 coefficients and 5 terms of the form $c_i\cdot\square^i$ (including $i=0$). Sometimes the coefficient will be zero: the term is thus not written down but in a list of coefficients, it will be included as a 0. 
 
-The main question to tackle is how to "encode" a array of integers into a polynomial. This is generally done one of three ways:
+The main question to tackle is how to "encode" an array of integers into a polynomial. This is generally done one of three ways:
 
 1. Coefficients
 2. Evaluation Points
@@ -46,7 +46,7 @@ The main question to tackle is how to "encode" a array of integers into a polyno
 
 Each has its advantages and disadvantages, which we discuss next. 
 
-Fast forwarding a bit, once the polynomial is created, it is not shared directly with anyone. Instead a commitment to it is shared. The commitment does two things: (1) it makes it succinct: e.g., constant size regardless of how long the array is; and (2) it can hide the data in the array as necessary. We will discuss one specific polynomial commitment scheme called KZG. KZG needs the polynomial in the format of a list of its coefficients. If we have the polynomial in a different form, we will have to convert to coefficients. Thus this needs to be considered when weighing the pros/cons of the three encoding methods.
+Fast forwarding a bit, once the polynomial is created, it is not shared directly with anyone. Instead, a commitment to it is shared. The commitment does two things: (1) it makes it succinct: e.g., constant size regardless of how long the array is; and (2) it can hide the data in the array as necessary. We will discuss one specific polynomial commitment scheme called KZG. KZG needs the polynomial in the format of a list of its coefficients. If we have the polynomial in a different form, we will have to convert it to coefficients. Thus this needs to be considered when weighing the pros/cons of the three encoding methods.
 
 
 

@@ -110,7 +110,7 @@ We prove knowledge soundness in the Algebraic Group Model (AGM). To do so, we mu
     * $\mathcal{V}$ accepts at the end of the protocol
     * the values in $\mathsf{In}$ do not satisfy the circuit
 
-The proof is trivial: to make $\mathsf{Poly}_\mathsf{Vanish}$ exist, the values in $\mathsf{In}$ have to satisfy the circuit. By the Schwartz-Zippel lemma, the soundness error is $\kappa/|\mathbb{F}|$, which is negligible since $\kappa=4$ and $\mathbb{F}$ is enormous for any widely used ellpitic curve.
+The proof is trivial: to make $\mathsf{Poly}_\mathsf{Vanish}$ exist, the values in $\mathsf{In}$ have to satisfy the circuit. By the Schwartz-Zippel lemma, the soundness error is $\kappa/|\mathbb{F}|$, which is negligible since $\kappa=4$ and $\mathbb{F}$ is enormous for any widely used elliptic curve.
 
 ### Zero-Knowledge
 
