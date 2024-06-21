@@ -27,7 +27,7 @@ In addition to demontrasting the equality of the product of $\mathsf{Arr_1}'$ an
 
 * $\mathcal{P}$ holds an array $\mathsf{Arr_1} = [a_{(1,0)}, a_{(1,1)}, a_{(1,2)}, \dots, a_{(1,n-1)}]$ of $n$ integers ($a_{(1,i)} \in \mathbb{Z}_q$)
 * $\mathcal{P}$ holds an array $\mathsf{Arr_2} = [a_{(2,0)}, a_{(2,1)}, a_{(2,2)}, \dots, a_{(2,n-1)}]$ of $n$ integers ($a_{(2,i)} \in \mathbb{Z}_q$)
-* $\mathcal{P}$ computes $\mathsf{Arr_j}'$ as follows for $j \in [1,2]$:
+* $\mathcal{P}$ generates the random challenge $r$ and computes $\mathsf{Arr_j}'$ as follows for $j \in [1,2]$:
   * $\mathsf{Arr_j}'[i]= r - \mathsf{Arr_j}[i]$
 
 ### Polynomial Level

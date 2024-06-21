@@ -30,7 +30,7 @@ To prove the relation between $\mathsf{Arr}$ and $\mathsf{Arr'}$, the prover mus
 
 ### Array Level
 
-* $\mathcal{P}$ holds an array $\mathsf{Arr_1} = [a_0 a_1, a_2, \dots, a_{n-1}]$ of $n$ integers ($a_{i} \in \mathbb{Z}_q$)
+* $\mathcal{P}$ holds an array $\mathsf{Arr_1} = [a_0, a_1, a_2, \dots, a_{n-1}]$ of $n$ integers ($a_{i} \in \mathbb{Z}_q$)
 * $\mathcal{P}$ computes $\mathsf{Arr}'$ as follows:
   * $\mathsf{Arr}'[i]= \mathsf{Arr}[i+\alpha]$ for $i \in [0, n-1]$
 
@@ -46,7 +46,7 @@ We write the constraint in polynomial form:
 
 1. For all $X$ from $\omega^0$ to $\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Arr'}(X) = \mathsf{Poly}_\mathsf{Arr}(X)\cdot\omega^\alpha$ 
 
-We adjust each of the constraint to show an equality with 0 and label it:
+We adjust the constraint to show an equality with 0 and label it:
 
 1. $\mathsf{Poly}_\mathsf{Vanish}(X)= \mathsf{Poly}_\mathsf{Arr'}(X) - \mathsf{Poly}_\mathsf{Arr}(X)\cdot\omega^\alpha = 0$
 
@@ -126,7 +126,7 @@ $\mathcal{A}$ then obtains the random challenge $\zeta$ (using strong Fiat-Shami
 
 We prove that the above protocol is zero-knowledge when $\mathsf{PolyCommit}_\mathsf{Ped}$ (from the KZG paper) is used for the polynomial commitments. We do so by constructing a probabilistic polynomial time simulator $\mathcal{S}$ that knows the trapdoor $\tau$, which, for every (possibly malicious) verifier $\mathcal{V}$, can output a view of the execution of the protocol that is indistinguishable from the view produced by the real execution of the program.
 
-The simulator $\mathcal{S}$ choose arbitrary values for ${\mathsf{Poly}_\mathsf{Arr}(\tau)}$ and ${\mathsf{Poly}_\mathsf{Arr'}(\tau)}$, then computes $g^{\mathsf{Poly}_\mathsf{Arr_1}(\tau)}$ and $g^{\mathsf{Poly}_\mathsf{Arr_2}(\tau)}$ to output as the commitments $ K_\mathsf{Arr_1}$ and $K_\mathsf{Arr_1}$. $\mathcal{S}$ computes $Q(\tau)$ using the values it chose for ${\mathsf{Poly}_\mathsf{Arr}(\tau)}$ and ${\mathsf{Poly}_\mathsf{Arr'}(\tau)}$. $\mathcal{S}$ outputs the commitment $K_Q = g^{Q(\tau)}$.
+The simulator $\mathcal{S}$ choose arbitrary values for ${\mathsf{Poly}_\mathsf{Arr}(\tau)}$ and ${\mathsf{Poly}_\mathsf{Arr'}(\tau)}$, then computes $g^{\mathsf{Poly}_\mathsf{Arr}(\tau)}$ and $g^{\mathsf{Poly}_\mathsf{Arr'}(\tau)}$ to output as the commitments $ K_\mathsf{Arr}$ and $K_\mathsf{Arr'}$. $\mathcal{S}$ computes $Q(\tau)$ using the values it chose for ${\mathsf{Poly}_\mathsf{Arr}(\tau)}$ and ${\mathsf{Poly}_\mathsf{Arr'}(\tau)}$. $\mathcal{S}$ outputs the commitment $K_Q = g^{Q(\tau)}$.
 
 Now, $\mathcal{S}$ generates the random challenge point $\zeta$ (which we assume is not in $\mathcal{H}_\kappa$; if it is in $\mathcal{H}_\kappa$, $\mathcal{S}$ simply restarts and runs from the beginning). This is by strong Fiat-Shamir. $\mathcal{S}$ then create fake opening proofs for ${\mathsf{Poly}_\mathsf{Arr}(\zeta)}$ and ${\mathsf{Poly}_\mathsf{Arr'}(\zeta)}$, to arbitrary values. This is done using the knowledge of $\tau$, calculating the respective witness $q(\tau) = \frac{{f(\tau) - f(\zeta)}}{\tau - \zeta}$ for each of the polynomials.
 

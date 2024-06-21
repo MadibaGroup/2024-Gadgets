@@ -30,7 +30,7 @@ In addition to demontrasting the equality of the product of $\mathsf{Arr_1}'$ an
 * $\mathcal{P}$ holds an array $\mathsf{Arr_\pi} = [\pi(\omega^0), \pi(\omega^1), \pi(\omega^2), \dots, \pi(\omega^{n-1})]$ of $n$ integers ($a_{(2,i)} \in \mathbb{Z}_q$)
 * $\mathcal{P}$ computes $\mathsf{Arr_1}'$ as follows:
   * $\mathsf{Arr_1}'[i]= r - s\cdot i - \mathsf{Arr_1}[i]$
-* $\mathcal{P}$ computes $\mathsf{Arr_2}'$ as follows:
+* $\mathcal{P}$ generates the random challenge $r, s$ and computes $\mathsf{Arr_2}'$ as follows:
   * $\mathsf{Arr_2}'[i]= r - s\cdot \mathsf{Arr_\pi}[i] - \mathsf{Arr_2}[i]$
 
 ### Polynomial Level
