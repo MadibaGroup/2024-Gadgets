@@ -24,5 +24,6 @@ headless: true
 - [lookup1]({{< relref "/docs/gadgets/lookup1" >}})
 - [lookup2]({{< relref "/docs/gadgets/lookup2" >}})
 - [range]({{< relref "/docs/gadgets/range" >}})
+- [circuit]({{< relref "/docs/gadgets/circuit" >}})
 
 <br />
