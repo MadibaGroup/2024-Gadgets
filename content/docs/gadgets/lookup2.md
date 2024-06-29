@@ -30,7 +30,71 @@ We can observe that $\mathsf{Arr}^\prime[i]$ is equal to $\mathsf{T}^\prime[i]$ 
 
 ### Plookup
 
+We start with an unoptimized version of Plookup that is conceptually simpler than the final version and is still fully succinct. The inputs are: an array containing the values of the lookup table $\mathsf{T}$ of size $n_1$; and an array of length $n_2$ (typically longer than $n_1$ but not necessarily) that will be proven to contain only values from somewhere in $\mathsf{T}$. 
+
+The prover will create 5 helper arrays ($\mathsf{Acc_1}$ to $\mathsf{Acc_5}$) to demonstrate this overall property ($\mathsf{Arr}[i]\in\mathsf{T}$ for all $i$). The helper arrays will each be of size $n_1+n_2$ with the exception of $\mathsf{Acc_4}$ which is $n_2$. They are as follows:
+
+1. $\mathsf{Acc_1}=\mathsf{Arr}||\mathsf{T}$
+2. $\mathsf{Acc_2}=\mathtt{Sort}(\mathsf{Acc_1})$
+3. $\mathsf{Acc_3}[i]=\mathsf{Acc_2}[i+1]-\mathsf{Acc_2}[i]$
+4. $\mathsf{Acc_4}[i]=\mathsf{T}[i+1]-\mathsf{T}[i]$
+5. $\mathsf{Acc_5}=\mathsf{Acc_4}||\{0\}^{n_2}$ where $n_1=|\mathsf{Arr}|$
+
+It is probably worth an example at this point.
+
+* $\mathsf{T}=[7,0,15,3]$
+* $\mathsf{Arr}=[7,0,15,15,7,7,15,0,0,7,15,7]$
+* $\mathsf{Acc_1}=[7,0,15,15,7,7,15,0,0,7,15,7,7,0,15,3]$
+* $\mathsf{Acc_2}=[7,7,7,7,7,7,0,0,0,0,15,15,15,15,15,3]$
+* $\mathsf{Acc_3}=[0,0,0,0,0,-7,0,0,0,15,0,0,0,0,-12,\bot]$
+* $\mathsf{Acc_4}=[-7,15,-12,\bot]$
+* $\mathsf{Acc_5}=[-7,15,-12,\bot,0,0,0,0,0,0,0,0,0,0,0,0]$
+
+The first array $\mathsf{Acc_1}$ is the concatination for $\mathsf{Arr}$ and $\mathsf{T}$. The intuition for this is as follows. Every element of $\mathsf{Arr}$ is in $\mathsf{T}$ (what is being proven) but the converse is not true, not every element of $\mathsf{T}$ is necessarily in $\mathsf{Arr}$. By constructing $\mathsf{Acc_1}$, the prover has an array where every element of $\mathsf{T}$ appears at least once. This will be convenient later. Additionally, if the prover can show every element in $\mathsf{Acc_1}$ is in $\mathsf{T}$, it implies every element in the original $\mathsf{Arr}$ is in $\mathsf{T}$ so it can now move forward with $\mathsf{Acc_1}$.
+
+How does $\mathsf{Acc_1}$ compare to $\mathsf{T}$? They both have the same elements but $\mathsf{Acc_1}$ has a bunch of extra duplicates of values. Also the appearance of elements in $\mathsf{Acc_1}$ are in a different (arbitrary) order. Next the prover will sort the values of $\mathsf{Acc_1}$, grouping all duplicates together, and having them appear in the same order as the original $\mathsf{T}$ (which does not have to be sorted). 
+
+Now how does $\mathsf{Acc_2}$ compare to $\mathsf{T}$? They have the same elements in the same order (including 3 which is not in the original $\mathsf{Arr}$) however $\mathsf{Acc_2}$ has a bunch of duplicates of some of the elements. Next we want to "flag" all the elements that are duplicates. The way we do this is to take the difference between each neighbouring elements. If the neighbouring elements are the same (duplicates), this is will place a 0 in that position. If they are not, a non-zero number will appear instead.
+
+This is straight-forward until we hit the last element in $\mathsf{Acc_2}$ and $\mathsf{Acc_3}$ which has no "next" element in the array. We will leave it for now as an arbitrary integer $\bot$. 
+
+We have marked the duplicates elements but have some other integers when neighbouring elements are not the same. The idea is do the same thing with $\mathsf{T}$ and we create $\mathsf{Acc_4}$, which we then pad with $n_2$ zeros.
+
+* $\mathsf{Acc_5}=[-7,15,-12,\bot,0,0,0,0,0,0,0,0,0,0,0,0]$
+
+If $\mathsf{Acc_5}$ is a permutation of $\mathsf{Acc_3}$ and everything else is correctly constructed, then all elements in $\mathsf{Arr}$ are from $\mathsf{T}$. 
+
+
+
+The prover will show that $\mathsf{Acc_1}$ is constructed correctly with the $\mathtt{concat}$ gadget. It will not prove that $\mathsf{Acc_2}$ is sorted correctly (if it does not sort it correctly, the protocol will not work) but it will prove that $\mathsf{Acc_2}$ is a permutation of $\mathsf{Acc_1}$ using $\mathtt{shuffle1}(\mathsf{Acc_1},\mathsf{Acc_2})$. It will prove $\mathsf{Acc_3}$ is constructed correctly by $\mathsf{add1}(\mathsf{Acc_2}[i+1],-\mathsf{Acc_2}[i])$ and $\mathsf{Acc_3}$ is $\mathsf{add1}(\mathsf{T}[i+1],-\mathsf{T}[i])$. Last, it will prove that $\mathsf{Acc_5}$ is correctly formed with $\mathtt{concat}$ and finally, that it is a permutation of $\mathsf{Acc_3}$ with $\mathtt{shuffle1}(\mathsf{Acc_5},\mathsf{Acc_3})$.
+
+
+
+
+
+
+
+
+
+ $\mathsf{T}$ to the end of $\mathsf{Arr}$ does not change anything about the arguement  
+
+In fact, the only difference betweeen $\mathsf{Acc_1}$ and $\mathsf{T}$ itself is that there are serveral duplicates 
+
+
+
+With these arrays, the following constraints are demonstrated:
+
+1. Uses $\mathtt{concat}$ gadget
+2. Uses $\mathtt{shuffle1}(\mathsf{Acc_1},\mathsf{Acc_2})$
+3. Uses $\mathsf{add1}(\mathsf{Acc_2}[i+1],-\mathsf{Acc_2}[i])$
+4. Uses $\mathsf{add1}(\mathsf{T}[i+1],-\mathsf{T}[i])$
+5. Uses $\mathtt{concat}$ and then $\mathtt{shuffle1}(\mathsf{Acc_5},\mathsf{Acc_3})$
+
+
+
 Unlike halo2, Plookup requires only one auxiliary vector, $\mathsf{S}$, where $\mathsf{S}$ is the union set of $\mathsf{Arr}$ and $\mathsf{T}$, and sorted by $\mathsf{T}$. The prover encodes $\mathsf{Arr}$, $\mathsf{T}$, and $\mathsf{S}$ into polynomials: $\mathsf{Poly}_\mathsf{Arr}$, $\mathsf{Poly}_\mathsf{T}$, and $\mathsf{Poly}_\mathsf{S}$, and computes $\prod{\mathsf{Poly}_\mathsf{Arr}\cdot\prod\mathsf{Poly}_\mathsf{T}}$ and $\prod{\mathsf{Poly}_\mathsf{S}}$ with some random challenges. The theorem tells us the two products are equal if and only if: $\mathsf{Arr}\subset\mathsf{T}$, and $\mathsf{S}=(\mathsf{Arr},\mathsf{T})$ and sorted by $\mathsf{T}$.
+
+
 
 ## Protocol Details
 
