@@ -4,7 +4,15 @@ headless: true
 
 - **Background**
 
+- [Overview]({{< relref "/docs/background/overview" >}})
+
+- [KZG]({{< relref "/docs/background/kzg" >}})
+
 - [Poly IOP]({{< relref "/docs/background/poly-iop" >}})
+
+- [Red Tape]({{< relref "/docs/background/red-tape" >}})
+
+- [Proofs]({{< relref "/docs/background/proofs" >}})
 <br />
 
 - **Gadgets**
