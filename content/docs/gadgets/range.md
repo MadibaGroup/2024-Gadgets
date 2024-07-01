@@ -2,9 +2,9 @@
 
 ## Recap of types
 
-| Type | Description | Recap | This |
-| ---- | ----------- | ----- | ---- |
-| range | $\mathsf{Arr}[i]\in[0,r]$ | Each element of array $\mathsf{Arr}$ is in the range $[0,r]$ | ✅ |
+| Type  | Description               | Recap                                                        | This |
+| ----- | ------------------------- | ------------------------------------------------------------ | ---- |
+| range | $\mathsf{Arr}[i]\in[0,r]$ | Each element of array $\mathsf{Arr}$ is in the range $[0,r]$ | ✅    |
 
 ## Relation
 
@@ -12,7 +12,25 @@ $\mathcal{R}_{\mathtt{add1}} := \left\{ \begin{array}{l} (K_\mathsf{Arr}) \end{a
 
 ## Intuition
 
-To prove each element of array $\mathsf{Arr}$ is in the range $[0,r]$, one of the most intuitive ways is we create a vector containing the numbers from $0$ to $r$ and run the lookup argument for $\mathsf{Arr}$. Another approach is we prove each element is in $[0,r]$. Specifically, we decompose the target number to digits in some base $x$ and prove (i) the digits are valid and (ii) the number can be recovered from the digits and the base. The prover ($\mathcal{P}$) holds a number $\eta$ and $\mathsf{Arr}$ of $k=\lceil\log_x{\eta}\rceil$ integers from $\mathbb{Z}_q$: $[a_0,a_1,a_2,\dots,a_{k-1}]$. It will produce a succinct (logarithm base $x$ of $\eta$. For simplicity, we will use base $2$) proof that the vector $\mathsf{T}$ satisfies the following conditions: (i) the first value of $\mathsf{T}$ equals to $\eta$ (ii) the last value of $\mathsf{T}$ equals to one or zero (iii) any value minus two times the next value is equal to one or zero in $\mathsf{T}$. The prover will encode $\mathsf{Arr}$ and $\mathsf{T}$ into two polynomials: $\mathsf{Poly}_\mathsf{Arr}$ and $\mathsf{Poly}_\mathsf{T}$ (using [evaluation points]() on the domain $\mathcal{H}_\kappa$). He will commit to each polynomial: $K_\mathsf{Arr}$ and $K_\mathsf{T}$. The verifier ($\mathcal{V}$) cannot check any of the $\mathsf{Arr}$, $\mathsf{T}$ or $\mathsf{Poly}_\mathsf{Arr}$, $\mathsf{Poly}_\mathsf{T}$ values directly. Instead the verifier only sees $K_\mathsf{Arr}$, and $K_\mathsf{T}$.
+To prove each element of array $\mathsf{Arr}$ is in the range $[0,r]$, one of the most intuitive ways is we create a vector containing the numbers from $0$ to $r$ and run the lookup argument for $\mathsf{Arr}$. Another approach is we prove each element is in $[0,r]$. Specifically, we decompose the target number to digits in some base $x$ and prove (i) the digits are valid and (ii) the number can be recovered from the digits and the base. The prover ($\mathcal{P}$) holds a number $\eta$ and a vector $\mathsf{T}$ of $k=\lceil\log_x{\eta}\rceil$ integers from $\mathbb{Z}_q$: $[a_0,a_1,a_2,\dots,a_{k-1}]$. Then $r=x^k$ and the prover shows $\eta \in [0, r]$. It will produce a succinct (logarithm base $x$ of $\eta$; for simplicity, we will use base $2$) proof that the vector $\mathsf{T}$ satisfies the following conditions: (i) the first value of $\mathsf{T}$ equals to $\eta$ (ii) the last value of $\mathsf{T}$ equals to one or zero (iii) any value minus two times the next value is equal to one or zero in $\mathsf{T}$. The prover will encode $\mathsf{Arr}$ and $\mathsf{T}$ into two polynomials: $\mathsf{Poly}_\mathsf{Arr}$ and $\mathsf{Poly}_\mathsf{T}$ (using [evaluation points]() on the domain $\mathcal{H}_\kappa$). It will commit to each polynomial: $K_\mathsf{Arr}$ and $K_\mathsf{T}$. The verifier ($\mathcal{V}$) cannot check any of the $\mathsf{Arr}$, $\mathsf{T}$ or $\mathsf{Poly}_\mathsf{Arr}$, $\mathsf{Poly}_\mathsf{T}$ values directly. Instead the verifier only sees $K_\mathsf{Arr}$, and $K_\mathsf{T}$.
+
+Consider a small numerical example where $\eta = 14$, working with $x=2$. Since $k=\lceil\log_2{\eta}\rceil = 4$, we will demonstrate that $\eta \in [0,r=2^k]$ by constructing $\mathsf{Arr}$ consisting of $k$ integers. First, we know $\mathsf{T}[0] = \eta = 14$:
+
+- $\mathsf{T} = [14, \bot, \bot, \bot]$
+
+Now, for $\mathsf{T}[1]$ we want an integer $a_1$ such that $14 - 2\cdot a_1$ equals 1 or 0. Since 14 is even, we are looking for $a_1$ such that $14 - 2\cdot a_1=0$, thus $a_1=7$:
+
+- $\mathsf{T} = [14, 7, \bot, \bot]$
+
+Now we find $a_2$ such that $7-2\cdot a_2$ equals 1 or 0. Since 7 is odd, we are looking for $a_2$ such that $7-2\cdot a_2=1$, thus $a_2 = 3$:
+
+- $\mathsf{T} = [14, 7, 3, \bot]$
+
+Finally, we find $a_3$ such that $3 - 2\cdot a_3$ equals 1 or 0. Again, since 3 is odd, we are looking for $a_3$ such that $3-2\cdot a_3=1$, thus $a_3= 1$:
+
+- $\mathsf{T} = [14, 7, 3, 1]$
+
+Now, $\mathsf{Arr}$ is $k$ elements long, and the last element of $\mathsf{T}$ is one or zero, so we have constructed the desired vector $\mathsf{T}$. Note that the last element of $\mathsf{T}$ will only be zero if $\eta \leq x^{k-1}$.
 
 In order to prove $K_\mathsf{Arr}$ and $K_\mathsf{T}$ satisfy the above three conditions, one of the most straightforward methods is to use the additive homomorphic property of the KZG commitment scheme, i.e., prove $K_\mathsf{Arr}$ and $K_\mathsf{T}$ satisfy the conditions through the group addition. This method works if the target condition only involves additive operations. However, there are multiplications in the above conditions, so it is infeasible to calculate the product of two KZG commitments unless the t-SDH can be solved. Even if the verifier is given the powers of the KZG commitments, it is inefficient to perform scalar multiplications for two commitments (imagine the time complexity of multiplying two $d$-degree polynomials is $O(d^2)$), which implies this method is hard to be succinct.
 
@@ -24,20 +42,22 @@ The second method is more general and widely used. The basic idea is instead of 
 
 * $\mathcal{P}$ holds a number $\eta\in\mathbb{Z}$
 * $\mathcal{P}$ computes or holds an array $\mathsf{T}=[t_0,t_1,t_2,\dots,t_{k-1}]$ of $k$ (recall $k=\lceil\log_2{\eta}\rceil$) integers ($t_i\in\mathbb{Z}$) such that:
-    * $\mathsf{T}[0]=\eta$
-    * $\mathsf{T}[k-1]\in\{0,1\}$
-    * $\mathsf{T}[i]-2\cdot\mathsf{T}[i+1]\in\{0,1\}$
+  * $\mathsf{T}[0]=\eta$
+  * $\mathsf{T}[k-1]\in\{0,1\}$
+  * $\mathsf{T}[i]-2\cdot\mathsf{T}[i+1]\in\{0,1\}$
 
 ### Polynomial Level
 
 We assume the array $\mathsf{T}$ is encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 0 (which will not change the sum).
 
 Recall the constraints we want to prove: 
+
 1. $\mathsf{T}[0]=\eta$
 2. $\mathsf{T}[k-1]\in\{0,1\}$
 3. $\mathsf{T}[i]-2\cdot\mathsf{T}[i+1]\in\{0,1\}$
 
 In polynomial form, the constraints are:
+
 1. For $X=\omega^0$: $\mathsf{Poly}_\mathsf{T}(X)=\eta$
 2. For $X=\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{T}(X)\in\{0,1\}$
 3. For all $X=\mathcal{H}_\kappa\setminus{\omega^{\kappa-1}}$: $\mathsf{Poly}_\mathsf{T}(X)-2\cdot\mathsf{Poly}_\mathsf{T}(X\omega)\in\{0,1\}$
@@ -63,6 +83,7 @@ By rearranging, we can get $\mathsf{Poly}_\mathsf{Zero}(X)$ as a true zero polyn
 $\mathsf{Poly}_\mathsf{Zero}(X)=\mathsf{Poly}_\mathsf{Vanish1}(X) + \rho\cdot\mathsf{Poly}_\mathsf{Vanish2}(X)-Q(X)\cdot(X^{\kappa-1}-1)=0$
 
 Ultimately the range gadget will satisfy the following constraints at the Commitment Level:
+
 1. Show $Q(X)$ exists (as a polynomial that evenly divides the divisor)
 2. Show $\mathsf{Poly}_\mathsf{Zero}(X)$ is correctly constructed from $\mathsf{Poly}_\mathsf{T}(X)$
 3. Show $\mathsf{Poly}_\mathsf{Zero}(X)$ is the zero polynomial
@@ -72,6 +93,7 @@ Ultimately the range gadget will satisfy the following constraints at the Commit
 The verifier will never see the arrays or polynomials themselves. They are undisclosed because they either (i) contain private data or (ii) are too large to examine and maintain a succinct proof system. Instead, the prover will use commitments.
 
 The prover will write the following commitments to the transcript:
+
 * $K_\mathsf{T}=\mathsf{KZG.Commit}(\mathsf{Poly}_\mathsf{T}(X))$
 
 The prover will generate a random challenge evaluation point (using strong Fiat-Shamir) on the polynomial that is outside of $\mathcal{H}_\kappa$. Call this point $\rho$. It will be used by the prover to create polynomial $Q(X)$ (see above) and the prover will write to the transcript:
@@ -110,8 +132,8 @@ We prove knowledge soundness in the Algebraic Group Model (AGM). To do so, we mu
 2. $\mathcal{E}$, given access to $\mathcal{A}$'s outputs from the previous step, outputs $\mathsf{Poly}_\mathsf{T}(X)$ and $Q$
 3. $\mathcal{A}$ plays the part of the prover in showing that $Y_\mathsf{Zero}$ is zero at a random challenge $\zeta$
 4. $\mathcal{A}$ wins if
-    * $\mathcal{V}$ accepts at the end of the protocol
-    * $\eta\notin[0,r]$
+   * $\mathcal{V}$ accepts at the end of the protocol
+   * $\eta\notin[0,r]$
 
 Our proof is as follows:
 
