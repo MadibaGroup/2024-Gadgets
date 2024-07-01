@@ -65,7 +65,7 @@ The trick to avoiding this is two-fold: first, the array will be encoded into a 
 
 In order to work, Plonk establishes a set of Poly-IOP building blocks (or gadgets) and combines them into a somewhat involved protocol that proves a circuit is executed correctly. Once this is done, anyone can write any function into a circuit and have Plonk's circuit gadget prove it is executed correctly.
 
-```mermaid
+{{< mermaid >}}
 flowchart-elk LR
 Succinctness --> Poly-IOP
 Poly-IOP --> Univariate
@@ -95,6 +95,6 @@ classDef color fill:#9f6;
 class Protocol1 color
 class Protocol2 color
 
-```
+{{< mermaid >}}
 
 This gadget book is not for writing Plonk circuits. Writing Plonk circuits is one method for proving a function is correctly executed. The second method is to realize that the building blocks of Plonk can be used directly, if they are verbose enough to capture what you want $f$ to do. It should be intuitive that this will be considerably faster for the prover. It is also possible to do a hybrid approach where certain parts of the circuit are implemented directly with gadgets and then glued to the parts that cannot be.
