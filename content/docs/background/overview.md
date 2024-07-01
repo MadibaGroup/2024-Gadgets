@@ -66,7 +66,7 @@ The trick to avoiding this is two-fold: first, the array will be encoded into a 
 In order to work, Plonk establishes a set of Poly-IOP building blocks (or gadgets) and combines them into a somewhat involved protocol that proves a circuit is executed correctly. Once this is done, anyone can write any function into a circuit and have Plonk's circuit gadget prove it is executed correctly.
 
 {{< mermaid >}}
-flowchart-elk LR
+flowchart LR
 Succinctness --> Poly-IOP
 Poly-IOP --> Univariate
 Univariate --> Gadgets

@@ -6,9 +6,9 @@ headless: true
 
 - [Overview]({{< relref "/docs/background/overview" >}})
 
-- [KZG]({{< relref "/docs/background/kzg" >}})
+- [Polynomials]({{< relref "/docs/background/poly-iop" >}})
 
-- [Poly IOP]({{< relref "/docs/background/poly-iop" >}})
+- [Commitments]({{< relref "/docs/background/kzg" >}})
 
 - [Red Tape]({{< relref "/docs/background/red-tape" >}})
 

@@ -1,10 +1,6 @@
-Polynomial Interactive Oracle Proofs
+# Encoding Arrays of Data into Polynomials
 
-
-
-## Encoding Arrays of Data into Polynomials
-
-Data starts as an array of integers where integers in each slot are between 0 and $q-1$, where $q$ is a large (generally 256 bit) prime number. Recall that we call this set of integers $\mathbb{Z}_q$.
+In the Poly-IOP model, data starts as an array (or vector) of integers and gadgets are defined in terms of operations on arrays. In the proof stage, the arrays are encoded into a polynomial. Array slots contain integers between 0 and $q-1$, where $q$ is a large (generally 256 bit) prime number. Recall that we call this set of integers $\mathbb{Z}_q$.
 
 | $\mathsf{data}_0$ | $\mathsf{data}_1$ | $\mathsf{data}_2$ | $\mathsf{data}_3$ | $\mathsf{data}_4$ |
 | ----------------- | ----------------- | ----------------- | ----------------- | ----------------- |
@@ -29,7 +25,7 @@ Fast forwarding a bit, once the polynomial is created, it is not shared directly
 
 
 
-### Encoding 1: Coefficients
+## Encoding 1: Coefficients
 
 Create polynomial as: $P_1(\square)=\mathsf{data}_0+\square+\mathsf{data}_2\cdot\square^2+\mathsf{data}_3\cdot\square^3+\mathsf{data}_4\cdot\square^4=\sum_{i=0}^d \mathsf{data}_i\cdot\square^i$  
 
@@ -44,7 +40,7 @@ Properties:
 
   
 
-### Encoding 2: Evaluation Points
+## Encoding 2: Evaluation Points
 
 Create a list of points $\{x,y\}$ for the data: $\langle\{0,\mathsf{data}_0\},\{1,\mathsf{data}_1\},\{2,\mathsf{data}_2\},\{3,\mathsf{data}_3\},\{4,\mathsf{data}_4\}\rangle$ and interpolate a polynomial $P_2(\square)$ through these points. 
 
@@ -57,7 +53,7 @@ Properties:
 
 
 
-### Encoding 3: Roots
+## Encoding 3: Roots
 
 Create polynomial as: $P_3(\square)=(\square-\mathsf{data}_0)(\square-\mathsf{data}_1)(\square-\mathsf{data}_2)(\square-\mathsf{data}_3)(\square-\mathsf{data}_4)$
 
@@ -74,7 +70,7 @@ Properties:
 
 ^[1]: Hat tip Pratyush Mishra.
 
-### Decision Tree for Encoding
+## Decision Tree for Encoding
 
 Basically we decide if we specifically need unordered "bags" of data. If so, encoding as roots is the only option. If not, we consider if we need to ever get the data back from the polynomial. Generally we do and encoding as evaluation points is the most common encoding technique. When do we encode the data and never want it back? Usually when (1) the coefficients are all supposed to be zero so we are just showing that property, or (2) we want back the sum of the data and not the data itself. In these cases, you can still work with evaluation point encoding but it will be faster to just do coefficient encoding.
 
