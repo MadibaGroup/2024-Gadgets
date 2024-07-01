@@ -1,4 +1,4 @@
-# Polynomial Interactive Oracle Proofs
+Polynomial Interactive Oracle Proofs
 
 
 
@@ -78,8 +78,6 @@ Properties:
 
 Basically we decide if we specifically need unordered "bags" of data. If so, encoding as roots is the only option. If not, we consider if we need to ever get the data back from the polynomial. Generally we do and encoding as evaluation points is the most common encoding technique. When do we encode the data and never want it back? Usually when (1) the coefficients are all supposed to be zero so we are just showing that property, or (2) we want back the sum of the data and not the data itself. In these cases, you can still work with evaluation point encoding but it will be faster to just do coefficient encoding.
 
-
-
 {{< mermaid >}}
   flowchart LR;
       A[Array to Polynomial] --> B{Is the data unordered?};
@@ -91,49 +89,15 @@ Basically we decide if we specifically need unordered "bags" of data. If so, enc
 
 The short answer is to start with evaluation point encoding until you realize you need something different.
 
-
-
-## Optimizing Interpolation (Roots of Unity + FFT)
+## Roots of Unity
 
 Moving forward, we will assume we are using Encoding 2: Evaluation Points. In short, this means placing the elements of our array into the $y$-coordinates ($\mathsf{data}_i=P(\boxed{x_i})$) of points on the polynomial. Before commiting to $P(\square)$, we need to use interpolation to find the coefficients of the polynomial that is fitted to these points. General interpolation algorithms are $O(n^2)$ work for $n$ evaluation points but this can be reduced to $O(n\log n)$ with an optimization.
 
 The optimization we will explore enables interpolation via the fast Fourier transform (FFT). It concerns how to choose the $x$-coordinates, which will serve as the index for accessing the data: evaluating $P(X)$ at $x_i$ will reveal $\mathsf{data}_i$. First note, $x$-coordinates are from the exponent group ($Z_q$) and the choices exceed what is feasible to use ($2^{255}$ values in bls). Any subset can be used and interpolated. The optimization is to chose them with a mathematical structure. Specifically, instead an additive sequence (e.g., $0,1,2,3,\ldots$), we use a multiplicative sequence $1,\omega,\omega\cdot\omega,\omega\cdot\omega\cdot\omega,\ldots$ or equivalently: $\omega^0,\omega^1,\omega^2,\ldots,\omega^{\kappa-1}$. Further, the sequence is closed under multiplication which means that next index after $\omega^{\kappa-1}$ wraps back to the first index: $\omega^{k-1} \cdot \omega = \omega^\kappa = \omega^0=1$ (this property is also useful in proving relationships between data in the array and its neighbouring values). 
 
-![Roots of Unity](https://hackmd.io/_uploads/SyQdoMDxC.png)
+![Roots of Unity](/figures/Figures.001.png)
 
 
 For terminology, we say $\omega$ is a generator with multiplicative order $\kappa$ in $\mathbb{Z}_q$ (or $\omega \in \mathbb{G}_\kappa$). This implies $\omega^\kappa=1$. Rearranging, $\omega=\sqrt[\kappa]{1}$. Thus we can equivalently describe $\omega$ as a $\kappa$-th root of 1. Finally, as 1 is the unity element in $Z_q$, $\omega$ is commonly called a $\kappa$-th root of unity. 
 
 For practical purposes, $\kappa$ represents the length of the longest array of data we can use in our protocol. Where does $\kappa$ come from? Different elements of $Z_q$ will have different multiplicative orders but every order must be a divisor of $q-1$. Thus $\kappa$ is the largest divisor of the exact value of $q$ used in an elliptic curve standard. BLS12-384 has $\kappa=2^{32}$ (for terminology, this called a $2$-adicity of $32$). In summary, we can only encode data arrays of length up to $2^{32}=4,294,967,296$.
-
-
-
-## Zeroing Parts of an Array
-
-Assuming an input array of size $n$: $\langle \mathsf{data}_0,\mathsf{data}_1,\ldots,\mathsf{data}_{n-1}\rangle$ and input array encoded into the polynomial. This uses "Encoding 2" from above (evaluation points) and uses "Roots of Unity + FFT" from above where $\omega\in\mathbb{G}_\kappa$ is a generator for the x-coordinates of the points.
-
-$\bot$ is an arbitrary non-zero integer.
-
-| Operation          | Input Array                 | Input Polynomial | Output Array                            | Output Polynomial                           |
-| ------------------ | --------------------------- | ---------------- | --------------------------------------- | ------------------------------------------- |
-| Zero all           | $\langle 3,1,3,3,7 \rangle$ | $P(X)$           | $\langle 0,0,0,0,0 \rangle$             | $P(X)\cdot(X^n-1)$                          |
-| Zero first         | $\langle 3,1,3,3,7 \rangle$ | $P(X)$           | $\langle 0,\bot,\bot,\bot,\bot \rangle$ | $P(X)\cdot(X-\omega^0)$                     |
-| Zero last          | $\langle 3,1,3,3,7 \rangle$ | $P(X)$           | $\langle \bot,\bot,\bot,\bot,0 \rangle$ | $P(X)\cdot(X-\omega^{n-1})$                 |
-| Zero all but first | $\langle 3,1,3,3,7 \rangle$ | $P(X)$           | $\langle \bot,0,0,0,0 \rangle$          | $P(X)\cdot\frac{(X^n-1)}{(X-\omega^0)}$     |
-| Zero all but last  | $\langle 3,1,3,3,7 \rangle$ | $P(X)$           | $\langle 0,0,0,0,\bot \rangle$          | $P(X)\cdot\frac{(X^n-1)}{(X-\omega^{n-1})}$ |
-
-Why are these useful? Consider a [range proof](https://hackmd.io/@dabo/B1U4kx8XI) from Boneh, Fisch, Gabizon, and Williamson. At a certain point in the protocol, we reach the following:
-
-![Screenshot 2024-04-12 at 9.11.45 PM](https://hackmd.io/_uploads/H1Xg2IvgR.png)
-
-First note that $w$ and $\omega$ look the same but are different: $w$ are three new polynomials we are creating, while $\omega$ is the generator of $\mathbb{G}_\kappa$ we are using to pick x-coordinates for the polynomials. 
-
-* In the first constraint, we want to prove the value of f(1) and g(1) are the same. So we subtract (g-f) which leaves a zero in the first element of the array but the rest of the array will contain other stuff. By applying "zero all but first", we can zero out the rest of the array. We now have an array that is all zero (in polynomial form, this is called a vanshing polynomial and we can prove a polynomial vanishes easily and in a batch).
-* In the second constraint, we prove the last element in g is a binary bit (0 or 1) and then we apply the "zero all but last" to make an array that is all zero (and vanishing polynomial).
-* In the third constraint, the first two terms of the multiplication are proving $g(X)$ has a certain form that does not need to be understood here. What is important is that there is a relationship between each integer in the array ($g(X)$) and the integer right beside it ($g(X\omega)$) in the array. When the relationship holds, the result is a zero in $w_3$. Unfortunately, there is a corner case: for the last element in the array, the "next" integer wraps back to the first integer and the relationship does not hold across this boundary. So we use "zero last" to manually zero out the last integer in the array, leaving us with a zero array (and vanishing polynomial). 
-
- 
-
-## Additional Text to Merge
-
-The prover interpolates $A$ and $B$ to get $P_A(x)$ and $P_B(x)$. To do so, an $n$th root of unity (which we will call $\omega$) is used, and the values of $A$ and $B$ are paired with the powers of this root of unity as follows: $(\omega^0, a_0), (\omega^1, a_1), \dots, (\omega^{n-1}, a_{n-1})$ and similarly for $B$. Then the interpolation (using the fast fourier transform (FFT)) creates a polynomial that passes through the points represented by these tuples. We also define $H$ as the set $[\omega^0, \omega^1, \dots, \omega^{n-1}]$. We are assuming that $n$ is a power of 2, so that we can use FFT. In practice, if it is not, then a power of 2 greater than $n$, say $2^m$, is used and the last $2^m - n$ entries of $A$ are padded with 1s.
