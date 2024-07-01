@@ -23,6 +23,17 @@ If the domain of the array is larger than what is needed, we add some dummy elem
 
 Many gadgets involve comparisons between neighbouring values in the same array (or across two arrays). This comparison works until you hit the last element of the array and there is no "next" element in the array. In practice, there is always a "next" element but attention needs to be paid to what it is. Using a multiplicative domain, the next element will be a dummy element if the array is smaller than the domain, or it will "wrap" back to the first element of the array if it is full. Many gadgets will just let the constraint end up with some arbitrary value in the last element, and then manually zero it out with $\texttt{zero2}$.
 
+## Trusted setup
+
+KZG polynomial commitments require a trusted setup, which implicitly impacts the maximum length an array can take on. Interpolating an array of length $n$ into a univariate polynomial will output a polynomial of degree $n-1$. The trusted setup needs to have an SRS with $n-1$ elements. 
+
+In terms of trust, the trusted setup can be run with any number of individuals participating, who each must prover that their participation did not corrupt the setup in any way. As long as 1 participant is honest and does not remember their random numbers, the setup achieves its security properties. 
+
+
+
 ## Additional reading
 
 * [Article (Thaler)](https://a16zcrypto.com/posts/article/17-misconceptions-about-snarks/): includes points comparing univariate Poly-IOP to other zk-SNARK models
+* [Paper (Nikolaenko)](https://eprint.iacr.org/2022/1592): trusted setup ceremony
+
+ 
