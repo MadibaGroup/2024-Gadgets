@@ -87,8 +87,8 @@ subgraph Gadgets
   circuit
 end
 
-Gadgets ---Special Purpose--- Protocol1(Function)
-circuit ---General Purpose--- Protocol2(Function)
+Gadgets --Special Purpose--- Protocol1(Function)
+circuit --General Purpose--- Protocol2(Function)
 
 classDef color fill:#9f6;
 class Protocol1 color
