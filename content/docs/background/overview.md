@@ -87,9 +87,8 @@ subgraph Gadgets
   circuit
 end
 
-Gadgets o--Gadgets--- Protocol1(Function)
-circuit x--Plonk--- Protocol2(Function)
-
+Gadgets ---Special Purpose--- Protocol1(Function)
+circuit ---General Purpose--- Protocol2(Function)
 
 classDef color fill:#9f6;
 class Protocol1 color
@@ -97,4 +96,4 @@ class Protocol2 color
 
 {{< /mermaid >}}
 
-This gadget book is not for writing Plonk circuits. Writing Plonk circuits is one method for proving a function is correctly executed. The second method is to realize that the building blocks of Plonk can be used directly, if they are verbose enough to capture what you want $f$ to do. It should be intuitive that this will be considerably faster for the prover. It is also possible to do a hybrid approach where certain parts of the circuit are implemented directly with gadgets and then glued to the parts that cannot be.
+This gadget book is not for writing Plonk circuits. Writing Plonk circuits is one method for proving a function is correctly executed and is a general purpose method that works for any function. The second method is to realize that the building blocks of Plonk can be used directly, if they are verbose enough to capture what you want $f$ to do. It is a special purpose method, meaning it will not work for all $f$ but if it does work, it should be intuitive that this will be considerably faster for the prover. It is also possible to do a hybrid approach where certain parts of a general purpose circuit are replaced with gadgets and then glued back to the circuit.
