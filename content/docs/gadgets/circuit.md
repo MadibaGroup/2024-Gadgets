@@ -14,7 +14,7 @@ $\mathcal{R}_{\mathtt{circ}} := \left\{ \begin{array}{l} (K_\mathsf{T},K_\mathsf
 
 The prover ($\mathcal{P}$) and the verifier ($\mathcal{V}$) are both given a circuit $\mathsf{T}$, where $\mathsf{T}[0]$ and $\mathsf{T}[1]$ are the factors of the two inputs respectively, $\mathsf{T}[2]$ is the factor of the product of the two inputs, and $\mathsf{T}[3]$ is the selector of the gate ($\mathsf{T}[3]$ is one for addition gate and zero for multiplication gate). The prover wants to prove he knows an input vector $\mathsf{In}$ satisfying $\mathsf{T}$. Specifically, we define $\mathsf{In}[0]$ and $\mathsf{In}[1]$ are the inputs of the circuit, $\mathsf{In}[2]$ is a constant, and $\mathsf{In}[3]$ is the output. Thus, the prover will produce a succinct proof that $\mathsf{In}$ satisfies the following condition: the equation $\mathsf{T}[3]\cdot(\mathsf{In}[0]\cdot\mathsf{T}[0]+\mathsf{In}[1]\cdot\mathsf{T}[1])+(1-\mathsf{T}[3])\cdot(\mathsf{In}[0]\cdot\mathsf{In}[1]\cdot\mathsf{T}[2])+\mathsf{In}[2]=\mathsf{In}[3]$ holds.
 
-This means that if $\mathsf{T}[3] = 0$, this is the circuit which must be satisfied:
+This means that if $\mathsf{T}[3] = 0$, the multiplication circuit must be satisfied:
 
 {{< mermaid >}}
     flowchart LR
@@ -24,7 +24,7 @@ This means that if $\mathsf{T}[3] = 0$, this is the circuit which must be satisf
         id3 --> in3["In[3]"]
 {{< /mermaid >}}
 
-And if $\mathsf{T}[3] = 1$, this is the circuit which must be satisfied:
+And if $\mathsf{T}[3] = 1$, the addition circuit must be satisfied:
 
 {{< mermaid >}}
     flowchart LR
