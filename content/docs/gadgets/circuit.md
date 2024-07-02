@@ -17,35 +17,22 @@ The prover ($\mathcal{P}$) and the verifier ($\mathcal{V}$) are both given a cir
 This means that if $\mathsf{T}[3] = 0$, this is the circuit which must be satisfied:
 
 {{< mermaid >}}
-
-flowchart LR
-
-   in0["In[0]"] & in1["In[1]"] **-->** id1((x))
-
-   t2["T[2]"] & id1 **-->** id2((x))
-
-   in2["In[2]"] & id2 **-->** id3((+))
-
-   id3 **-->** in3["In[3]"]
-
+    flowchart LR
+        in0["In[0]"] & in1["In[1]"] --> id1((x))
+        t2["T[2]"] & id1 --> id2((x))
+        in2["In[2]"] & id2 --> id3((+))
+        id3 --> in3["In[3]"]
 {{< /mermaid >}}
 
 And if $\mathsf{T}[3] = 1$, this is the circuit which must be satisfied:
 
 {{< mermaid >}}
-
-flowchart LR
-
-   in0["In[0]"] & t0["T[0]"] **-->** id1((x))
-
-   in1["In[1]"] & t1["T[1]"] **-->** id2((x))
-
-   id1 & id2 **-->** id3((+))
-
-   in2["In[2]"] & id3 **-->** id4((+))
-
-   id4 **-->** in3["In[3]"]
-
+    flowchart LR
+        in0["In[0]"] & t0["T[0]"] --> id1((x))
+        in1["In[1]"] & t1["T[1]"] --> id2((x))
+        id1 & id2 --> id3((+))
+        in2["In[2]"] & id3 --> id4((+))
+        id4 --> in3["In[3]"]
 {{< /mermaid >}}
 
 Consider, as an example, the circuit $5x+6y$. Thus, $\mathsf{T}=[5,6,0,1]$. Since $\mathsf{T}$ is publicly known to both parties, $\mathsf{Poly}_\mathsf{T}$ is also known and the prover does not need to prove the correctness of $\mathsf{T}$. Now the prover claims $\mathsf{In}=[6,5,0,60]$ satisfies the circuit. Indeed, $5\cdot 6+ 6\cdot 5 + 0 = 60$. Instead of sending each element of $\mathsf{In}$ one by one to show this, the prover interpolates a polynomial $\mathsf{Poly}_\mathsf{In}$ from $\mathsf{In}$ and computes a vanishing polynomial with $\mathsf{Poly}_\mathsf{T}$ and $\mathsf{Poly}_\mathsf{In}$. If the prover can prove the polynomial is vanishing, the verifier will be convinced that the prover knows a valid $\mathsf{In}$.
