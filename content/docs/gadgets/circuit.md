@@ -14,7 +14,41 @@ $\mathcal{R}_{\mathtt{circ}} := \left\{ \begin{array}{l} (K_\mathsf{T},K_\mathsf
 
 The prover ($\mathcal{P}$) and the verifier ($\mathcal{V}$) are both given a circuit $\mathsf{T}$, where $\mathsf{T}[0]$ and $\mathsf{T}[1]$ are the factors of the two inputs respectively, $\mathsf{T}[2]$ is the factor of the product of the two inputs, and $\mathsf{T}[3]$ is the selector of the gate ($\mathsf{T}[3]$ is one for addition gate and zero for multiplication gate). The prover wants to prove he knows an input vector $\mathsf{In}$ satisfying $\mathsf{T}$. Specifically, we define $\mathsf{In}[0]$ and $\mathsf{In}[1]$ are the inputs of the circuit, $\mathsf{In}[2]$ is a constant, and $\mathsf{In}[3]$ is the output. Thus, the prover will produce a succinct proof that $\mathsf{In}$ satisfies the following condition: the equation $\mathsf{T}[3]\cdot(\mathsf{In}[0]\cdot\mathsf{T}[0]+\mathsf{In}[1]\cdot\mathsf{T}[1])+(1-\mathsf{T}[3])\cdot(\mathsf{In}[0]\cdot\mathsf{In}[1]\cdot\mathsf{T}[2])+\mathsf{In}[2]=\mathsf{In}[3]$ holds.
 
-Consider an example that the circuit is $5x+6y$, so that $\mathsf{T}=[5,6,0,1]$. Since $\mathsf{T}$ is publicly known to both parties, $\mathsf{Poly}_\mathsf{T}$ is also known and the prover does not need to prove the correctness of $\mathsf{T}$. Now the prover claims $\mathsf{In}=[6,5,0,60]$ satisfies the circuit. Instead of sending each element of $\mathsf{In}$ one by one, the prover interpolates a polynomial $\mathsf{Poly}_\mathsf{In}$ from $\mathsf{In}$ and computes a vanishing polynomial with $\mathsf{Poly}_\mathsf{T}$ and $\mathsf{Poly}_\mathsf{In}$. If the prover can prove the polynomial is vanishing, the verifier will be convinced that the prover knows a valid $\mathsf{In}$.
+This means that if $\mathsf{T}[3] = 0$, this is the circuit which must be satisfied:
+
+{{< mermaid >}}
+
+flowchart LR
+
+   in0["In[0]"] & in1["In[1]"] **-->** id1((x))
+
+   t2["T[2]"] & id1 **-->** id2((x))
+
+   in2["In[2]"] & id2 **-->** id3((+))
+
+   id3 **-->** in3["In[3]"]
+
+{{< /mermaid >}}
+
+And if $\mathsf{T}[3] = 1$, this is the circuit which must be satisfied:
+
+{{< mermaid >}}
+
+flowchart LR
+
+   in0["In[0]"] & t0["T[0]"] **-->** id1((x))
+
+   in1["In[1]"] & t1["T[1]"] **-->** id2((x))
+
+   id1 & id2 **-->** id3((+))
+
+   in2["In[2]"] & id3 **-->** id4((+))
+
+   id4 **-->** in3["In[3]"]
+
+{{< /mermaid >}}
+
+Consider, as an example, the circuit $5x+6y$. Thus, $\mathsf{T}=[5,6,0,1]$. Since $\mathsf{T}$ is publicly known to both parties, $\mathsf{Poly}_\mathsf{T}$ is also known and the prover does not need to prove the correctness of $\mathsf{T}$. Now the prover claims $\mathsf{In}=[6,5,0,60]$ satisfies the circuit. Indeed, $5\cdot 6+ 6\cdot 5 + 0 = 60$. Instead of sending each element of $\mathsf{In}$ one by one to show this, the prover interpolates a polynomial $\mathsf{Poly}_\mathsf{In}$ from $\mathsf{In}$ and computes a vanishing polynomial with $\mathsf{Poly}_\mathsf{T}$ and $\mathsf{Poly}_\mathsf{In}$. If the prover can prove the polynomial is vanishing, the verifier will be convinced that the prover knows a valid $\mathsf{In}$.
 
 ## Protocol Details
 
