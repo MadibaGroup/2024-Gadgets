@@ -21,6 +21,10 @@ This is close enough to Method 2 for practical purposes and is materially less w
 
 ## KZG Polynomial Commitment
 
+Recall the Pedersen commitment scheme, which for message $m$ and randomness $r$ produces commitment value $K_m=\mathsf{Commit}(m,r)=g^mh^r$. The commitment scheme is *hiding* in that examining $K_m$ does not reveal the message $m$ or any information about what $m$ might be. It is also *binding* which means the person who creates and circulates $K_m$ can later show how $m$ was used to construct $K_m$ but cannot show that for a different value $m'\neq m$. This comes under the important caveat that $g$ and $h$ are random group elements and the committer does not know there discrete logarithm. 
+
+
+
 
 
 ## Definitions
