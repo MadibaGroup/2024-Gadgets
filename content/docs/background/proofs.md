@@ -1,3 +1,8 @@
+---
+title: Proofs
+type: docs
+---
+
 # Security Proofs
 
 To be added.

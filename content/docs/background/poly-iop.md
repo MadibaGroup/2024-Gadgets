@@ -1,3 +1,8 @@
+---
+title: Polynomials
+type: docs
+---
+
 # Encoding Arrays of Data into Polynomials
 
 In the Poly-IOP model, data starts as an array (or vector) of integers and gadgets are defined in terms of operations on arrays. In the proof stage, the arrays are encoded into a polynomial. Array slots contain integers between 0 and $q-1$, where $q$ is a large (generally 256 bit) prime number. Recall that we call this set of integers $\mathbb{Z}_q$.

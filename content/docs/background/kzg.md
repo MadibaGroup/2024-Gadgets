@@ -1,5 +1,5 @@
 ---
-title: Plonkbook | PCS
+title: PCS
 type: docs
 ---
 

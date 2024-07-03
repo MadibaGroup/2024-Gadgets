@@ -1,3 +1,8 @@
+---
+title: Red Tape
+type: docs
+---
+
 # Red Tape
 
 Generally speaking, the gadgets are quite flexible and work well as defined. However there are some subtle issues to pay attention to when using them.
