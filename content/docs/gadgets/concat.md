@@ -36,7 +36,7 @@ The other approach is fill $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$ with zero to $n
 
 ### Polynomial Level
 
-We assume arrays $\mathsf{Arr}_1$, $\mathsf{Arr}_2$, and $\mathsf{Arr}_3$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../../background/poly-iop/) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 1 (which will not change the product).
+We assume arrays $\mathsf{Arr}_1$, $\mathsf{Arr}_2$, and $\mathsf{Arr}_3$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../../background/poly-iop) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 1 (which will not change the product).
 
 Recall the constraints we want to prove: 
 
@@ -52,7 +52,7 @@ In polynomial form, the constraints are:
 3. For $X\in[n_1,n_1+n_2)$, $\mathsf{Poly}_{\mathsf{Arr}_1}(X)=0$
 4. For $X\in[n_2,n_1+n_2)$, $\mathsf{Poly}_{\mathsf{Arr}_2}(X)=0$
 
-Next we take care of the "for $X$" conditions by zeroing out the rest of the polynomial that is not zero. See the gadget <span style="border-style:dotted;border-width: 2px;"> [zero1](../zero1/)</span> for more on why this works.
+Next we take care of the "for $X$" conditions by zeroing out the rest of the polynomial that is not zero. See the gadget <span style="border-style:dotted;border-width: 2px;"> [zero1](../zero1)</span> for more on why this works.
 
 1. $\mathsf{Poly}_\mathsf{Vanish1}(X)=\mathsf{Poly}_{\mathsf{Arr}_3}(X)-\mathsf{Poly}_{\mathsf{Arr}_1}(X)-\mathsf{Poly}_{\mathsf{Arr}_2^\prime}(X)$
 2. $\mathsf{Poly}_\mathsf{Vanish2}(X)=\mathsf{Poly}_{\mathsf{Arr}_2}(X)-\mathsf{Poly}_{\mathsf{Arr}_2^\prime}(X\omega^{n_1})$

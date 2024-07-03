@@ -4,8 +4,8 @@
 
 | Type                 | Description                         | Recap                                                        | This |
 | -------------------- | ----------------------------------- | :----------------------------------------------------------- | ---- |
-| [lookup1](./lookup1) | $\mathsf{Arr}[i]\in \{0,1\}$        | Each element of array $\mathsf{Arr}$ is in $\{0,1\}$ (or another small set). | ✅    |
-| [lookup2](./lookup2) | $\mathsf{Arr}[i]\in \mathsf{Table}$ | Each element of array $\mathsf{Arr}$ is in a disclosed table of values $\mathsf{Table}$. |      |
+| [lookup1](#) | $\mathsf{Arr}[i]\in \{0,1\}$        | Each element of array $\mathsf{Arr}$ is in $\{0,1\}$ (or another small set). | ✅    |
+| [lookup2](../lookup2) | $\mathsf{Arr}[i]\in \mathsf{Table}$ | Each element of array $\mathsf{Arr}$ is in a disclosed table of values $\mathsf{Table}$. |      |
 
 ## Relation
 
@@ -25,7 +25,7 @@ In order to check that each element of $\mathsf{Arr}$ is either 0 or 1, consider
 
 ### Polynomial Level
 
-We assume that $\mathsf{Arr}$ is encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 0 or 1.
+We assume that $\mathsf{Arr}$ is encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../../background/poly-iop) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 0 or 1.
 
 Recall the constraint we want to prove: 
 

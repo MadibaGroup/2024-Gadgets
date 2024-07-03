@@ -4,7 +4,7 @@
 
 | Type  | Description               | Recap                                                        | This |
 | ----- | ------------------------- | ------------------------------------------------------------ | ---- |
-| range | $\mathsf{Arr}[i]\in[0,r]$ | Each element of array $\mathsf{Arr}$ is in the range $[0,r]$ | ✅    |
+| [range](#) | $\mathsf{Arr}[i]\in[0,r]$ | Each element of array $\mathsf{Arr}$ is in the range $[0,r]$ | ✅    |
 
 ## Relation
 
@@ -12,7 +12,7 @@ $\mathcal{R}_{\mathtt{add1}} := \left\{ \begin{array}{l} (K_\mathsf{Arr}) \end{a
 
 ## Intuition
 
-To prove each element of array $\mathsf{Arr}$ is in the range $[0,r]$, one of the most intuitive ways is we create a vector containing the numbers from $0$ to $r$ and run the lookup argument for $\mathsf{Arr}$. Another approach is we prove each element is in $[0,r]$. Specifically, we decompose the target number to digits in some base $x$ and prove (i) the digits are valid and (ii) the number can be recovered from the digits and the base. The prover ($\mathcal{P}$) holds a number $\eta$ and a vector $\mathsf{T}$ of $k=\lceil\log_x{\eta}\rceil$ integers from $\mathbb{Z}_q$: $[a_0,a_1,a_2,\dots,a_{k-1}]$. Then $r=x^k$ and the prover shows $\eta \in [0, r]$. It will produce a succinct (logarithm base $x$ of $\eta$; for simplicity, we will use base $2$) proof that the vector $\mathsf{T}$ satisfies the following conditions: (i) the first value of $\mathsf{T}$ equals to $\eta$ (ii) the last value of $\mathsf{T}$ equals to one or zero (iii) any value minus two times the next value is equal to one or zero in $\mathsf{T}$. The prover will encode $\mathsf{Arr}$ and $\mathsf{T}$ into two polynomials: $\mathsf{Poly}_\mathsf{Arr}$ and $\mathsf{Poly}_\mathsf{T}$ (using [evaluation points]() on the domain $\mathcal{H}_\kappa$). It will commit to each polynomial: $K_\mathsf{Arr}$ and $K_\mathsf{T}$. The verifier ($\mathcal{V}$) cannot check any of the $\mathsf{Arr}$, $\mathsf{T}$ or $\mathsf{Poly}_\mathsf{Arr}$, $\mathsf{Poly}_\mathsf{T}$ values directly. Instead the verifier only sees $K_\mathsf{Arr}$, and $K_\mathsf{T}$.
+To prove each element of array $\mathsf{Arr}$ is in the range $[0,r]$, one of the most intuitive ways is we create a vector containing the numbers from $0$ to $r$ and run the lookup argument for $\mathsf{Arr}$. Another approach is we prove each element is in $[0,r]$. Specifically, we decompose the target number to digits in some base $x$ and prove (i) the digits are valid and (ii) the number can be recovered from the digits and the base. The prover ($\mathcal{P}$) holds a number $\eta$ and a vector $\mathsf{T}$ of $k=\lceil\log_x{\eta}\rceil$ integers from $\mathbb{Z}_q$: $[a_0,a_1,a_2,\dots,a_{k-1}]$. Then $r=x^k$ and the prover shows $\eta \in [0, r]$. It will produce a succinct (logarithm base $x$ of $\eta$; for simplicity, we will use base $2$) proof that the vector $\mathsf{T}$ satisfies the following conditions: (i) the first value of $\mathsf{T}$ equals to $\eta$ (ii) the last value of $\mathsf{T}$ equals to one or zero (iii) any value minus two times the next value is equal to one or zero in $\mathsf{T}$. The prover will encode $\mathsf{Arr}$ and $\mathsf{T}$ into two polynomials: $\mathsf{Poly}_\mathsf{Arr}$ and $\mathsf{Poly}_\mathsf{T}$ (using [evaluation points](../../background/poly-iop) on the domain $\mathcal{H}_\kappa$). It will commit to each polynomial: $K_\mathsf{Arr}$ and $K_\mathsf{T}$. The verifier ($\mathcal{V}$) cannot check any of the $\mathsf{Arr}$, $\mathsf{T}$ or $\mathsf{Poly}_\mathsf{Arr}$, $\mathsf{Poly}_\mathsf{T}$ values directly. Instead the verifier only sees $K_\mathsf{Arr}$, and $K_\mathsf{T}$.
 
 Consider a small numerical example where $\eta = 14$, working with $x=2$. Since $k=\lceil\log_2{\eta}\rceil = 4$, we will demonstrate that $\eta \in [0,r=2^k]$ by constructing $\mathsf{Arr}$ consisting of $k$ integers. First, we know $\mathsf{T}[0] = \eta = 14$:
 
@@ -48,7 +48,7 @@ The second method is more general and widely used. The basic idea is instead of 
 
 ### Polynomial Level
 
-We assume the array $\mathsf{T}$ is encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 0 (which will not change the sum).
+We assume the array $\mathsf{T}$ is encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../../background/poly-iop) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 0 (which will not change the sum).
 
 Recall the constraints we want to prove: 
 
@@ -64,7 +64,7 @@ In polynomial form, the constraints are:
 
 Note because the value of $\eta$ is a secret, $\mathcal{P}$ will not reveal $\eta$ to let $\mathcal{V}$ verify $\eta$ is the evaluation of $\mathsf{Poly}_\mathsf{T}(\omega^0)$. $\mathcal{P}$ will leverage the hiding property of KZG (Pedersen) commitment to prove the committed $\eta$ is the correct evaluation. Specifically, $\mathcal{P}$ claims the committed $\eta$ is the correct one and opens $\mathsf{Poly}_\mathsf{T}$ at $\omega^0$. If the committed $\eta$ satisfy the KZG verification, $\mathcal{V}$ can believe the first constraint is satisfied.
 
-We take care of the "for $X$" conditions of constraints 2 and 3 by zeroing out the rest of the polynomial that is not zero. See the gadget <span style="border-style:dotted;border-width: 2px;"> [zero1](./zero1)</span> for more on why this works.
+We take care of the "for $X$" conditions of constraints 2 and 3 by zeroing out the rest of the polynomial that is not zero. See the gadget <span style="border-style:dotted;border-width: 2px;"> [zero1](../zero1)</span> for more on why this works.
 
 1. $\mathsf{Poly}_\mathsf{Vanish1}(X)=\mathsf{Poly}_\mathsf{T}(X)\cdot[\mathsf{Poly}_\mathsf{T}(X)-1]\cdot\frac{X^\kappa-1}{X-\omega^{\kappa-1}}=0$
 2. $\mathsf{Poly}_\mathsf{Vanish2}(X)=[\mathsf{Poly}_\mathsf{T}(X)-2\cdot\mathsf{Poly}_\mathsf{T}(X\omega)]\cdot[\mathsf{Poly}_\mathsf{T}(X)-2\cdot\mathsf{Poly}_\mathsf{T}(X\omega)-1]\cdot(X-\omega^{\kappa-1})=0$

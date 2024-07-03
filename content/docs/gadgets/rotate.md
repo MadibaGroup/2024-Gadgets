@@ -6,7 +6,7 @@ $ \mathcal{R}_{\mathtt{rotate}} := \left\{ \begin{array}{l} (K_\mathsf{Arr}, K_\
 
 **## Intuition**
 
-Assume $\mathsf{Arr}$ is an array of data of size $n$. It is encoded as the y-coordinates into univariant polynomials where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. We call our polynomial $\mathsf{Poly}_\mathsf{Arr}(X)$. The goal is to construct an output polynomial $\mathsf{Poly_\mathsf{Arr'}}$ where all the elements in $\mathsf{Arr}$ have been rotated by $\alpha$ positions; i.e. $\mathsf{Arr'}[i] \leftarrow \mathsf{Arr}[i + \alpha]$. Here, the index is defined mod $n$.
+Assume $\mathsf{Arr}$ is an array of data of size $n$. It is encoded as the y-coordinates into univariant polynomials where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../../background/poly-iop) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. We call our polynomial $\mathsf{Poly}_\mathsf{Arr}(X)$. The goal is to construct an output polynomial $\mathsf{Poly_\mathsf{Arr'}}$ where all the elements in $\mathsf{Arr}$ have been rotated by $\alpha$ positions; i.e. $\mathsf{Arr'}[i] \leftarrow \mathsf{Arr}[i + \alpha]$. Here, the index is defined mod $n$.
 
 Written in terms the polynomials, the goal is that $\mathsf{Poly_\mathsf{Arr'}}(\omega^i) = \mathsf{Poly_\mathsf{Arr}}(\omega^i\cdot\omega^\alpha)$ for all $i \in [0, n-1]$. To this end, we define $\mathsf{Poly_\mathsf{Arr}}(X) = \mathsf{Poly_\mathsf{Arr}}(X)\cdot\omega^\alpha$ and demonstrate below why this satisfies the requirements of the output polynomials.
 
@@ -38,7 +38,7 @@ To prove the relation between $\mathsf{Arr}$ and $\mathsf{Arr'}$, the prover mus
 
 **### Polynomial Level**
 
-We assume that $\mathsf{Arr}$ and $\mathsf{Arr'}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the arrays, the arrays can be padded with elements all of value 1 (or any other value, as long as it is the same for both arrays).
+We assume that $\mathsf{Arr}$ and $\mathsf{Arr'}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../../background/poly-iop) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the arrays, the arrays can be padded with elements all of value 1 (or any other value, as long as it is the same for both arrays).
 
 Recall the constrant we want to prove: 
 

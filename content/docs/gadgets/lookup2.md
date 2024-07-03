@@ -4,8 +4,8 @@
 
 | Type | Description | Recap | This |
 | ---- | ----------- | ----- | ---- |
-| lookup1  | $\mathsf{Arr}[i]\in \{0,1\}$ | Each element of array $\mathsf{Arr}$ is in $\{0,1\}$ (or another small set). |
-| lookup2  | $\mathsf{Arr}[i]\in \mathsf{Table}$ | Each element of array $\mathsf{Arr}$ is in a disclosed table of values $\mathsf{Table}$. | ✅ |
+| [lookup1](../lookup1)  | $\mathsf{Arr}[i]\in \{0,1\}$ | Each element of array $\mathsf{Arr}$ is in $\{0,1\}$ (or another small set). |
+| [lookup2](#)  | $\mathsf{Arr}[i]\in \mathsf{Table}$ | Each element of array $\mathsf{Arr}$ is in a disclosed table of values $\mathsf{Table}$. | ✅ |
 
 ## Relation
 
@@ -114,7 +114,7 @@ Unlike halo2, Plookup requires only one auxiliary vector, $\mathsf{S}$, where $\
 
 #### Polynomial Level
 
-We assume arrays $\mathsf{Arr}$, $\mathsf{Arr}^\prime$, $\mathsf{T}$, and $\mathsf{T}^\prime$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 1 (which will not change the product).
+We assume arrays $\mathsf{Arr}$, $\mathsf{Arr}^\prime$, $\mathsf{T}$, and $\mathsf{T}^\prime$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../../background/poly-iop) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 1 (which will not change the product).
 
 Recall the four constraints we want to prove:
 1. $\mathsf{Arr}^\prime$ is a permutation of $\mathsf{Arr}$
@@ -128,7 +128,7 @@ In polynomial form, the constraints are ($\alpha,\beta$ are challenges from $\ma
 3. For $X=\omega^0$: $\mathsf{Poly}_{\mathsf{Arr}^\prime}(X)=\mathsf{Poly}_{\mathsf{T}^\prime}(X)$
 4. For all $X\in\mathcal{H}_\kappa\setminus{\omega^0}$: $[\mathsf{Poly}_{\mathsf{Arr}^\prime}(X)-\mathsf{Poly}_{\mathsf{T}^\prime}(X)]\cdot[\mathsf{Poly}_{\mathsf{Arr}^\prime}(X)-\mathsf{Poly}_{\mathsf{Arr}^\prime}(X\cdot\omega^{-1})]=0$
 
-We take care of the "for $X$" conditions by zeroing out the rest of the polynomial that is not zero. See the gadget <span style="border-style:dotted;border-width: 2px;"> [zero1](./zero1)</span> for more on why this works.
+We take care of the "for $X$" conditions by zeroing out the rest of the polynomial that is not zero. See the gadget <span style="border-style:dotted;border-width: 2px;"> [zero1](../zero1)</span> for more on why this works.
 
 1. $\mathsf{Poly}_\mathsf{Vanish1}(X)=\prod[\alpha-\mathsf{Poly}_{\mathsf{Arr}}(X)]-\prod[\alpha-\mathsf{Poly}_{\mathsf{Arr}^\prime}(X)]=0$
 2. $\mathsf{Poly}_\mathsf{Vanish2}(X)=\prod[\beta-\mathsf{Poly}_{\mathsf{T}}(X)]-\prod[\beta-\mathsf{Poly}_{\mathsf{T}^\prime}(X)]=0$
@@ -221,7 +221,7 @@ Finally, if the constraint system is true, the following constraint will be true
 
 #### Polynomial Level
 
-We assume arrays $\mathsf{Arr}$, $\mathsf{T}$, and $\mathsf{S}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 1 (which will not change the product).
+We assume arrays $\mathsf{Arr}$, $\mathsf{T}$, and $\mathsf{S}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../../background/poly-iop) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 1 (which will not change the product).
 
 Recall the two constraints we want to prove:
 1. For each $i\in[0,d-1)$, there exists a $j\in[0,n+d-1)$ such that $(t_i,t_{i+1})=(s_j,s_{j+1})$
@@ -239,7 +239,7 @@ However, the above accumulator does not exist because the degree of the denomina
 * For $X\in\mathcal{H}_n\setminus{\omega^{\kappa-1}}$: $\mathsf{Poly}_\mathsf{Z}(X\omega)=\mathsf{Poly}_\mathsf{Z}(X)\cdot\frac{(1+\beta)[\alpha+\mathsf{Poly}_{\mathsf{Arr}}(X)]\cdot[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{T}}(X)+\beta\mathsf{Poly}_{\mathsf{T}}(X\omega)]}{[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}_\mathsf{l}}(X)+\beta\mathsf{Poly}_{\mathsf{S}_\mathsf{l}}(X\omega)]\cdot[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}_\mathsf{h}}(X)+\beta\mathsf{Poly}_{\mathsf{S}_\mathsf{h}}(X\omega)]}$
 * For $X=\omega^{\kappa-1}$: $\mathsf{Poly}_{\mathsf{S}_\mathsf{l}}(X)=\mathsf{Poly}_{\mathsf{S}_\mathsf{h}}(X\omega)$
 
-Similarly, we take care of the "for $X$" conditions by zeroing out the rest of the polynomial that is not zero. See the gadget <span style="border-style:dotted;border-width: 2px;"> [zero1](./zero1)</span> for more on why this works.
+Similarly, we take care of the "for $X$" conditions by zeroing out the rest of the polynomial that is not zero. See the gadget <span style="border-style:dotted;border-width: 2px;"> [zero1](../zero1)</span> for more on why this works.
 
 1. $\mathsf{Poly}_\mathsf{Vanish1}(X)=[\mathsf{Poly}_{\mathsf{Z}}(X)-1]\cdot\frac{X^n-1}{(X-\omega^0)(X-\omega^{\kappa-1})}=0$
 2. $\displaylines{\mathsf{Poly}_\mathsf{Vanish2}(X)=\{\mathsf{Poly}_\mathsf{Z}(X\omega)\cdot[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}_\mathsf{l}}(X)+\beta\mathsf{Poly}_{\mathsf{S}_\mathsf{l}}(X\omega)]\cdot[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}_\mathsf{h}}(X)+\beta\mathsf{Poly}_{\mathsf{S}_\mathsf{h}}(X\omega)]-\\\mathsf{Poly}_\mathsf{Z}(X)\cdot(1+\beta)[\alpha+\mathsf{Poly}_{\mathsf{Arr}}(X)]\cdot[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{T}}(X)+\beta\mathsf{Poly}_{\mathsf{T}}(X\omega)]\}\cdot(X-\omega^{\kappa-1})}=0$
@@ -356,7 +356,7 @@ We prove knowledge soundness in the Algebraic Group Model (AGM). To do so, we mu
 
 Our proof is as follows:
 
-To make $Y_\mathsf{Zero}$ a zero polynomial, $\mathcal{A}$ has to prove the three vanishing polynomials are correct. It is easy to observe that $\mathsf{Poly}_\mathsf{Vanish1}$ and $\mathsf{Poly}_\mathsf{Vanish3}$ can be constructed even if some elements in $\mathsf{Arr}$ do not appear in $\mathsf{T}$, so we focus on the $\mathsf{Poly}_\mathsf{Vanish2}$. By the soundness of the [product check](), we know $\mathsf{S}$ must be the union set of $\mathsf{Arr}$ and $\mathsf{T}$ if we want to the product of $\mathsf{S}[i]$ equals to the product of $\mathsf{Arr}[i]$ and $\mathsf{T}[i]$. Recall the equation $\mathcal{A}$ needs to prove:
+To make $Y_\mathsf{Zero}$ a zero polynomial, $\mathcal{A}$ has to prove the three vanishing polynomials are correct. It is easy to observe that $\mathsf{Poly}_\mathsf{Vanish1}$ and $\mathsf{Poly}_\mathsf{Vanish3}$ can be constructed even if some elements in $\mathsf{Arr}$ do not appear in $\mathsf{T}$, so we focus on the $\mathsf{Poly}_\mathsf{Vanish2}$. By the soundness of the [product check](../mult3/#soundness), we know $\mathsf{S}$ must be the union set of $\mathsf{Arr}$ and $\mathsf{T}$ if we want to the product of $\mathsf{S}[i]$ equals to the product of $\mathsf{Arr}[i]$ and $\mathsf{T}[i]$. Recall the equation $\mathcal{A}$ needs to prove:
 $$
 (1+\beta)^n\prod_{i<{n}}[\alpha+\mathsf{Poly}_{\mathsf{Arr}}(\omega^i)]\cdot\prod_{i<{d-1}}[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{T}}(\omega^i)+\beta\mathsf{Poly}_{\mathsf{T}}(\omega^{i+1})]=\prod_{i<{n+d-1}}[\alpha(1+\beta)+\mathsf{Poly}_{\mathsf{S}}(\omega^i)+\beta\mathsf{Poly}_{\mathsf{S}}(\omega^{i+1})]
 $$

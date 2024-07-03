@@ -4,9 +4,9 @@
 
 | Type             | Description                                                  | Recap                                                        | This |
 | ---------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ---- |
-| [mult1]()        | $\mathsf{Arr}_3=\mathsf{Arr}_1 \cdot \mathsf{Arr}_2$         | $\mathsf{Arr}_3$ is the element-wise multiplication of $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$. |      |
-| [mult2](./mult2) | $\mathsf{Prod}_\mathsf{Arr}=\prod_{i = 0}^{n-1} \mathsf{Arr}[i]$ | $\mathsf{Prod}_\mathsf{Arr}$ is the disclosed product of all the elements in $\mathsf{Arr}$. |      |
-| [mult3](./mult3) | $\prod_{i = 0}^{n-1} \mathsf{Arr}_1[i]=\prod_{i = 0}^{n-1} \mathsf{Arr}_2[i]$ | $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$ have the same undisclosed product. | ✅    |
+| [mult1](../mult1)        | $\mathsf{Arr}_3=\mathsf{Arr}_1 \cdot \mathsf{Arr}_2$         | $\mathsf{Arr}_3$ is the element-wise multiplication of $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$. |      |
+| [mult2](../mult2) | $\mathsf{Prod}_\mathsf{Arr}=\prod_{i = 0}^{n-1} \mathsf{Arr}[i]$ | $\mathsf{Prod}_\mathsf{Arr}$ is the disclosed product of all the elements in $\mathsf{Arr}$. |      |
+| [mult3](#) | $\prod_{i = 0}^{n-1} \mathsf{Arr}_1[i]=\prod_{i = 0}^{n-1} \mathsf{Arr}_2[i]$ | $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$ have the same undisclosed product. | ✅    |
 
 ## Relation
 
@@ -14,7 +14,7 @@ $ \mathcal{R}_{\mathtt{mult3}} := \left\{ \begin{array}{l} (K_\mathsf{Arr_1},K_\
 
 ## Intuition
 
-The prover ($\mathcal{P}$) holds two arrays $\mathsf{Arr_1}$ and $\mathsf{Arr_2}$ of $n$ integers from $\mathbb{Z}_q$: $[a_0, a_1, a_2, \dots, a_{n-1}]$. It will produce a succinct (independent of $n$) proof that they have the same undisclosed product. The prover will encode the two arrays into polynomials, $\mathsf{Poly}_\mathsf{Arr_1}$ and $\mathsf{Poly}_\mathsf{Arr_2}$ (using [evaluation points](../background/poly-iop) on the domain $\mathcal{H}_\kappa$) and commit to them as $K_\mathsf{Arr_1}$ and $K_\mathsf{Arr_2}$. The verifier ($\mathcal{V}$) cannot check either array directly (they may contain secret information, and even if they do not, it is too long to check) so the verifier only sees $K_\mathsf{Arr_1}$ and $K_\mathsf{Arr_2}$.
+The prover ($\mathcal{P}$) holds two arrays $\mathsf{Arr_1}$ and $\mathsf{Arr_2}$ of $n$ integers from $\mathbb{Z}_q$: $[a_0, a_1, a_2, \dots, a_{n-1}]$. It will produce a succinct (independent of $n$) proof that they have the same undisclosed product. The prover will encode the two arrays into polynomials, $\mathsf{Poly}_\mathsf{Arr_1}$ and $\mathsf{Poly}_\mathsf{Arr_2}$ (using [evaluation points](../../background/poly-iop) on the domain $\mathcal{H}_\kappa$) and commit to them as $K_\mathsf{Arr_1}$ and $K_\mathsf{Arr_2}$. The verifier ($\mathcal{V}$) cannot check either array directly (they may contain secret information, and even if they do not, it is too long to check) so the verifier only sees $K_\mathsf{Arr_1}$ and $K_\mathsf{Arr_2}$.
 
 In order to prove $K_\mathsf{Arr_1}$ and  $K_\mathsf{Arr_2}$ are consistent, the prover will build two helper arrays $\mathsf{Acc_1}$ and $\mathsf{Acc_2}$ called accumulators (or accumulating arrays or incremental arrays). This should not be confused with accumulators from cryptography, which are a concept related to succinct proofs but are distinct. As with $\mathsf{Arr_1}$ and $\mathsf{Arr_2}$, the prover will also encode $\mathsf{Acc_1}$ and $\mathsf{Acc_2}$ as a polynomials and provide a commitment to the verifier of each one. The idea is that the prover will prove a relation between each $\mathsf{Arr}$ and its $\mathsf{Acc}$; and a relation between $\mathsf{Acc_1}$ and $\mathsf{Acc_2}$. Put together, it will imply the correct relation between $\mathsf{Arr_1}$ and $\mathsf{Arr_2}$.
 
@@ -71,7 +71,7 @@ Last, while it is not necessary to do, it is often convenient to hold the the va
 
 ### Polynomial Level
 
-We assume arrays $\mathsf{Arr_1}$, $\mathsf{Arr_2}$, $\mathsf{Acc_1}$, and $\mathsf{Acc_2}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 1 (which will not change the product).
+We assume arrays $\mathsf{Arr_1}$, $\mathsf{Arr_2}$, $\mathsf{Acc_1}$, and $\mathsf{Acc_2}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../../background/poly-iop) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 1 (which will not change the product).
 
 Recall the five constraints we want to prove (now adjusted to fit with an $\mathsf{Acc}$ that is constructed "backwards," as noted above): 
 
@@ -89,7 +89,7 @@ In polynomial form, the constraints are:
 4. For all $X$ except $X=\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc_2}(X)=\mathsf{Poly}_\mathsf{Arr_2}(X)\cdot\mathsf{Poly}_\mathsf{Acc_2}(\omega\cdot X)$ 
 5. For $X=w^0$: $\mathsf{Poly}_\mathsf{Acc_1}(X)=\mathsf{Poly}_\mathsf{Acc_2}(X)$
 
-In constraints 2 and 3, $\mathsf{Poly}_\mathsf{Acc}(\omega\cdot X)$ can also be conceptualized as <span style="border-style:dotted;border-width: 2px;"> [rotate](./rotate)</span> applied to $\mathsf{Poly}_\mathsf{Acc}(X)$ by one element (rightward in the array view). Also note thats constraint 2 and 3 do not hold at $X=\omega^{\kappa-1}$ because this value is defined by constraint 1 (for the last value of $X$, the "next" value, $\omega X$, wraps back to the first element of the array which is a boundary condition).
+In constraints 2 and 3, $\mathsf{Poly}_\mathsf{Acc}(\omega\cdot X)$ can also be conceptualized as <span style="border-style:dotted;border-width: 2px;"> [rotate](../rotate)</span> applied to $\mathsf{Poly}_\mathsf{Acc}(X)$ by one element (rightward in the array view). Also note thats constraint 2 and 3 do not hold at $X=\omega^{\kappa-1}$ because this value is defined by constraint 1 (for the last value of $X$, the "next" value, $\omega X$, wraps back to the first element of the array which is a boundary condition).
 
 We adjust each of these constraints to show an equality with 0:
 
@@ -99,7 +99,7 @@ We adjust each of these constraints to show an equality with 0:
 4. For all $X$ except $X=\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc_2}(X)-\mathsf{Poly}_\mathsf{Arr_2}(X)\cdot\mathsf{Poly}_\mathsf{Acc_2}(\omega\cdot X)=0$ 
 5. For $X=w^0$: $\mathsf{Poly}_\mathsf{Acc_1}(X)-\mathsf{Poly}_\mathsf{Acc_2}(X)=0$
 
-Next we take care of the "for $X$" conditions by zeroing out the rest of the polynomial that is not zero. See the gadget <span style="border-style:dotted;border-width: 2px;"> [zero1](./zero1)</span> for more on why this works.
+Next we take care of the "for $X$" conditions by zeroing out the rest of the polynomial that is not zero. See the gadget <span style="border-style:dotted;border-width: 2px;"> [zero1](../zero1)</span> for more on why this works.
 
 1. $\mathsf{Poly}_\mathsf{Vanish1}(X)=(\mathsf{Poly}_\mathsf{Acc_1}(X)-\mathsf{Poly}_\mathsf{Arr_1}(X))\cdot\frac{(X^\kappa-1)}{(X-\omega^{\kappa-1})}=0$,
 2. $\mathsf{Poly}_\mathsf{Vanish2}(X)=(\mathsf{Poly}_\mathsf{Acc_2}(X)-\mathsf{Poly}_\mathsf{Arr_2}(X))\cdot\frac{(X^\kappa-1)}{(X-\omega^{\kappa-1})}=0$,

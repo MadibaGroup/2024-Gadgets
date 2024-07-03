@@ -4,8 +4,8 @@
 
 | Type                   | Description                                            | Recap                                                        | This |
 | ---------------------- | ------------------------------------------------------ | :----------------------------------------------------------- | ---- |
-| [shuffle1](./shuffle1) | $\mathsf{Arr}_2=\mathsf{Permute}(\mathsf{Arr}_1)$      | Array $\mathsf{Arr}_2$ is a shuffle of $\mathsf{Arr}_1$ for some undisclosed permutation $\pi$. | ✅    |
-| [shuffle2](./shuffle2) | $\mathsf{Arr}_2=\mathsf{Permute}(\mathsf{Arr}_1 ,\pi)$ | Array $\mathsf{Arr}_2$ is a shuffle of $\mathsf{Arr}_1$ under a disclosed permutation $\pi$. |      |
+| [shuffle1](#) | $\mathsf{Arr}_2=\mathsf{Permute}(\mathsf{Arr}_1)$      | Array $\mathsf{Arr}_2$ is a shuffle of $\mathsf{Arr}_1$ for some undisclosed permutation $\pi$. | ✅    |
+| [shuffle2](../shuffle2) | $\mathsf{Arr}_2=\mathsf{Permute}(\mathsf{Arr}_1 ,\pi)$ | Array $\mathsf{Arr}_2$ is a shuffle of $\mathsf{Arr}_1$ under a disclosed permutation $\pi$. |      |
 
 ## Relation
 
@@ -13,7 +13,7 @@ $ \mathcal{R}_{\mathtt{shuffle1}} := \left\{ \begin{array}{l} (K_\mathsf{Arr_1},
 
 ## Intuition
 
-The prover ($\mathcal{P}$) holds 2 arrays, $\mathsf{Arr_1 }$ and $\mathsf{Arr_2}$, of $n$ integers from $\mathbb{Z}_q$: $[a_0, a_1, a_2, \dots, a_{n-1}]$. It will produce a succinct (independent of $n$) proof that $\mathsf{Arr}_2$ is a shuffle of $\mathsf{Arr}_1$ for some undisclosed permutation $\pi$. The prover will encode the two arrays into polynomials, $\mathsf{Poly}_\mathsf{Arr_1}$ and $\mathsf{Poly}_\mathsf{Arr_2}$ (using [evaluation points](../background/poly-iop) on the domain $\mathcal{H}_\kappa$) and commit to them as $K_\mathsf{Arr_1}$ and $K_\mathsf{Arr_2}$.  The verifier ($\mathcal{V}$) cannot check either array directly (they may contain secret information, and even if they do not, it is too long to check) so the verifier only sees $K_\mathsf{Arr_1}$ and $K_\mathsf{Arr_2}$.
+The prover ($\mathcal{P}$) holds 2 arrays, $\mathsf{Arr_1 }$ and $\mathsf{Arr_2}$, of $n$ integers from $\mathbb{Z}_q$: $[a_0, a_1, a_2, \dots, a_{n-1}]$. It will produce a succinct (independent of $n$) proof that $\mathsf{Arr}_2$ is a shuffle of $\mathsf{Arr}_1$ for some undisclosed permutation $\pi$. The prover will encode the two arrays into polynomials, $\mathsf{Poly}_\mathsf{Arr_1}$ and $\mathsf{Poly}_\mathsf{Arr_2}$ (using [evaluation points](../../background/poly-iop) on the domain $\mathcal{H}_\kappa$) and commit to them as $K_\mathsf{Arr_1}$ and $K_\mathsf{Arr_2}$.  The verifier ($\mathcal{V}$) cannot check either array directly (they may contain secret information, and even if they do not, it is too long to check) so the verifier only sees $K_\mathsf{Arr_1}$ and $K_\mathsf{Arr_2}$.
 
 One idea to check that $\mathsf{Arr_2}$ is a permutation of $\mathsf{Arr_1}$ might be to perform a product check on the two arrays. If the permutation relation holds, then the products will be equal; however, many arrays can have their entries multiply to the same number, without necessarily containing the same elements. 
 
@@ -32,7 +32,7 @@ In addition to demontrasting the equality of the product of $\mathsf{Arr_1}'$ an
 
 ### Polynomial Level
 
-We assume that $\mathsf{Arr_1}$, $\mathsf{Arr_2}$, $\mathsf{Arr_1'}$, and $\mathsf{Arr_2'}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the arrays, the arrays can be padded with elements all of value 1 (or any other value, as long as it is the same for both arrays).
+We assume that $\mathsf{Arr_1}$, $\mathsf{Arr_2}$, $\mathsf{Arr_1'}$, and $\mathsf{Arr_2'}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../../background/poly-iop) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the arrays, the arrays can be padded with elements all of value 1 (or any other value, as long as it is the same for both arrays).
 
 Recall the two steps we want to prove: 
 
@@ -74,7 +74,7 @@ In addition, it will show that $\prod^{n-1}_{i=0}(r - \mathsf{Arr_1}[i]) = \prod
 
 The verifier will never see the arrays or polynomials themselves. They are undisclosed because they either (i) contain private data or (ii) they are too large to examine and maintain a succinct proof system. Instead the prover will use commitments.
 
-The prover will create a transcript for the product check, as decribed in [mult3](./mult3). Below, we give details specific to the second step, showing that $\mathsf{Arr_j}'[i]= r - \mathsf{Arr_j}[i]$ for $j \in [1,2]$, $0 \leq 1 \leq n-1$.
+The prover will create a transcript for the product check, as decribed in [mult3](../mult3). Below, we give details specific to the second step, showing that $\mathsf{Arr_j}'[i]= r - \mathsf{Arr_j}[i]$ for $j \in [1,2]$, $0 \leq 1 \leq n-1$.
 
 The prover will write the following commitments to the transcript:
 
@@ -123,7 +123,7 @@ Any honest prover can do the computations explained above and create an acceptin
 
 ### Soundness
 
-We prove knowledge soundness in the Algebraic Group Model (AGM). We assume soundness of the product check (it is proven in [mult3](./mult3)) and conduct a proof of soundness for the rest of the protocol. To do so, we must prove that there exists an efficient extractor $\mathcal{E}$ such that for any algebraic adversary $\mathcal{A}$, the probability of $\mathcal{A}$ winning the following game is $\mathsf{negl}(\lambda)$.
+We prove knowledge soundness in the Algebraic Group Model (AGM). We assume soundness of the product check (it is proven in [mult3](../mult3)) and conduct a proof of soundness for the rest of the protocol. To do so, we must prove that there exists an efficient extractor $\mathcal{E}$ such that for any algebraic adversary $\mathcal{A}$, the probability of $\mathcal{A}$ winning the following game is $\mathsf{negl}(\lambda)$.
 
 1. Given $[g, g^\tau, g^{\tau^2}, \dots,g^{\tau^{n-1}}]$ $\mathcal{A}$ outputs commitments to $\mathsf{Poly}_\mathsf{Arr_1}(X)$, $\mathsf{Poly}_\mathsf{Arr_2}(X)$, $\mathsf{Poly}_\mathsf{Arr_1'}(X)$, $\mathsf{Poly}_\mathsf{Arr_2'}(X)$, $Q(X)$
 
@@ -145,9 +145,9 @@ $\mathcal{A}$ then obtains the random challenge $\zeta$ (using strong Fiat-Shami
 
 ### Zero-Knowledge
 
-We prove that the above protocol is zero-knowledge when $\mathsf{PolyCommit}_\mathsf{Ped}$ (from the KZG paper) is used for the polynomial commitments. We assume the product check is zero-knowledge (it is proven in [mult3](./mult3)), and conduct a proof for the rest of the protocol. We do so by constructing a probabilistic polynomial time simulator $\mathcal{S}$ that knows the trapdoor $\tau$, which, for every (possibly malicious) verifier $\mathcal{V}$, can output a view of the execution of the protocol that is indistinguishable from the view produced by the real execution of the program.
+We prove that the above protocol is zero-knowledge when $\mathsf{PolyCommit}_\mathsf{Ped}$ (from the KZG paper) is used for the polynomial commitments. We assume the product check is zero-knowledge (it is proven in [mult3](../mult3)), and conduct a proof for the rest of the protocol. We do so by constructing a probabilistic polynomial time simulator $\mathcal{S}$ that knows the trapdoor $\tau$, which, for every (possibly malicious) verifier $\mathcal{V}$, can output a view of the execution of the protocol that is indistinguishable from the view produced by the real execution of the program.
 
-The simulator $\mathcal{S}$ chooses arbitrary values for ${\mathsf{Poly}_\mathsf{Arr_1}(\tau)}$ and ${\mathsf{Poly}_\mathsf{Arr_2}(\tau)}$, then computes $g^{\mathsf{Poly}_\mathsf{Arr_1}(\tau)}$ and $g^{\mathsf{Poly}_\mathsf{Arr_2}(\tau)}$ to write as the commitments $ K_\mathsf{Arr_1}$ and $K_\mathsf{Arr_1}$. $\mathcal{S}$ then generates the random challenge $r$ (by strong Fiat-Shamir). It chooses arbitrary values for ${\mathsf{Poly}_\mathsf{Arr_1'}(\tau)}$ and ${\mathsf{Poly}_\mathsf{Arr_2'}(\tau)}$, then computes $g^{\mathsf{Poly}_\mathsf{Arr_1'}(\tau)}$ and $g^{\mathsf{Poly}_\mathsf{Arr_2'}(\tau)}$ to write as the commitments $ K_\mathsf{Arr_1'}$ and $K_\mathsf{Arr_1'}$. It creates a view of the product check as described in the zero-knowledge proof for [mult3](./mutl3).
+The simulator $\mathcal{S}$ chooses arbitrary values for ${\mathsf{Poly}_\mathsf{Arr_1}(\tau)}$ and ${\mathsf{Poly}_\mathsf{Arr_2}(\tau)}$, then computes $g^{\mathsf{Poly}_\mathsf{Arr_1}(\tau)}$ and $g^{\mathsf{Poly}_\mathsf{Arr_2}(\tau)}$ to write as the commitments $ K_\mathsf{Arr_1}$ and $K_\mathsf{Arr_1}$. $\mathcal{S}$ then generates the random challenge $r$ (by strong Fiat-Shamir). It chooses arbitrary values for ${\mathsf{Poly}_\mathsf{Arr_1'}(\tau)}$ and ${\mathsf{Poly}_\mathsf{Arr_2'}(\tau)}$, then computes $g^{\mathsf{Poly}_\mathsf{Arr_1'}(\tau)}$ and $g^{\mathsf{Poly}_\mathsf{Arr_2'}(\tau)}$ to write as the commitments $ K_\mathsf{Arr_1'}$ and $K_\mathsf{Arr_1'}$. It creates a view of the product check as described in the zero-knowledge proof for [mult3](../mutl3).
 
 $\mathcal{S}$ generates the challenge evaluation point $\rho$ (by strong Fiat-Shamir) and computes $Q(\tau)$ using $\rho$ and the values it chose for ${\mathsf{Poly}_\mathsf{Arr_1}(\tau)}$, ${\mathsf{Poly}_\mathsf{Arr_2}(\tau)}$, ${\mathsf{Poly}_\mathsf{Arr_1'}(\tau)}$, and ${\mathsf{Poly}_\mathsf{Arr_2'}(\tau)}$. $\mathcal{S}$ outputs the commitment $K_Q = g^{Q(\tau)}$.
 

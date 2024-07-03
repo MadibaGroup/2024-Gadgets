@@ -49,7 +49,7 @@ Consider, as an example, the circuit $5x+6y$. Thus, $\mathsf{T}=[5,6,0,1]$. Sinc
 
 ### Polynomial Level
 
-We assume arrays $\mathsf{T}$ and $\mathsf{In}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 1 (which will not change the product). In this case, $\kappa$ is $4$.
+We assume arrays $\mathsf{T}$ and $\mathsf{In}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../../background/poly-iop) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 1 (which will not change the product). In this case, $\kappa$ is $4$.
 
 Recall the constraint we want to prove: 
 
@@ -59,7 +59,7 @@ In polynomial form, the constraint is:
 
 1. For $X=\omega^0$: $\displaylines{\mathsf{Poly}_\mathsf{T}(X\omega^3)\cdot(\mathsf{Poly}_\mathsf{In}(X)\cdot\mathsf{Poly}_\mathsf{T}(X)+\mathsf{Poly}_\mathsf{In}(X\omega)\cdot\mathsf{Poly}_\mathsf{T}(X\omega))\\+(1-\mathsf{Poly}_\mathsf{T}(X\omega^3))\cdot(\mathsf{Poly}_\mathsf{In}(X)\cdot\mathsf{Poly}_\mathsf{In}(X\omega)\cdot\mathsf{Poly}_\mathsf{T}(X\omega^2))+\mathsf{Poly}_\mathsf{In}(X\omega^2)=\mathsf{Poly}_\mathsf{In}(X\omega^3)}$
 
-We take care of the "for $X$" condition by zeroing out the rest of the polynomial that is not zero. See the gadget <span style="border-style:dotted;border-width: 2px;"> [zero1](./zero1)</span> for more on why this works.
+We take care of the "for $X$" condition by zeroing out the rest of the polynomial that is not zero. See the gadget <span style="border-style:dotted;border-width: 2px;"> [zero1](../zero1)</span> for more on why this works.
 
 1. $\displaylines{\mathsf{Poly}_\mathsf{Vanish}(X)=[\mathsf{Poly}_\mathsf{T}(X\omega^3)\cdot(\mathsf{Poly}_\mathsf{In}(X)\cdot\mathsf{Poly}_\mathsf{T}(X)+\mathsf{Poly}_\mathsf{In}(X\omega)\cdot\mathsf{Poly}_\mathsf{T}(X\omega))\\+(1-\mathsf{Poly}_\mathsf{T}(X\omega^3))\cdot(\mathsf{Poly}_\mathsf{In}(X)\cdot\mathsf{Poly}_\mathsf{In}(X\omega)\cdot\mathsf{Poly}_\mathsf{T}(X\omega^2))+\\\mathsf{Poly}_\mathsf{In}(X\omega^2)-\mathsf{Poly}_\mathsf{In}(X\omega^3)]\cdot\frac{X^\kappa-1}{X-\omega^0}}$
 
