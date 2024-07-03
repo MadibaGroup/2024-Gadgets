@@ -1,3 +1,8 @@
+---
+title: Plonkbook | PCS
+type: docs
+---
+
 # Polynomial Commitment Schemes (PCS)
 
 ## Comparing Polynomials
