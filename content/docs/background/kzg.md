@@ -86,12 +86,12 @@ What if the person generating this is not trustworthy? What goes wrong? There ar
 
 The prover can use the SRS to create a commitment to the polynomial evaluted at $\tau$ as follows:
 $$
-\begin{aligned}
-K_{P(\tau)}&=&\mathsf{Commit}(P(\tau))\\
-&=& (g)^{c_0} (g^{\tau})^{c_1} (g^{\tau^2})^{c_2} (g^{\tau^3})^{c_3} \ldots \\
-&=& g^{c_0 + c_1\tau + c_2\tau^2 + c_3\tau^3 + \ldots}\\
-&=& g^{P(\tau)}
-\end{aligned}
+\begin{align}
+K_{P(\tau)}&=\mathsf{Commit}(P(\tau))\\
+&= (g)^{c_0} (g^{\tau})^{c_1} (g^{\tau^2})^{c_2} (g^{\tau^3})^{c_3} \ldots \\
+&= g^{c_0 + c_1\tau + c_2\tau^2 + c_3\tau^3 + \ldots}\\
+&= g^{P(\tau)}
+\end{align}
 $$
 At the end of the commitment operation, the prover does not know either $\tau$ nor $P(\tau)$ and would have to solve a discrete logarithm to learn them. The degree of the polynomial $P(\square)$ has no impact on the size of $K_{P(\tau)}$ so it is succinct. However the SRS has to be long enough to have $\tau^d$ for committing to degree $d$ polynomials. 
 
@@ -110,9 +110,9 @@ KZG commitments are homomorphic with respect to the polynomial addition: $K_{P_1
 KZG commitments are not exactly homomorphic with respect to polynomial multiplication but we can get something close. The subtle difference is as follows. For addition, anyone who sees $K_{P_1(\tau)}$ and $K_{P_2(\tau)}$ can compute $K_{P_1(\tau)+P_2(\tau)}$ directly without involving anyone else. This is not possible with multiplication. However the prover can assert the value for $K_{P_1(\tau)\cdot P_2(\tau)}$ and can convince the verifier it is correct, given $K_{P_1(\tau)}$ and $K_{P_2(\tau)}$. The rough idea is to use the bilinear pairing to show:
 $$
 \begin{align}
-e(K_{P_1(\tau)},K_{P_2(\tau)})&\stackrel{?}{=}&e(K_{P_1(\tau)+P_2(\tau)},g)\\
- e(g^{P_1(\tau)},g^{P_2(\tau)})&=&e(g^{P_1(\tau)\cdot P_2(\tau)},g)
- \\&=&e(g,g)^{P_1(\tau)\cdot P_2(\tau)}
+e(K_{P_1(\tau)},K_{P_2(\tau)})&\stackrel{?}{=}e(K_{P_1(\tau)+P_2(\tau)},g)\\
+ e(g^{P_1(\tau)},g^{P_2(\tau)})&=e(g^{P_1(\tau)\cdot P_2(\tau)},g)
+ \\&=e(g,g)^{P_1(\tau)\cdot P_2(\tau)}
  \end{align}
 $$
 There is some red tape with this as the pairing might not be symmetric ($g$ and $h$ are in different groups for $e(g,h)$) and other subtle details. We will show a different approach to multiplications with our $\texttt{mult}$ gadget. 
@@ -129,9 +129,11 @@ The prover will compute the quotient polynomial $Q(\square)=P(\square)/(\square-
 
 The verifier has $r$ and $K_{P(\tau)}$ and $K_{Q(\tau)}$. The verifier can compute a commitment to $(\square-r)$ at $\tau$ by just treating it as the polynomial   $V(\square)=(\square-r)=-r+1\cdot\square$ and using KZG to produce $K_{V(\tau)}$. The verifier can then check:
 $$
+\begin{align}
 e(K_{P(\tau)},g)&\stackrel{?}{=}e(K_{Q(\tau)},K_{V(\tau)})\\
  e(g^{P(\tau)},g)&=e(g^{Q(\tau)},g^{V(\tau)})
  \\e(g,g)^{P(\tau)}&=e(g,g)^{Q(\tau)\cdot V(\tau)}
+ \end{align}
 $$
 Notice that the degree of the polynomial $P(\square)$ (and thus $Q(\square)$) has no impact on the size of the proof given to the verifier or the work that the verifier has to do. Even if the degree of $P(\square)$ is billions, the proof is the same size and time for the verifier. In a sense, this is our first special purpose SNARK and one we will leverage into making SNARKs for all the gadgets in Plonkbook.
 
