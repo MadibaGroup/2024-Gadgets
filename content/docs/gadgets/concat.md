@@ -16,7 +16,7 @@ $$
 
 The prover ($\mathcal{P}$) holds three arrays $\mathsf{Arr}_1$, $\mathsf{Arr}_2$ and $\mathsf{Arr_3}$. He wants to convince the verifier ($\mathcal{V}$) $\mathsf{Arr}_3$ is the concatenation of $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$. Specifically, assume there are $n_1$, $n_2$, and $n_3$ elements in $\mathsf{Arr}_1$, $\mathsf{Arr}_2$, and $\mathsf{Arr}_3$ respectively, then the prover will prove: (i) $\mathsf{Arr}_3[i]=\mathsf{Arr}_1[i],i\in[0,n_1)$ (ii) $\mathsf{Arr}_3[i+n_1]=\mathsf{Arr}_2[i],i\in[0,n_2)$. It is intuitive to think about using the grand product check in the Plookup. However, the product check of Plookup holds if and only if (i) $\mathsf{Arr}_1$ is the subset of $\mathsf{Arr}_2$ (ii) $\mathsf{Arr}_3$ is the union set of $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$ (iii) $\mathsf{Arr}_3$ is sorted by $\mathsf{Arr}$. Thus, we cannot use the product check directly, but we can leverage the same fact in the product check of Plookup: the product of $\mathsf{Arr}_3$ equals the product of $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$ if and only if $\mathsf{Arr}_3$ is the union set of $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$ (permutation check). Additionally, we need to prove the concatenation relationship rather than the permutation. To solve this problem, we can break $\mathsf{Arr}_3$ to two sub arrays $\mathsf{Arr}_{3_l}$ and $\mathsf{Arr}_{3_h}$ as we do in Plookup, and prove the product of $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$ equals the product of $\mathsf{Arr}_{3_l}$ and $\mathsf{Arr}_{3_h}$.
 
-The other approach is fill $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$ with zero to $n_1+n_2$, and construct a new vector $\mathsf{Arr}_2^\prime$ by rotating right $\mathsf{Arr}_2$ by $n_1$, so that $\mathsf{Arr}_3$ is the addition of $\mathsf{Arr}_1$ and $\mathsf{Arr}_2^\prime$. Instead of performing the product check in the previous approach, the prover proves three things: (i) $\mathsf{Arr}_2^\prime$ is rotated from $\mathsf{Arr}_2$ (ii) $\mathsf{Arr}_3=\mathsf{Arr}_1+\mathsf{Arr}_2^\prime$ (iii) $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$ are correctly fill with zero.
+The other approach is fill $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$ with zero to $n_1+n_2$, and construct a new vector $\mathsf{Arr}_2^\prime$ by rotating right $\mathsf{Arr}_2$ by $n_1$, so that $\mathsf{Arr}_3$ is the sum of $\mathsf{Arr}_1$ and $\mathsf{Arr}_2^\prime$. Instead of performing the product check in the previous approach, the prover proves three things: (i) $\mathsf{Arr}_2^\prime$ is rotated from $\mathsf{Arr}_2$ (ii) $\mathsf{Arr}_3=\mathsf{Arr}_1+\mathsf{Arr}_2^\prime$ (iii) $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$ are correctly fill with zero. Since we already discussed how [product check in the plookup](../lookup2/#plookup) works, we will focus on the second solution in this post.
 
 ## Protocol Details
 
@@ -36,7 +36,7 @@ The other approach is fill $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$ with zero to $n
 
 ### Polynomial Level
 
-We assume arrays $\mathsf{Arr}_1$, $\mathsf{Arr}_2$, and $\mathsf{Arr}_3$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 1 (which will not change the product).
+We assume arrays $\mathsf{Arr}_1$, $\mathsf{Arr}_2$, and $\mathsf{Arr}_3$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../../background/poly-iop/) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 1 (which will not change the product).
 
 Recall the constraints we want to prove: 
 
@@ -52,7 +52,7 @@ In polynomial form, the constraints are:
 3. For $X\in[n_1,n_1+n_2)$, $\mathsf{Poly}_{\mathsf{Arr}_1}(X)=0$
 4. For $X\in[n_2,n_1+n_2)$, $\mathsf{Poly}_{\mathsf{Arr}_2}(X)=0$
 
-Next we take care of the "for $X$" conditions by zeroing out the rest of the polynomial that is not zero. See the gadget <span style="border-style:dotted;border-width: 2px;"> [zero1](./zero1)</span> for more on why this works.
+Next we take care of the "for $X$" conditions by zeroing out the rest of the polynomial that is not zero. See the gadget <span style="border-style:dotted;border-width: 2px;"> [zero1](../zero1/)</span> for more on why this works.
 
 1. $\mathsf{Poly}_\mathsf{Vanish1}(X)=\mathsf{Poly}_{\mathsf{Arr}_3}(X)-\mathsf{Poly}_{\mathsf{Arr}_1}(X)-\mathsf{Poly}_{\mathsf{Arr}_2^\prime}(X)$
 2. $\mathsf{Poly}_\mathsf{Vanish2}(X)=\mathsf{Poly}_{\mathsf{Arr}_2}(X)-\mathsf{Poly}_{\mathsf{Arr}_2^\prime}(X\omega^{n_1})$
