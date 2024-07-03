@@ -39,22 +39,22 @@ Below is a quick summary of various gadgets you can use in your Poly-IOP systems
 
 | Gadget   | Short Description                                            | Recap                                                        |
 | -------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| zero1    | $\mathsf{Arr}[i]\leftarrow0$                                 | Zero-out elements of an array $\mathsf{Arr}$ such as: all, first, last, all-but-first, all-but-last. |
-| zero2    | $\mathsf{Arr}[i]\leftarrow0$ iff $\mathsf{Sel}[i]=0$         | Zero-out elements of an array $\mathsf{Arr}$ according to a binary array $\mathsf{Sel}$. |
-| rotate   | $\mathsf{Arr}[i]\leftarrow \mathsf{Arr}[i+\alpha]$           | Rotate array $\mathsf{Arr}$ by $\alpha$ positions.           |
-| add1     | $\mathsf{Arr}_3=\mathsf{Arr}_1 + \mathsf{Arr}_2$             | Array $\mathsf{Arr}_3$ is the element-wise addition of $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$. |
-| add2     | $\mathsf{Sum}_\mathsf{Arr}=\sum_{i = 0}^{n-1} \mathsf{Arr}[i]$ | $\mathsf{Sum}_\mathsf{Arr}$ is the disclosed sum of all the elements in array $\mathsf{Arr}$. |
-| add3     | $\sum_{i = 0}^{n-1} \mathsf{Arr}_1[i]=\sum_{i = 0}^{n-1} \mathsf{Arr}_2[i]$ | Arrays $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$ have the same undisclosed sum. |
-| mult1    | $\mathsf{Arr}_3=\mathsf{Arr}_1 \cdot \mathsf{Arr}_2$         | Array $\mathsf{Arr}_3$ is the element-wise multiplication of $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$. |
-| mult2    | $\mathsf{Prod}_\mathsf{Arr}=\prod_{i = 0}^{n-1} \mathsf{Arr}[i]$ | $\mathsf{Prod}_\mathsf{Arr}$ is the disclosed product of all the elements in array $\mathsf{Arr}$. |
-| mult3    | $\prod_{i = 0}^{n-1} \mathsf{Arr}_1[i]=\prod_{i = 0}^{n-1} \mathsf{Arr}_2[i]$ | Arrays $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$ have the same undisclosed product. |
-| encode   | $\mathsf{Arr}_3\leftarrow\mathsf{Encode}(\mathsf{Arr}_1,\mathsf{Arr}_2)$ | Map a set of elements, such as the pair $\{\mathsf{Arr}_1[i],\mathsf{Arr}_2[i]\}$, into a single element $\mathsf{Arr}_3[i]$ without collisions. |
-| shuffle1 | $\mathsf{Arr}_2=\mathsf{Permute}(\mathsf{Arr}_1)$            | Array $\mathsf{Arr}_2$ is a shuffle of $\mathsf{Arr}_1$ for some undisclosed permutation $\pi$. |
-| shuffle2 | $\mathsf{Arr}_2=\mathsf{Permute}(\mathsf{Arr}_1 ,\pi)$       | Array $\mathsf{Arr}_2$ is a shuffle of $\mathsf{Arr}_1$ under a disclosed permutation $\pi$. |
-| lookup1  | $\mathsf{Arr}[i]\in \{0,1\}$                                 | Each element of array $\mathsf{Arr}$ is in $\{0,1\}$ (or another small set). |
-| lookup2  | $\mathsf{Arr}[i]\in \mathsf{Table}$                          | Each element of array $\mathsf{Arr}$ is in a disclosed table of values $\mathsf{Table}$. |
-| range    | $\mathsf{Arr}[i]\in[0,r]$                                    | Each element of array $\mathsf{Arr}$ is in the range $[0,r]$ for some upper-cap $r$. |
-| circuit  | $z=\mathsf{Circ}(x,y)$                                       | $z$ is the output of disclosed arithmetic circuit $\mathsf{Circ}$ with disclosed (and/or undisclosed) inputs $x$ and $y$. |
+| [zero1](../docs/gadgets/zero1)       | $\mathsf{Arr}[i]\leftarrow0$                                 | Zero-out elements of an array $\mathsf{Arr}$ such as: all, first, last, all-but-first, all-but-last. |
+| [zero2](../docs/gadgets/zero2)       | $\mathsf{Arr}[i]\leftarrow0$ iff $\mathsf{Sel}[i]=0$         | Zero-out elements of an array $\mathsf{Arr}$ according to a binary array $\mathsf{Sel}$. |
+| [rotate](../docs/gadgets/rotate)     | $\mathsf{Arr}[i]\leftarrow \mathsf{Arr}[i+\alpha]$           | Rotate array $\mathsf{Arr}$ by $\alpha$ positions.           |
+| [add1](../docs/gadgets/add1)         | $\mathsf{Arr}_3=\mathsf{Arr}_1 + \mathsf{Arr}_2$             | Array $\mathsf{Arr}_3$ is the element-wise addition of $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$. |
+| [add2](../docs/gadgets/add2)         | $\mathsf{Sum}_\mathsf{Arr}=\sum_{i = 0}^{n-1} \mathsf{Arr}[i]$ | $\mathsf{Sum}_\mathsf{Arr}$ is the disclosed sum of all the elements in array $\mathsf{Arr}$. |
+| [add3](../docs/gadgets/add3)         | $\sum_{i = 0}^{n-1} \mathsf{Arr}_1[i]=\sum_{i = 0}^{n-1} \mathsf{Arr}_2[i]$ | Arrays $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$ have the same undisclosed sum. |
+| [mult1](../docs/gadgets/mult1)       | $\mathsf{Arr}_3=\mathsf{Arr}_1 \cdot \mathsf{Arr}_2$         | Array $\mathsf{Arr}_3$ is the element-wise multiplication of $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$. |
+| [mult2](../docs/gadgets/mult2)       | $\mathsf{Prod}_\mathsf{Arr}=\prod_{i = 0}^{n-1} \mathsf{Arr}[i]$ | $\mathsf{Prod}_\mathsf{Arr}$ is the disclosed product of all the elements in array $\mathsf{Arr}$. |
+| [mult3](../docs/gadgets/mult3)       | $\prod_{i = 0}^{n-1} \mathsf{Arr}_1[i]=\prod_{i = 0}^{n-1} \mathsf{Arr}_2[i]$ | Arrays $\mathsf{Arr}_1$ and $\mathsf{Arr}_2$ have the same undisclosed product. |
+| [encode](../docs/gadgets/encode)     | $\mathsf{Arr}_3\leftarrow\mathsf{Encode}(\mathsf{Arr}_1,\mathsf{Arr}_2)$ | Map a set of elements, such as the pair $\{\mathsf{Arr}_1[i],\mathsf{Arr}_2[i]\}$, into a single element $\mathsf{Arr}_3[i]$ without collisions. |
+| [shuffle1](../docs/gadgets/shuffle1) | $\mathsf{Arr}_2=\mathsf{Permute}(\mathsf{Arr}_1)$            | Array $\mathsf{Arr}_2$ is a shuffle of $\mathsf{Arr}_1$ for some undisclosed permutation $\pi$. |
+| [shuffle2](../docs/gadgets/shuffle2) | $\mathsf{Arr}_2=\mathsf{Permute}(\mathsf{Arr}_1 ,\pi)$       | Array $\mathsf{Arr}_2$ is a shuffle of $\mathsf{Arr}_1$ under a disclosed permutation $\pi$. |
+| [lookup1](../docs/gadgets/lookup1)   | $\mathsf{Arr}[i]\in \{0,1\}$                                 | Each element of array $\mathsf{Arr}$ is in $\{0,1\}$ (or another small set). |
+| [lookup2](../docs/gadgets/lookup2)   | $\mathsf{Arr}[i]\in \mathsf{Table}$                          | Each element of array $\mathsf{Arr}$ is in a disclosed table of values $\mathsf{Table}$. |
+| [range](../docs/gadgets/range)       | $\mathsf{Arr}[i]\in[0,r]$                                    | Each element of array $\mathsf{Arr}$ is in the range $[0,r]$ for some upper-cap $r$. |
+| [circuit](../docs/gadgets/circuit)   | $z=\mathsf{Circ}(x,y)$                                       | $z$ is the output of disclosed arithmetic circuit $\mathsf{Circ}$ with disclosed (and/or undisclosed) inputs $x$ and $y$. |
 |          |                                                              |                                                              |
 |          |                                                              |                                                              |
 |          |                                                              |                                                              |
