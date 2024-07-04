@@ -38,7 +38,7 @@ To prove the relation between $\mathsf{Arr}$ and $\mathsf{Arr'}$, the prover mus
 
 ### Polynomial Level
 
-We assume that $\mathsf{Arr}$ and $\mathsf{Arr'}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../../background/poly-iop) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the arrays, the arrays can be padded with elements all of value 1 (or any other value, as long as it is the same for both arrays).
+We assume that $\mathsf{Arr}$ and $\mathsf{Arr'}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../../background/poly-iop) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the arrays, then $\mathsf{Arr}$ can be padded with any value (say, all 1s) as long as this is done before the rotation to create $\mathsf{Arr'}$ is computed. 
 
 Recall the constrant we want to prove: 
 
