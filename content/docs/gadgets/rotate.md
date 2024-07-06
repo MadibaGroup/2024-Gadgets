@@ -102,19 +102,19 @@ Finally, if the constraint system is true, the following constraint will be true
 
 ### Completeness
 
-If $Y_\mathsf{Zero}$ is the zero polynomial, then $\mathcal{V}$ will accept. Therefore, to show completeness, we show that any prover who holds $\mathsf{Arr'}$ and $\mathsf{Arr}$ such that $\mathsf{Arr'}[i] = \mathsf{Arr}[i +\alpha]$ can follow the steps outlined in the above protocol and get $Y_\mathsf{Zero}$ the zero polynomial. To see this, observed that $Y_\mathsf{Zero}(X)$
+If $Y_\mathsf{Zero}$ is zero, then $\mathcal{V}$ will accept. Therefore, to show completeness, we show that any prover who holds $\mathsf{Arr'}$ and $\mathsf{Arr}$ such that $\mathsf{Arr'}[i] = \mathsf{Arr}[i +\alpha] \space \forall i \in [0, n-1]$ can follow the steps outlined in the above protocol and the resulting $Y_\mathsf{Zero}$ will be equal to zero.  To see this, observed that $Y_\mathsf{Zero}$
 
-$ = Y_\mathsf{Vanish} - Q(X)(X^\kappa - 1)$ 
+$ = Y_\mathsf{Vanish} - Q(\zeta)(\zeta^\kappa - 1)$ 
 
-$ = \mathsf{Poly_{Arr'}}(X) - \mathsf{Poly_{Arr}}(X)\cdot \omega^\alpha - Q(X)(X^\kappa - 1)$
+$ = \mathsf{Poly_{Arr'}}(\zeta) - \mathsf{Poly_{Arr}}(\zeta)\cdot \omega^\alpha - Q(\zeta)(\zeta^\kappa - 1)$
 
- $= \mathsf{Poly_{Arr'}}(X) - \mathsf{Poly_{Arr}}(X)\cdot \omega^\alpha - \frac{\mathsf{Poly_{Vanish}}(X)}{X^\kappa - 1}\cdot(X^\kappa - 1)$ 
+ $= \mathsf{Poly_{Arr'}}(\zeta) - \mathsf{Poly_{Arr}}(\zeta)\cdot \omega^\alpha - \frac{\mathsf{Poly_{Vanish}}(\zeta)}{\zeta^\kappa - 1}\cdot(\zeta^\kappa - 1)$ 
 
-$= \mathsf{Poly_{Arr'}}(X) - \mathsf{Poly_{Arr}}(X)\cdot \omega^\alpha - \mathsf{Poly_{Arr'}}(X) + \mathsf{Poly_{Arr}}(X)\cdot \omega^\alpha$
+$= \mathsf{Poly_{Arr'}}(\zeta) - \mathsf{Poly_{Arr}}(\zeta)\cdot \omega^\alpha - \mathsf{Poly_{Arr'}}(\zeta) + \mathsf{Poly_{Arr}}(\zeta)\cdot \omega^\alpha$
 
 $= 0$
 
-Where the third equality relies on the fact that $\mathsf{Poly_{Vanish}}(X)$ is divisible by $X^\kappa - 1$. This is true if $\mathsf{Poly_{Vanish}}(X)$ is vanishing on $\mathcal{H_\kappa}$, i.e. if $\mathsf{Poly}_\mathsf{Arr'}(X) - \mathsf{Poly}_\mathsf{Arr}(X)\cdot\omega^\alpha = 0 \space \forall X \in \mathcal{H_\kappa}$.  This is true if $\mathsf{Poly}_\mathsf{Arr'}(X) - \mathsf{Poly}_\mathsf{Arr}(X\cdot\omega^\alpha) = 0 \space \forall X \in \mathcal{H_\kappa}$, which is in turn true if $\mathsf{Arr'}[i] - \mathsf{Arr}[i + \alpha] = 0$, since $\mathsf{Poly_Arr}(\omega^i)=\mathsf{Arr}[i] \space \forall i \in [0, \kappa -1]$. But $\mathsf{Arr'}[i] - \mathsf{Arr}[i + \alpha] = 0$ is precisely the relation between $\mathsf{Arr'}$ and $\mathsf{Arr}$ that we assumed held for our prover, thus the $Y_\mathsf{Zero}(X)$ it creates by following the protocol is the zero polynomial, as its transcipt will be accepted.
+Where the third equality relies on the fact that $\mathsf{Poly_{Vanish}}(X)$ is divisible by $X^\kappa - 1$. This is true if $\mathsf{Poly_{Vanish}}(X)$ is vanishing on $\mathcal{H_\kappa}$, i.e. if $\mathsf{Poly}_\mathsf{Arr'}(X) - \mathsf{Poly}_\mathsf{Arr}(X)\cdot\omega^\alpha = 0 \space \forall X \in \mathcal{H_\kappa}$.  This is true if $\mathsf{Poly}_\mathsf{Arr'}(X) - \mathsf{Poly}_\mathsf{Arr}(X\cdot\omega^\alpha) = 0 \space \forall X \in \mathcal{H_\kappa}$, which is in turn true if $\mathsf{Arr'}[i] - \mathsf{Arr}[i + \alpha] = 0 \space \forall i \in [0, \kappa -1]$, since $\mathsf{Poly_Arr}(\omega^i)=\mathsf{Arr}[i] \space \forall i \in [0, \kappa -1]$. But $\mathsf{Arr'}[i] - \mathsf{Arr}[i + \alpha] = 0 \space \forall i \in [0, n-1]$ is precisely the relation between $\mathsf{Arr'}$ and $\mathsf{Arr}$ that we assumed held for our prover (if $\kappa \gt n$ then the arrays get padded such that this relation still holds), thus the $Y_\mathsf{Zero}(X)$ it creates by following the protocol is the zero polynomial, and its transcipt will be accepted.
 
 ### Soundness
 

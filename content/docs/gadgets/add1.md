@@ -53,7 +53,7 @@
 
   We adjust the constraints to show an equality with 0 and label it:
 
-  1. For all $X$ from $\omega^0$ to $\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Vanish}(X)=\mathsf{Poly}_\mathsf{Arr_3}(X)-\mathsf{Poly}_\mathsf{Arr_1}(X)+\mathsf{Poly}_\mathsf{Arr_2}(X)=0$ 
+  1. For all $X$ from $\omega^0$ to $\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Vanish}(X)= \mathsf{Poly}_\mathsf{Arr_1}(X)+\mathsf{Poly}_\mathsf{Arr_2}(X) - \mathsf{Poly}_\mathsf{Arr_3}(X)=0$ 
 
   This equation is true for every value of $X \in \mathcal{H}_\kappa$ (but not necessarily true outside of these values). To show this, we divide the polynomial by  $X^\kappa - 1$, which is a minimal vanishing polynomial for $\mathcal{H}_\kappa$ that does not require interpolation to create. If the quotient is polynomial (and not a rational function), then $\mathsf{Poly}_\mathsf{Vanish}(X)$ must be vanishing on $\mathcal{H}_\kappa$ too. Specifically, the prover computes:
 
@@ -61,7 +61,7 @@
 
   By rearranging, we can get $\mathsf{Poly}_\mathsf{Zero}(X)$ as a true zero polynomial (zero at every value both in $\mathcal{H}_\kappa$ and outside of it):
 
-  1. $\mathsf{Poly}_\mathsf{Zero}(X)=\mathsf{Poly}_\mathsf{Vanish}(X) - Q(X)\cdot (X^n - 1)=0$
+  1. $\mathsf{Poly}_\mathsf{Zero}(X)=\mathsf{Poly}_\mathsf{Vanish}(X) - Q(X)\cdot (X^\kappa - 1)=0$
 
   Ultimately the add1 argument will satisfy the following constraints at the Commitment Level:
 
@@ -92,8 +92,8 @@
 
   To check the proof, the verifier uses the transcript to construct the value $Y_\mathsf{Zero}$ as follows:
 
-  * $Y_\mathsf{Vanish}=\mathsf{Poly}_\mathsf{Arr_1}(\zeta)-\mathsf{Poly}_\mathsf{Arr_2}(\zeta)+\mathsf{Poly}_\mathsf{Arr_3}( \zeta)$ 
-  * $Y_\mathsf{Zero}=Y_\mathsf{Vanish1} - Q(\zeta)\cdot (\zeta^n - 1)$
+  * $Y_\mathsf{Vanish}=\mathsf{Poly}_\mathsf{Arr_1}(\zeta)+\mathsf{Poly}_\mathsf{Arr_2}(\zeta)-\mathsf{Poly}_\mathsf{Arr_3}( \zeta)$ 
+  * $Y_\mathsf{Zero}=Y_\mathsf{Vanish1} - Q(\zeta)\cdot (\zeta^\kappa - 1)$
 
   Finally, if the constraint system is true, the following constraint will be true (and will be false otherwise with overwhelming probability, due to the Schwartz-Zippel lemma on $\zeta$) :
 
@@ -108,7 +108,19 @@
 
 ### Completeness
 
-Any honest prover can do the computations explained above and create an accepting proof.
+If $Y_\mathsf{Zero}$ is zero, then $\mathcal{V}$ will accept. Therefore, to show completeness, we show that any prover who holds $\mathsf{Arr_1}, \mathsf{Arr_2}$ and $\mathsf{Arr_3}$ such that $\mathsf{Arr_1}[i] + \mathsf{Arr_2}[i] - \mathsf{Arr_3}[i] = 0 \space \forall i \in [0, n - 1]$ can follow the steps outlined in the above protocol and the resulting $Y_\mathsf{Zero}$ will be equal to zero.  To see this, observed that $Y_\mathsf{Zero}$
+
+$ = Y_\mathsf{Vanish} - Q(\zeta)(\zeta^\kappa - 1)$ 
+
+$ = \mathsf{Poly}_\mathsf{Arr_1}(\zeta) + \mathsf{Poly}_\mathsf{Arr_2}(\zeta) - \mathsf{Poly}_\mathsf{Arr_3}( \zeta) - Q(\zeta)(\zeta^\kappa - 1)$
+
+ $= \mathsf{Poly}_\mathsf{Arr_1}(\zeta) + \mathsf{Poly}_\mathsf{Arr_2}(\zeta) - \mathsf{Poly}_\mathsf{Arr_3}( \zeta) - \frac{\mathsf{Poly_{Vanish}}(\zeta)}{\zeta^\kappa - 1}\cdot(\zeta^\kappa - 1)$ 
+
+$= \mathsf{Poly}_\mathsf{Arr_1}(\zeta) + \mathsf{Poly}_\mathsf{Arr_2}(\zeta) - \mathsf{Poly}_\mathsf{Arr_3}( \zeta) - (\mathsf{Poly}_\mathsf{Arr_1}(\zeta)+\mathsf{Poly}_\mathsf{Arr_2}(\zeta) - \mathsf{Poly}_\mathsf{Arr_3}(\zeta))$
+
+$= 0$
+
+Where the third equality relies on the fact that $\mathsf{Poly_{Vanish}}(X)$ is divisible by $X^\kappa - 1$. This is true if $\mathsf{Poly_{Vanish}}(X)$ is vanishing on $\mathcal{H_\kappa}$, i.e. if $\mathsf{Poly}_\mathsf{Arr_1}(X)+\mathsf{Poly}_\mathsf{Arr_2}(X) - \mathsf{Poly}_\mathsf{Arr_3}(X) =0 \space \forall X \in \mathcal{H}_\kappa$. This is true if if $\mathsf{Arr_1}[i] + \mathsf{Arr_2}[i] - \mathsf{Arr_3}[i] = 0 \space \forall i \in [0, \kappa - 1]$, since $\mathsf{Poly_j}(\omega^i) = \mathsf{Arr_j}[i] \space \forall i \in [0, \kappa - 1]$.  But $\mathsf{Arr_1}[i] + \mathsf{Arr_2}[i] - \mathsf{Arr_3}[i] = 0 \space \forall i \in [0, \kappa - 1]$ is precisely the relation tnat we assumed held for our prover (if $\kappa \gt n$ then the arrays get padded such that this relation still holds), thus the $Y_\mathsf{Zero}(X)$ it creates by following the protocol is zero, and its transcipt will be accepted.
 
 ### Soundness
 
@@ -130,7 +142,7 @@ Our proof is as follows:
 
 For the second win condition to be fulfilled, the constraint must not hold for at least one index of the arrays. But then $\mathsf{Poly}_\mathsf{Vanish}(X)$ is not vanishing on $\mathcal{H}_\kappa$, so $Q(X)$ is not a polynomial (it is a rational function). This means that $\mathcal{A}$ cannot calculate the correct commitment value $g^{Q(\tau)}$ without solving the t-SDH. Thus, $\mathcal{A}$ chooses an arbitrary value for $Q(\tau)$ and writes $K_Q = g^{Q(\tau)}$ to the transcript. Before this, it also writes commitments to  $\mathsf{Poly}_\mathsf{Arr1}(X)$, $\mathsf{Poly}_\mathsf{Arr2}(X)$, and $\mathsf{Poly}_\mathsf{Arr3}(X)$. Each commitment $\mathcal{A}$ has written is a linear combination of the elements in $[g, g^\tau, g^{\tau^2}, \dots,g^{\tau^{n-1}}]$. $\mathcal{E}$ is given these coefficients (since $\mathcal{A}$ is an algebraic adversary) so $\mathcal{E}$ can output the original polynomials.
 
-$\mathcal{A}$ then obtains the random challenge $\zeta$ (using strong Fiat-Shamir). By the binding property of KZG commitments, $\mathsf{Poly}_\mathsf{Arr1}(\zeta)$,  $\mathsf{Poly}_\mathsf{Arr2}(\zeta)$, and $\mathsf{Poly}_\mathsf{Arr3}(\zeta)$ can only feasibliy be opened to one value each. For $\mathcal{A}$ to have the verifier accept, it must produce a proof that $Q(\zeta)$ opens to $Q(\zeta) = \frac{Y_\mathsf{Vanish}}{(\zeta^n - 1)}$. This means being able to produce $g^{q(\tau)}$ where $q(\tau) = \frac{Q(\tau) - Q(\zeta)}{\tau - \zeta}$ and $Q(\zeta) = \frac{Y_\mathsf{Vanish}}{(\zeta^n - 1)}$. Since $Q(\tau)$ and $Q(\zeta)$ are known, this implies knowing $g^{\frac{1}{\tau - \zeta}}$. Thus $\mathcal{A}$ would have found $\langle\zeta,g^{\frac{1}{\tau - \zeta}}\rangle$, which is the t-SDH problem. We have shown that creating an accepting proof reduces to the t-SDH, so $\mathcal{A}$'s probability of success is negligible.
+$\mathcal{A}$ then obtains the random challenge $\zeta$ (using strong Fiat-Shamir). By the binding property of KZG commitments, $\mathsf{Poly}_\mathsf{Arr1}(\zeta)$,  $\mathsf{Poly}_\mathsf{Arr2}(\zeta)$, and $\mathsf{Poly}_\mathsf{Arr3}(\zeta)$ can only feasibliy be opened to one value each. For $\mathcal{A}$ to have the verifier accept, it must produce a proof that $Q(\zeta)$ opens to $Q(\zeta) = \frac{Y_\mathsf{Vanish}}{(\zeta^\kappa - 1)}$. This means being able to produce $g^{q(\tau)}$ where $q(\tau) = \frac{Q(\tau) - Q(\zeta)}{\tau - \zeta}$ and $Q(\zeta) = \frac{Y_\mathsf{Vanish}}{(\zeta^\kappa - 1)}$. Since $Q(\tau)$ and $Q(\zeta)$ are known, this implies knowing $g^{\frac{1}{\tau - \zeta}}$. Thus $\mathcal{A}$ would have found $\langle\zeta,g^{\frac{1}{\tau - \zeta}}\rangle$, which is the t-SDH problem. We have shown that creating an accepting proof reduces to the t-SDH, so $\mathcal{A}$'s probability of success is negligible.
 
 ### Zero-Knowledge
 
@@ -140,6 +152,6 @@ The simulator $\mathcal{S}$ chooses arbitrary values for ${\mathsf{Poly}_\mathsf
 
 Now, $\mathcal{S}$ generates the second random challenge point $\zeta$ (which we assume is not in $\mathcal{H}_\kappa$; if it is in $\mathcal{H}_\kappa$, $\mathcal{S}$ simply restarts and runs from the beginning). This is once again by strong Fiat-Shamir.  $\mathcal{S}$ then create fake opening proofs for ${\mathsf{Poly}_\mathsf{Arr1}(\zeta)}$, ${\mathsf{Poly}_\mathsf{Arr2}(\zeta)}$, and $\mathsf{Poly}_\mathsf{Arr3}(\zeta)$, to arbitrary values. This is done using the knowledge of $\tau$, calculating the respective witness $q(\tau) = \frac{{f(\tau) - f(\zeta)}}{\tau - \zeta}$ for each of the polynomials.
 
-Finally, $\mathcal{S}$ creates a fake opening proof for $Q(\zeta) = \frac{Y_\mathsf{Vanish}}{(\zeta^n - 1)}$. This is done using knowledge of $\tau$ to calculate an accepting witness $q(\tau)$, as above. This means that $Y_\mathsf{Zero}$ will be zero, and the transcript will be accepted by the verifier. It is indistinguishable from a transcript generated from a real execution, since $\mathsf{PolyCommit}_\mathsf{Ped}$ has the property of Indistinguishability of Commitments due to the randomization by $h^{\hat{\phi}(x)}$. 
+Finally, $\mathcal{S}$ creates a fake opening proof for $Q(\zeta) = \frac{Y_\mathsf{Vanish}}{(\zeta^\kappa - 1)}$. This is done using knowledge of $\tau$ to calculate an accepting witness $q(\tau)$, as above. This means that $Y_\mathsf{Zero}$ will be zero, and the transcript will be accepted by the verifier. It is indistinguishable from a transcript generated from a real execution, since $\mathsf{PolyCommit}_\mathsf{Ped}$ has the property of Indistinguishability of Commitments due to the randomization by $h^{\hat{\phi}(x)}$. 
 
 - For add2, the proof is written with a simulator that doesn't know the trapdoor; however, with small alterations the proof for add2 should apply here and vice versa
