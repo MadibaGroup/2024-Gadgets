@@ -1,3 +1,15 @@
+# Zero (Type 2)
+
+## Recap of types
+
+
+| Type              | Description                                          | Recap                                                        | This |
+| ----------------- | ---------------------------------------------------- | ------------------------------------------------------------ | ---- |
+| [zero1](../zero1) | $\mathsf{Arr}[i]\leftarrow0$                         | Zero-out elements of an array $\mathsf{Arr}$ such as: all, first, last, all-but-first, all-but-last. |      |
+| [zero2](../zero2) | $\mathsf{Arr}[i]\leftarrow0$ iff $\mathsf{Sel}[i]=0$ | Zero-out elements of an array $\mathsf{Arr}$ according to a binary array $\mathsf{Sel}$. | ✅    |
+
+ 
+
 # Zeroing Parts of an Array (2)
 
 Assume both $\mathsf{Arr}$ (an array of data) and $\mathsf{Sel}$ (a binary array) are of size $n$. They are encoded as the y-coordinates into univariant polynomials where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../../background/poly-iop) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. We call our polynomials $\mathsf{Poly}_\mathsf{Arr}(X)$ and $\mathsf{Poly}_\mathsf{Sel}(X)$. The goal is to construct an output polynomial where all the elements in $\mathsf{Arr}$ that share an index with a zero in $\mathsf{Sel}$ are zeroed (and non-zero elements in $\mathsf{Arr}$ that share an index with a one in $\mathsf{Sel}$ are kept non-zero).

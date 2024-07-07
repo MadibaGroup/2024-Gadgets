@@ -10,13 +10,13 @@ type: docs
 Say that Carol sends a polynomial to Alice and the same polynomial to Bob. Later Alice and Bob are sitting together and want to make sure their polynomials, which they got from Carol, are actually the same. How do you compare polynomials? There are many sufficient comparisons, but here are two ways to get started:
 
 1. Ensure the degree $d$ is the same and each coefficient is the same,
-2. Ensure the degree $d$ is the same and check at $d+1$ points.
+2. Ensure the degree $d$ is the same and check at $d+1$ unique points.
 
 Say Alice and Bob go with the second method for their polynomials from Carol, which are both degree 1000. They start checking points and after checking 500 points, the polynomials are the same so far. How confident are they that they have the same polynomial? They are not 100% confident until they check all $d+1$ points but should they be more than 0% confident?
 
-Imagine Carol is trying to trick them with different polynomials. If Carol knows Alice and Bob will check $P(0),P(1),P(2),\ldots,P(d+1)$, she can make sure the polynomials are the same at the first set of points, hoping they give up early (so Alice and Bob should be 0% confident after checking 500 points). 
+Imagine Carol is trying to trick them with different polynomials. If Carol knows Alice and Bob will check $P(0),P(1),P(2),\ldots,P(d+1)$, she can make sure the polynomials are the same at the first set of points, hoping they give up early. So Alice and Bob should be 0% confident after checking 500 points if they know Carol is malicious. 
 
-However if Alice and Bob choose random points to compare at, then Carol has to get "lucky" and hope the polynomials happen to be the same at each of those points. The nice thing is we can quantify what "lucky" means for Carol. Two polynomials of degree $d$ can only match at $d$ points (even if the polynomials are very similar to each, say differing only by one coefficient). Every time Alice and Bob check a random point, the probability that Carol gets lucky and does not get caught presenting different polynomials is $\frac{d}{q}$ where $q$ is the number of points on the polynomial. In a cryptographic setting, $q$ will be the integers $[0,\ldots,q-1]$ for large prime $q$. If $q$ is 256-bits and the polynomial is degree 1000, then the probability Carol can cheat is $\frac{1000}{2^{256}}$ which is negligibly small. So after checking one point, Alice and Bob are not confident with probability $1$. But they are with probability $1-\frac{1000}{2^{256}}$ which is close enough to 1 for practical purposes:
+However if Alice and Bob choose random points to compare at, then Carol has to get "lucky" and hope the polynomials happen to be the same at each of the random points. The nice thing is we can quantify what "lucky" means for Carol. Two polynomials of degree $d$ can only match at $d$ points (even if the polynomials are very similar to each, say differing only by one coefficient). Every time Alice and Bob check a random point, the probability that Carol gets lucky and does not get caught presenting different polynomials is $\frac{d}{q}$ where $q$ is the number of points on the polynomial (all values in $\mathbb{Z}_q$). In a cryptographic setting, $q$ will be a large prime. If $q$ is 256-bits and the polynomial is degree 1000, then the probability Carol can get away with cheating after the first check is $\frac{1000}{2^{256}}$, which is already negligibly small. So after checking just one random point, Alice and Bob are pretty confident the polynomials are the same if the point matches. Specifically, probability $1-\frac{1000}{2^{256}}$ which is close enough to 1 for practical purposes:
 
 $0.99999999999999999999999999999999999999999999999999999999999999999999999999136383\ldots$
 
@@ -24,7 +24,7 @@ So we can add a third probabilistic method for Alice and Bob to use in checking 
 
 3. Ensure the degree $d$ is the same and check at $1$ random point.
 
-This is close enough to Method 2 for practical purposes and is materially less work for Alice and Bob. In mathematics, this result is commonly known as the Schwartz–Zippel[^1] lemma. We will use this idea in building a commitment scheme for polynomials. 
+Compared to Method 2, it is materially less work for Alice and Bob. In mathematics, this result is commonly known as the Schwartz–Zippel[^1] lemma. We will use this idea in building a commitment scheme for polynomials. 
 
 ## A Wishlist for Polynomial Commitments
 
@@ -42,20 +42,20 @@ A final property to be considered with commitments is how many $m$ values can be
 Next, let us consider committing to polynomials. We can use any of the above schemes to commit to a complete description of a polynomial, where a complete description might be its coefficients, all of its roots, or a sufficient set of points on the polynomial. However we can also consider making a special purpose commitment function for polynomials that might allow us some useful things for dealing with polynomials. A wishlist for a polynomial scheme might look as follows:
 
 * Binding: necessary for commitments.
-* Optional Hiding: necessary for using the commitment for zk-SNARKs but not necessary for just SNARKs.
+* (Optionally) hiding: necessary for using the commitment for zk-SNARKs but not necessary for just SNARKs.
 * Useful homomorphisms: 
   * Polynomial addition
   * Polynomial multiplication
 * Selective opening: demonstrating a single chosen point on a polynomial without revealing the rest of the polynomial.
 * Many-to-one (succinct): having $K_{P(X)}$ be constant-size regardless of how "big" (the degree) polynomial $P(X)$ is.
 
-The Kate-Zaverucha-Goldberg (KZG) polynomial commitment scheme gives us most of the above properties. Polynomial multiplication has a little red tape around it and the rest of the properties follow directly from KZG. KZG is only for univariant polynomials (which is all we will use in Plonkbook) however many research papers have shown how to adapt it to multivariant polynomials. 
+The Kate-Zaverucha-Goldberg (KZG) polynomial commitment scheme gives us most of the above properties. Polynomial multiplication has a little red tape around it but the rest of the properties follow directly from KZG. KZG is only for univariant polynomials (which is all we will use in Plonkbook) however many research papers have shown how to adapt it to multivariant polynomials. 
 
 ## KZG Commitments
 
 ### Starting Point
 
-KZG commitments will commit to a polynomial assuming it is in coefficient form. That is:
+KZG commitments will commit to a univariate polynomial assuming it is in coefficient form. That is:
 $$
 P(\square)=c_0+c_1\cdot\square+c_2\cdot\square^2+c_3\cdot\square^3+c_4\cdot\square^4=\sum_{i=0}^d c_i\cdot\square^i
 $$
@@ -66,25 +66,25 @@ What does it mean to commit to $P(\square)$ without specifying what $\square$ is
 
 What about selective opening? The committer (prover) knows that $y_\alpha=P(\alpha)$ for some value $\alpha$ and wants to prove it. To work toward computing $P(\alpha)=c_0+c_1\cdot\alpha+c_2\cdot\alpha^2+c_3\cdot\alpha^3$, the prover can create $\langle \alpha, \alpha^2, \alpha^3\rangle$ but can the prover get them into the "right spot" in the commitment: $g_0^{c_0}g_1^{c_1\cdot\alpha}g_2^{c_2\alpha^2}g_3^{c_3\alpha^3}$? It cannot do it with exponentiation as operations like $(g_0^{c_0}g_1^{c_1}g_2^{c_2}g_3^{c_3})^\alpha$ will distribute $\alpha$ to each term: $g_0^{c_0\cdot\alpha}g_1^{c_1\cdot\alpha}g_2^{c_2\cdot\alpha}g_3^{c_3\cdot\alpha}$. Even if it got them into the right spot, the prover would have to prove they used the right values. Finally, the prover cannot "add" the terms up: $g_0^{c_0}g_1^{c_1\cdot\alpha}g_2^{c_2\alpha^2}g_3^{c_3\alpha^3}\rightarrow g_0^{c_0+c_1\cdot\alpha+c_2\alpha^2+c_3\alpha^3}$ without knowing the discrete logarithm between $g_0, g_1, g_2, g_3$ (if it did, it would break the binding property) plus it would have to get rid of the discrete logarithm terms. Anyways, there are three or four roadblocks to adding selective opening to such a commitment.
 
-KZG takes a different approach. To commit to a polynomial, the idea is to commit to its evaluation at a set of points rather than committing to the coefficients. How many points do we need to commit to? Recall from above the story about Alice and Bob comparing the polynomials they received from Carol. We concluded that statistically it is sufficient for Alice and Bob to ensure their degree $d$ is the same and check at $1$ random point. 
+KZG takes a different approach. To commit to a polynomial, the idea is to commit to its evaluation at a set of points rather than committing to the coefficients. How many points do we need to commit to? Recall the story about Alice and Bob comparing the polynomials they received from Carol. We concluded that statistically it is sufficient for Alice and Bob to check at $1$ random point. 
 
-The idea of KZG is to commit to the evaluation of the polynomial at one random point $\tau$ with the caveat that no one knows what this point is (it is a secret). How do we pull this off? How can the prover figure out the evaluation of their polynomial at $\tau$ without knowing what $\tau$ is? And finally, if they can figure out what $P(\tau)$ is, can they not just reverse engineer what $\tau$ is (for example, by committing to $y=P(\tau)=\tau$)?
+The idea of KZG is to commit to the evaluation of the polynomial at one random point $\tau$ and have this commitment represent a commitment to the entire polynomial. The important caveat is that no one knows what $\tau$ is (it is a secret). How do we pull this off? How can the prover figure out the evaluation of their polynomial at $\tau$ without knowing what $\tau$ is? And finally, if they can figure out what $P(\tau)$ is, can they not just reverse engineer what $\tau$ is (for example, by committing to $y=P(\tau)=\tau$)?
+
+KZG uses a trusted setup to generate a commitment to $\tau$. It then uses homomorphic operations to let a prover compute a commimtent to $P(\tau)$ using the commiment to $\tau$ without learning what $\tau$ is or even what $P(\tau)$ is. Committing to $P(\tau)$ is considered as good as committing to the entire polynomial! We will see these details next.
 
 ### Setup
-
-KZG uses a trusted setup to generate a commitment to $\tau$. It then uses homomorphic operations to let a prover compute a commimtent to $P(\tau)$ using the commiment to $\tau$ without learning what $\tau$ is or even what $P(\tau)$ is. Committing to $P(\tau)$ is considered as good as committing to the entire polynomial! We will see these details below.
 
 Someone trusted chooses a random value (from $\mathbb{Z}_q$) to use as  $\tau$. They will also generate $d$ powers of $\tau$ which will be needed to commit to polynomials up to degree $d$. They will commit to each power of $\tau$ as follows. The output is called a structured random string (SRS) and will be available for the prover to use and the verifier to use:
 
 $$
-\langle g, g^\tau, g^{\tau^2}, g^{\tau^3}, \ldots, g^{\tau^d} \rangle \equiv SRS
+\langle g^{(\tau^0)}, g^{(\tau^1)}, g^{(\tau^2)}, g^{(\tau^3)}, \ldots, g^{(\tau^d)} \rangle \equiv SRS
 $$
 
-What if the person generating this is not trustworthy? What goes wrong? There are two ways the trusted party can cheat: (1) tell everyone the secret value $\tau$ (or use it for itself), and (2) generate SRS with the wrong structure (the values are not successive powers of $\tau$). We can address both of these issues. To address (1), we can let many parties generate an SRS and combine them into a single SRS. As long as one party deletes $\tau$ without looking at it, the entire SRS is secure. Many blockchain projects have done this already with thousands of contributors. We can also address (2) through special purpose zero knowledge proofs that demonstrate each contributor's SRS has the correct format. See [this article](https://a16zcrypto.com/posts/article/on-chain-trusted-setup-ceremony/) for more details on both (1) and (2).
+What if the person generating the powers of $\tau$ is not trustworthy? What goes wrong? There are two ways the trusted party can cheat: (1) tell everyone the secret value $\tau$ (or use it for itself), and (2) generate the SRS with the wrong structure (the values are not successive powers of $\tau$). We can address both of these issues. To address (1), we can let many parties generate an SRS and combine them into a single SRS. As long as one party deletes $\tau$ without looking at it, the entire SRS is secure. Many blockchain projects have done this already with thousands of contributors. We can also address (2) through special purpose zero knowledge proofs that demonstrate each contributor's SRS has the correct format without revealing $\tau$. We will not cover these details but you can learn more from [this article (a16z crypto research)](https://a16zcrypto.com/posts/article/on-chain-trusted-setup-ceremony/).
 
 ### Commitment
 
-The prover can use the SRS to create a commitment to the polynomial evaluted at $\tau$ as follows:
+Using the coefficients of the polynomial, the prover can use the SRS to create a commitment to the polynomial evaluated at $\tau$ as follows:
 $$
 \begin{align}
 K_{P(\tau)}&=\mathsf{Commit}(P(\tau))\\
@@ -143,9 +143,7 @@ If the prover wants to open at multiple roots, it runs the exact same protocol b
 
 #### Selective Open: Arbitrary Point
 
-Most of the time, the prover wants to prove the polynomial passes through an arbitrary point $\{x,y\}=\{x,P(x)\}$ where $y$ is some integer that is not zero (and thus $x$ is not a root). Again, this is very easy to prove. The intution is as follows: if and only if $P(\square)$ has value $y$ at point $x$, then subtracting $y$ from $P(\square)$ will create a new polynomial $\tilde{P}(\square)=P(\square)-y$ that is zero at point $x$. In other words, $x$ is a root of $\tilde{P}(\square)$.
-
-The verifier can construct $K_{\tilde{P}(\tau)}$ from $K_{P(\tau)}$ using the additive homomorphic property:  $K_{\tilde{P}(\tau)}=K_{P(tau)\cdot} g^{-y}$. Then the prover shows $K_{\tilde{P}(\tau)}$ has a root at point $x$ using the protocol above for proving roots.
+Most of the time, the prover wants to prove the polynomial passes through an arbitrary point $\{x,y\}=\{x,P(x)\}$ where $y$ is some integer that is not zero (and thus $x$ is not a root). Again, this is very easy to prove once we have a protocol for proving roots. The intution is as follows: if and only if $P(\square)$ has value $y$ at point $x$, then subtracting $y$ from $P(\square)$ will create a new polynomial $\tilde{P}(\square)=P(\square)-y$ that is zero at point $x$, making $x$ a root. (Visually you can imagine a polynomial with height $y$ at a point $x$, and subtracting $y$ shifts the whole polynomial down $y$ units, moving that point down to the x-axis.) The verifier can construct $K_{\tilde{P}(\tau)}$ from $K_{P(\tau)}$ using the additive homomorphic property:  $K_{\tilde{P}(\tau)}=K_{P(tau)\cdot} g^{-y}$. Then the prover shows $K_{\tilde{P}(\tau)}$ has a root at point $x$ using the protocol above for proving roots.
 
 #### Selective Open: Batch of Points
 

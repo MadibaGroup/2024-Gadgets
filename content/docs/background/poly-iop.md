@@ -3,7 +3,13 @@ title: Polynomials
 type: docs
 ---
 
-# Encoding Arrays of Data into Polynomials
+# Polynomials
+
+All the gadgets in Plonkbook follow the same high level model, called a polynomial interactive proof (Poly-IOP). Each gadget is defined as an operation on one or more arrays of data. The arrays are encoded into a univariate polynomial (see below) and the polynomial is committed to (next background section) and passed to the verifier. The verifier works with commitments and sees that operations on commitments are mirroring a set of operations being done on the polynomials themselves. And the operations on the polynomials are mirroring operations on the data encoded into them as an array. 
+
+Each gadget description will begin with the array and show the operation being done on the array. It will then show how to manipulate a polynomial holding the array so that the operation is performed on the underlying array. It will then show how the verifier can use only commitments to the polynomials, rather than the full polynomials, to follow along and check every step.
+
+## Encoding Arrays of Data into Polynomials
 
 In the Poly-IOP model, data starts as an array (or vector) of integers and gadgets are defined in terms of operations on arrays. In the proof stage, the arrays are encoded into a polynomial. Array slots contain integers between 0 and $q-1$, where $q$ is a large (generally 256 bit) prime number. Recall that we call this set of integers $\mathbb{Z}_q$.
 
@@ -28,9 +34,7 @@ Each has its advantages and disadvantages, which we discuss next.
 
 Fast forwarding a bit, once the polynomial is created, it is not shared directly with anyone. Instead, a commitment to it is shared. The commitment does two things: (1) it makes it succinct: e.g., constant size regardless of how long the array is; and (2) it can hide the data in the array as necessary. We will discuss one specific polynomial commitment scheme called KZG. KZG needs the polynomial in the format of a list of its coefficients. If we have the polynomial in a different form, we will have to convert it to coefficients. Thus this needs to be considered when weighing the pros/cons of the three encoding methods.
 
-
-
-## Encoding 1: Coefficients
+### Encoding 1: Coefficients
 
 Create polynomial as: $P_1(\square)=\mathsf{data}_0+\square+\mathsf{data}_2\cdot\square^2+\mathsf{data}_3\cdot\square^3+\mathsf{data}_4\cdot\square^4=\sum_{i=0}^d \mathsf{data}_i\cdot\square^i$  
 
@@ -43,9 +47,8 @@ Properties:
 * Other useful properties 👍: the sum of all values in a array can be computed by evaluating the polynomial at $P_1(\boxed{1})$! $\sum_{i=0}^d \mathsf{data}_i\cdot\boxed{1}^i=\sum_{i=0}^d \mathsf{data}_i$ . You can also show two arrays have the same sum (called a "sum check") by subtracting them and showing $P(\boxed{1})=0$.
 * Other useful properties 👍: when all coefficients are 0, the polynomial will be the zero polynomial ($P_1(\square)=0$). Coefficients can be entire polynomials, not just integers. A common optimization in Poly-IOP systems is taking a set of equations of polynomials that should equal 0, placing each into the coefficient of a super-polynomial, and showing the super-polynomial is the zero polynomial (which can be proven overwhelmingly by showing it is 0 at a randomly selected point).
 
-  
 
-## Encoding 2: Evaluation Points
+### Encoding 2: Evaluation Points
 
 Create a list of points $\{x,y\}$ for the data: $\langle\{0,\mathsf{data}_0\},\{1,\mathsf{data}_1\},\{2,\mathsf{data}_2\},\{3,\mathsf{data}_3\},\{4,\mathsf{data}_4\}\rangle$ and interpolate a polynomial $P_2(\square)$ through these points. 
 
@@ -56,9 +59,7 @@ Properties:
 * Multiplication 👍: two arrays can be multiplied together (slot-by-slot) by simply multiplying the polynomials together
 * Opening 👍: proving the value of the $i$th element in the array is $\mathsf{data}_i$ is possible with polynomial math by showing $P_2(\boxed{i})=\mathsf{data}_i$ and KZG has a precise algorithm for this. 
 
-
-
-## Encoding 3: Roots
+### Encoding 3: Roots
 
 Create polynomial as: $P_3(\square)=(\square-\mathsf{data}_0)(\square-\mathsf{data}_1)(\square-\mathsf{data}_2)(\square-\mathsf{data}_3)(\square-\mathsf{data}_4)$
 
@@ -73,9 +74,7 @@ Properties:
 * Other useful properties 👍: the order of the data in the array does not matter. The same polynomial will be produced even if the order is changed. This is useful when the array represents a "bag" of unordered data. You can easily prove two "bags" of data are the same because the polynomials will be the same. One use-case of this is proving the output of a shuffle/permutation is the same data as the input (just in a different order).
 * Other useful properties 👍: multiplying two polynomials results in a concatenation of the data in the arrays (or conjunction/union of the data in both bags). This might be useful in some protocols.
 
-^[1]: Hat tip Pratyush Mishra.
-
-## Decision Tree for Encoding
+### Decision Tree for Encoding
 
 Basically we decide if we specifically need unordered "bags" of data. If so, encoding as roots is the only option. If not, we consider if we need to ever get the data back from the polynomial. Generally we do and encoding as evaluation points is the most common encoding technique. When do we encode the data and never want it back? Usually when (1) the coefficients are all supposed to be zero so we are just showing that property, or (2) we want back the sum of the data and not the data itself. In these cases, you can still work with evaluation point encoding but it will be faster to just do coefficient encoding.
 
@@ -102,3 +101,7 @@ The optimization we will explore enables interpolation via the fast Fourier tran
 For terminology, we say $\omega$ is a generator with multiplicative order $\kappa$ in $\mathbb{Z}_q$ (or $\omega \in \mathbb{G}_\kappa$). This implies $\omega^\kappa=1$. Rearranging, $\omega=\sqrt[\kappa]{1}$. Thus we can equivalently describe $\omega$ as a $\kappa$-th root of 1. Finally, as 1 is the unity element in $Z_q$, $\omega$ is commonly called a $\kappa$-th root of unity. 
 
 For practical purposes, $\kappa$ represents the length of the longest array of data we can use in our protocol. Where does $\kappa$ come from? Different elements of $Z_q$ will have different multiplicative orders but every order must be a divisor of $q-1$. Thus $\kappa$ is the largest divisor of the exact value of $q$ used in an elliptic curve standard. BLS12-384 has $\kappa=2^{32}$ (for terminology, this called a $2$-adicity of $32$). In summary, we can only encode data arrays of length up to $2^{32}=4,294,967,296$.
+
+## Footnotes
+
+^[1]: Hat tip Pratyush Mishra for suggesting a state-of-the-art algorithm.
