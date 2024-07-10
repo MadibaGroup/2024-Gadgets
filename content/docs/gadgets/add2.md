@@ -174,7 +174,7 @@ $= (\mathsf{Poly}_\mathsf{Acc}(\zeta)-\mathsf{Poly}_\mathsf{Arr}(\zeta))\cdot\fr
 
 $= 0$
 
-Where the third equality relies on the fact that $\mathsf{Poly_{Vanish}}(X)$ is divisible by $X^\kappa - 1$. This is true if $\mathsf{Poly_{Vanish_1}}(X), \mathsf{Poly_{Vanish_2}}(X)$ and $\mathsf{Poly_{Vanish_3}}(X),$ are all vanishing on $\mathcal{H_\kappa}$, i.e. if all three of the following conditions hold for all $X \in \mathcal{H}_\kappa$:
+Where the third equality relies on the fact that $\mathsf{Poly}_\mathsf{Vanish1}(\zeta) + \mathsf{Poly}_\mathsf{Vanish2}(\zeta) \rho  +  \mathsf{Poly}_\mathsf{Vanish3}(\zeta)\rho^2$ is divisible by $X^\kappa - 1$. This is true if $\mathsf{Poly_{Vanish_1}}(X), \mathsf{Poly_{Vanish_2}}(X)$ and $\mathsf{Poly_{Vanish_3}}(X),$ are all vanishing on $\mathcal{H_\kappa}$, i.e. if all three of the following conditions hold for all $X \in \mathcal{H}_\kappa$:
 
 1. $(\mathsf{Poly}_\mathsf{Acc}(X)-\mathsf{Poly}_\mathsf{Arr}(X))\cdot\frac{(X^\kappa-1)}{(X-\omega^{\kappa-1})}=0$
 2. $ (\mathsf{Poly}_\mathsf{Acc}(X)-\mathsf{Poly}_\mathsf{Arr}(X)+\mathsf{Poly}_\mathsf{Acc}(\omega\cdot X))\cdot(X-\omega^{\kappa-1})=0$ 
@@ -182,15 +182,15 @@ Where the third equality relies on the fact that $\mathsf{Poly_{Vanish}}(X)$ is 
 
 These conditions, in turn, hold if:
 
-1. For $X=w^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc}(X)=\mathsf{Poly}_\mathsf{Arr}(X)$,
+1. For $X=w^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc}(X)=\mathsf{Poly}_\mathsf{Arr}(X)$
 2. For all $X$ except $X=\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc}(X)=\mathsf{Poly}_\mathsf{Arr}(X)+\mathsf{Poly}_\mathsf{Acc}(\omega\cdot X)$ 
 3. For $X=w^0$: $\mathsf{Poly}_\mathsf{Acc}(X)=\mathsf{Sum}_\mathsf{Arr}$
 
 Where we get the "For $X$" due to zeroing parts of the polynomials (see [zero1](../zero1.md)). Since $\mathsf{Poly_j}(\omega^i) = \mathsf{Arr_j}[i] \space \forall i \in [0, \kappa - 1]$, the above conditions are true if:
 
-1. The last value in $\mathsf{Acc}$ matches the last value in $\mathsf{Arr}$,
-2. The rest of the values in $\mathsf{Acc}$ are of the form $\mathsf{Acc}[i]=\mathsf{Arr}[i]+\mathsf{Acc}[i-1]$,
-3. The first value in $\mathsf{Acc}$ matches $\mathsf{Sum}_\mathsf{Arr}$.
+1. The last value in $\mathsf{Acc}$ matches the last value in $\mathsf{Arr}$
+2. The rest of the values in $\mathsf{Acc}$ are of the form $\mathsf{Acc}[i]=\mathsf{Arr}[i]+\mathsf{Acc}[i-1]$
+3. The first value in $\mathsf{Acc}$ matches $\mathsf{Sum}_\mathsf{Arr}$
 
 Which are precisely the conditions the Intuitions sections explains will hold if the prover contructs their Accumulator by following the protocol and using $\mathsf{Arr}$ such that $\mathsf{Sum}_\mathsf{Arr}=\sum_{i = 0}^{n-1} \mathsf{Arr}[i] \space \forall i \in [0, n - 1]$. This is what we assumed true about the prover, thus the $Y_\mathsf{Zero}(X)$ it creates by following the protocol is zero, and its transcipt will be accepted.
 

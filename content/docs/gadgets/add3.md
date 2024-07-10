@@ -116,11 +116,11 @@ These equations are true for every value of $X \in \mathcal{H}_\kappa$ (but not 
 
 We can replace polynomials $Q_1(X)$, $Q_2(X)$,  $Q_3(X)$,  $Q_4(X)$, and $Q_5(X)$ with a single polynomial $Q(X)$. We can do this because all three constraints have the same format: $\mathsf{Poly}_\mathsf{Vanish_i}(X)=0$. The batching technique is to create a new polynomial with all five $\mathsf{Poly}_\mathsf{Vanish_i}(X)$ values as coefficients. If and (overwhelmingly) only if all five are vanishing, then so will the new polynomial. This polynomial will be evaluated at a random challenge point $\rho$ selected after the commitments to the earlier polynomials are fixed. 
 
-$Q(X) = \frac{\mathsf{Poly}_\mathsf{Vanish1}(X) + \mathsf{Poly}_\mathsf{Vanish2}(X) \rho  +  \mathsf{Poly}_\mathsf{Vanish3}(X)\rho^2 + \mathsf{Poly}_\mathsf{Vanish4}(X)\rho^3 + \mathsf{Poly}_\mathsf{Vanish5}(X)\rho^4}{X^n - 1}$
+$Q(X) = \frac{\mathsf{Poly}_\mathsf{Vanish1}(X) + \mathsf{Poly}_\mathsf{Vanish2}(X) \rho  +  \mathsf{Poly}_\mathsf{Vanish3}(X)\rho^2 + \mathsf{Poly}_\mathsf{Vanish4}(X)\rho^3 + \mathsf{Poly}_\mathsf{Vanish5}(X)\rho^4}{X^\kappa - 1}$
 
 By rearranging, we can get $\mathsf{Poly}_\mathsf{Zero}(X)$ as a true zero polynomial (zero at every value both in $\mathcal{H}_\kappa$ and outside of it):
 
-$\mathsf{Poly}_\mathsf{Zero}(X)=\mathsf{Poly}_\mathsf{Vanish1}(X) + \mathsf{Poly}_\mathsf{Vanish2} (X) \rho + \mathsf{Poly}_\mathsf{Vanish3}(X) \rho^2 + \mathsf{Poly}_\mathsf{Vanish4}(X)\rho^3 + \mathsf{Poly}_\mathsf{Vanish5}(X)\rho^4 - Q(X)\cdot (X^n - 1)=0$
+$\mathsf{Poly}_\mathsf{Zero}(X)=\mathsf{Poly}_\mathsf{Vanish1}(X) + \mathsf{Poly}_\mathsf{Vanish2} (X) \rho + \mathsf{Poly}_\mathsf{Vanish3}(X) \rho^2 + \mathsf{Poly}_\mathsf{Vanish4}(X)\rho^3 + \mathsf{Poly}_\mathsf{Vanish5}(X)\rho^4 - Q(X)\cdot (X^\kappa - 1)=0$
 
 Ultimately the add3 argument will satisfy the following constraints at the Commitment Level:
 
@@ -162,7 +162,7 @@ To check the proof, the verifier uses the transcript to construct the value $Y_\
 * $Y_\mathsf{Vanish3}=(\mathsf{Poly}_\mathsf{Acc_1}(\zeta)-(\mathsf{Poly}_\mathsf{Arr_1}(\zeta)+\mathsf{Poly}_\mathsf{Acc_1}(\omega\cdot \zeta)))\cdot(\zeta-\omega^{\kappa-1})$
 * $Y_\mathsf{Vanish4}= (\mathsf{Poly}_\mathsf{Acc_2}(\zeta)-(\mathsf{Poly}_\mathsf{Arr_2}(\zeta)+\mathsf{Poly}_\mathsf{Acc_2}(\omega\cdot \zeta)))\cdot(\zeta-\omega^{\kappa-1})$
 * $Y_\mathsf{Vanish5}= (\mathsf{Poly}_\mathsf{Acc_1}(\zeta)-\mathsf{Poly}_\mathsf{Acc_2}(\zeta)\cdot\frac{(\zeta^\kappa-1)}{(\zeta-\omega^0)}$
-* $Y_\mathsf{Zero}=Y_\mathsf{Vanish1} + \rho Y_\mathsf{Vanish2} + \rho^2 Y_\mathsf{Vanish3} + \rho^3 Y_\mathsf{Vanish4} + \rho^4 Y_\mathsf{Vanish5}- Q(\zeta)\cdot (\zeta^n - 1)$
+* $Y_\mathsf{Zero}=Y_\mathsf{Vanish1} + \rho Y_\mathsf{Vanish2} + \rho^2 Y_\mathsf{Vanish3} + \rho^3 Y_\mathsf{Vanish4} + \rho^4 Y_\mathsf{Vanish5}- Q(\zeta)\cdot (\zeta^\kappa - 1)$
 
 Finally, if the constraint system is true, the following constraint will be true (and will be false otherwise with overwhelming probability, due to the Schwartz-Zippel lemma on $\rho$ and $\zeta$) :
 
@@ -176,7 +176,43 @@ Finally, if the constraint system is true, the following constraint will be true
 
 ### Completeness
 
-Any honest prover can do the computations explained above and create an accepting proof.
+If $Y_\mathsf{Zero}$ is zero, then $\mathcal{V}$ will accept. Therefore, to show completeness, we show that any prover who holds $\mathsf{Arr}$ such that $\sum_{i = 0}^{n-1} \mathsf{Arr}_1[i]=\sum_{i = 0}^{n-1} \mathsf{Arr}_2[i] \space \forall i \in [0, n - 1]$ can follow the steps outlined in the above protocol and the resulting $Y_\mathsf{Zero}$ will be equal to zero.  To see this, observed that $Y_\mathsf{Zero}$
+
+$ = Y_\mathsf{Vanish1} + \rho Y_\mathsf{Vanish2} + \rho^2 Y_\mathsf{Vanish3} + \rho^3 Y_\mathsf{Vanish4} + \rho^4 Y_\mathsf{Vanish5}- Q(\zeta)\cdot (\zeta^\kappa - 1)$ 
+
+$= Y_\mathsf{Vanish1} + \rho Y_\mathsf{Vanish2} + \rho^2 Y_\mathsf{Vanish3} + \rho^3 Y_\mathsf{Vanish4} + \rho^4 Y_\mathsf{Vanish5} - (\frac{\mathsf{Poly}_\mathsf{Vanish1}(X) + \mathsf{Poly}_\mathsf{Vanish2}(X) \rho  +  \mathsf{Poly}_\mathsf{Vanish3}(X)\rho^2 + \mathsf{Poly}_\mathsf{Vanish4}(X)\rho^3 + \mathsf{Poly}_\mathsf{Vanish5}(X)\rho^4}{X^\kappa - 1})(\zeta^\kappa - 1)$
+
+$= Y_\mathsf{Vanish1} + \rho Y_\mathsf{Vanish2} + \rho^2 Y_\mathsf{Vanish3} + \rho^3 Y_\mathsf{Vanish4} + \rho^4 Y_\mathsf{Vanish5} - {\mathsf{Poly}_\mathsf{Vanish1}(X) - \mathsf{Poly}_\mathsf{Vanish2}(X) \rho -  \mathsf{Poly}_\mathsf{Vanish3}(X)\rho^2 - \mathsf{Poly}_\mathsf{Vanish4}(X)\rho^3 - \mathsf{Poly}_\mathsf{Vanish5}(X)\rho^4}$
+
+$= 0$
+
+Where the finally equality holds becaue $Y_{\mathsf{Vanish_j}}=\mathsf{Poly_{Vanish_j}}(\zeta)$.
+
+Note also that the second equality relies on the fact that $\mathsf{Poly}_\mathsf{Vanish1}(X) + \mathsf{Poly}_\mathsf{Vanish2}(X) \rho  +  \mathsf{Poly}_\mathsf{Vanish3}(X)\rho^2 + \mathsf{Poly}_\mathsf{Vanish4}(X)\rho^3 + \mathsf{Poly}_\mathsf{Vanish5}(X)\rho^4$ is divisible by $X^\kappa - 1$. This is true if $\mathsf{Poly_{Vanish_1}}(X), \mathsf{Poly_{Vanish_2}}(X)$, $\mathsf{Poly_{Vanish_3}}(X),$ $\mathsf{Poly_{Vanish_4}}(X)$, and $\mathsf{Poly_{Vanish_5}}(X),$ are all vanishing on $\mathcal{H_\kappa}$, i.e. if all three of the following conditions hold for all $X \in \mathcal{H}_\kappa$:
+
+1. $ (\mathsf{Poly}_\mathsf{Acc_1}(X)-\mathsf{Poly}_\mathsf{Arr_1}(X))\cdot\frac{(X^\kappa-1)}{(X-\omega^{\kappa-1})}=0$
+2. $ (\mathsf{Poly}_\mathsf{Acc_2}(X)-\mathsf{Poly}_\mathsf{Arr_2}(X))\cdot\frac{(X^\kappa-1)}{(X-\omega^{\kappa-1})}=0$
+3. $(\mathsf{Poly}_\mathsf{Acc_1}(X)-(\mathsf{Poly}_\mathsf{Arr_1}(X)+\mathsf{Poly}_\mathsf{Acc_1}(\omega\cdot X)))\cdot(X-\omega^{\kappa-1})=0$ 
+4. $ (\mathsf{Poly}_\mathsf{Acc_2}(X)-(\mathsf{Poly}_\mathsf{Arr_2}(X)+\mathsf{Poly}_\mathsf{Acc_2}(\omega\cdot X)))\cdot(X-\omega^{\kappa-1})=0$ 
+5. $ (\mathsf{Poly}_\mathsf{Acc_1}(X)-\mathsf{Poly}_\mathsf{Acc_2}(X)\cdot\frac{(X^\kappa-1)}{(X-\omega^0)}=0$
+
+These conditions, in turn, hold if:
+
+1. For $X=w^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc_1}(X)=\mathsf{Poly}_\mathsf{Arr_1}(X)$
+2. For $X=w^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc_2}(X)=\mathsf{Poly}_\mathsf{Arr_2}(X)$
+3. For all $X$ except $X=\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc_1}(X)=\mathsf{Poly}_\mathsf{Arr_1}(X)+\mathsf{Poly}_\mathsf{Acc_1}(\omega\cdot X)$ 
+4. For all $X$ except $X=\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{Acc_2}(X)=\mathsf{Poly}_\mathsf{Arr_2}(X)+\mathsf{Poly}_\mathsf{Acc_2}(\omega\cdot X)$ 
+5. For $X=w^0$: $\mathsf{Poly}_\mathsf{Acc_1}(X)=\mathsf{Poly}_\mathsf{Acc_2}(X)$
+
+Where we get the "For $X$" due to zeroing parts of the polynomials (see [zero1](../zero1.md)). Since $\mathsf{Poly_j}(\omega^i) = \mathsf{Arr_j}[i] \space \forall i \in [0, \kappa - 1]$, the above conditions are true if:
+
+1. The last value in $\mathsf{Acc_1}$ matches the last value in $\mathsf{Arr_1}$ 
+2. The last value in $\mathsf{Acc_2}$ matches the last value in $\mathsf{Arr_2}$
+3. The rest of the values in $\mathsf{Acc}_1$ are of the form $\mathsf{Acc_1}[i]=\mathsf{Arr_1}[i]+\mathsf{Acc_1}[i-1]$ 
+4. The rest of the values in $\mathsf{Acc}_2$ are of the form $\mathsf{Acc_2}[i]=\mathsf{Arr_2}[i]+\mathsf{Acc_2}[i-1]$ 
+5. The first value in $\mathsf{Acc_1}$ matches the first value in $\mathsf{Acc_2}$
+
+Which are precisely the conditions the Intuitions sections explains will hold if the prover contructs their Accumulators by following the protocol and using $\mathsf{Arr}_1$ and $\mathsf{Arr_2}$ such that $\sum_{i = 0}^{n-1} \mathsf{Arr}_1[i] =\sum_{i = 0}^{n-1} \mathsf{Arr}_2[i] \space \forall i \in [0, n - 1]$. This is what we assumed true about the prover, thus the $Y_\mathsf{Zero}(X)$ it creates by following the protocol is zero, and its transcipt will be accepted.
 
 ### Soundness
 
