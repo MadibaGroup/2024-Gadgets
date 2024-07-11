@@ -192,7 +192,7 @@ Where we get the "For $X$" due to zeroing parts of the polynomials (see [zero1](
 2. The rest of the values in $\mathsf{Acc}$ are of the form $\mathsf{Acc}[i]=\mathsf{Arr}[i]+\mathsf{Acc}[i-1]$
 3. The first value in $\mathsf{Acc}$ matches $\mathsf{Sum}_\mathsf{Arr}$
 
-Which are precisely the conditions the Intuitions sections explains will hold if the prover contructs their Accumulator by following the protocol and using $\mathsf{Arr}$ such that $\mathsf{Sum}_\mathsf{Arr}=\sum_{i = 0}^{n-1} \mathsf{Arr}[i] \space \forall i \in [0, n - 1]$. This is what we assumed true about the prover, thus the $Y_\mathsf{Zero}(X)$ it creates by following the protocol is zero, and its transcipt will be accepted.
+Which are precisely the conditions the Intuitions sections explains will hold if the prover contructs their Accumulator by following the protocol and using $\mathsf{Arr}$ such that $\mathsf{Sum}_\mathsf{Arr}=\sum_{i = 0}^{n-1} \mathsf{Arr}[i] \space \forall i \in [0, n - 1]$. This is what we assumed true about the prover, thus the $Y_\mathsf{Zero}$ it creates by following the protocol is zero, and its transcipt will be accepted.
 
 ### Soundness
 
