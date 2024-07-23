@@ -4,8 +4,8 @@
 
 | Type                 | Description                         | Recap                                                        | This |
 | -------------------- | ----------------------------------- | :----------------------------------------------------------- | ---- |
-| [lookup1](#) | $\mathsf{Arr}[i]\in \{0,1\}$        | Each element of array $\mathsf{Arr}$ is in $\{0,1\}$ (or another small set). | ✅    |
-| [lookup2](../lookup2) | $\mathsf{Arr}[i]\in \mathsf{Table}$ | Each element of array $\mathsf{Arr}$ is in a disclosed table of values $\mathsf{Table}$. |      |
+| [lookup1](./lookup1) | $\mathsf{Arr}[i]\in \{0,1\}$        | Each element of array $\mathsf{Arr}$ is in $\{0,1\}$ (or another small set). | ✅    |
+| [lookup2](./lookup2) | $\mathsf{Arr}[i]\in \mathsf{Table}$ | Each element of array $\mathsf{Arr}$ is in a disclosed table of values $\mathsf{Table}$. |      |
 
 ## Relation
 
@@ -25,7 +25,7 @@ In order to check that each element of $\mathsf{Arr}$ is either 0 or 1, consider
 
 ### Polynomial Level
 
-We assume that $\mathsf{Arr}$ is encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../../background/poly-iop) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 0 or 1.
+We assume that $\mathsf{Arr}$ is encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 0 or 1.
 
 Recall the constraint we want to prove: 
 
@@ -41,7 +41,7 @@ This equation is true for every value of $X \in \mathcal{H}_\kappa$ (but not nec
 
 By rearranging, we can get $\mathsf{Poly}_\mathsf{Zero}(X)$ as a true zero polynomial (zero at every value both in $\mathcal{H}_\kappa$ and outside of it):
 
-1. $\mathsf{Poly}_\mathsf{Zero}(X)=\mathsf{Poly}_\mathsf{Vanish}(X) - Q(X)\cdot (X^n - 1)=0$
+1. $\mathsf{Poly}_\mathsf{Zero}(X)=\mathsf{Poly}_\mathsf{Vanish}(X) - Q(X)\cdot (X^\kappa - 1)=0$
 
 Ultimately the lookup1 argument will satisfy the following constraints at the Commitment Level:
 
@@ -67,7 +67,7 @@ The prover will generate a random challenge evaluation point (using strong Fiat-
 To check the proof, the verifier uses the transcript to construct the value $Y_\mathsf{Zero}$ as follows:
 
 * $Y_\mathsf{Vanish}=\mathsf{Poly}_\mathsf{Arr}(\zeta) \cdot (\mathsf{Poly}_\mathsf{Arr}(\zeta) - 1)$
-* $Y_\mathsf{Zero}=Y_\mathsf{Vanish1} - Q(\zeta)\cdot (\zeta^n - 1)$
+* $Y_\mathsf{Zero}=Y_\mathsf{Vanish} - Q(\zeta)\cdot (\zeta^\kappa - 1)$
 
 Finally, if the constraint system is true, the following constraint will be true (and will be false otherwise with overwhelming probability, due to the Schwartz-Zippel lemma on $\zeta$) :
 
@@ -81,7 +81,19 @@ Finally, if the constraint system is true, the following constraint will be true
 
 ### Completeness
 
-Any honest prover can do the computations explained above and create an accepting proof.
+If $Y_\mathsf{Zero}$ is zero, then $\mathcal{V}$ will accept. Therefore, to show completeness, we show that any prover who holds $\mathsf{Arr}$  such that $\mathsf{Arr}[i] \in \{0, 1\} \forall 0 \leq i \leq n$, can follow the steps outlined in the above protocol and the resulting $Y_\mathsf{Zero}$ will be equal to zero.  To see this, observed that $Y_\mathsf{Zero}$
+
+$= Y_\mathsf{Vanish}  - Q(\zeta)\cdot (\zeta^\kappa - 1)$
+
+$ = \mathsf{Poly}_\mathsf{Arr}(\zeta) \cdot (\mathsf{Poly}_\mathsf{Arr}(\zeta) - 1) - Q(\zeta)\cdot (\zeta^\kappa - 1)$
+
+$ = \mathsf{Poly}_\mathsf{Arr}(\zeta) \cdot (\mathsf{Poly}_\mathsf{Arr}(\zeta) - 1) - \frac{\mathsf{Poly}_\mathsf{Vanish}(\zeta)}{\zeta^\kappa - 1}\cdot (\zeta^\kappa - 1)$
+
+$ = \mathsf{Poly}_\mathsf{Arr}(\zeta) \cdot (\mathsf{Poly}_\mathsf{Arr}(\zeta) - 1) - [\mathsf{Poly}_\mathsf{Arr}(\zeta) \cdot (\mathsf{Poly}_\mathsf{Arr}(\zeta) - 1)]$
+
+$= 0$
+
+Where the third equality relies on the fact that $\mathsf{Poly_{Vanish}}(X)$ is divisible by $X^\kappa -1$. This is true if $\mathsf{Poly_{Vanish}}(\zeta)$ is vanishing on $\mathcal{H}_\kappa$, i.e. if $\mathsf{Poly}_\mathsf{Arr}(X) \cdot (\mathsf{Poly}_\mathsf{Arr}(X) - 1) = 0 \space \forall X \in \mathcal{H}_\kappa$. This is true if $\mathsf{Arr}[i] \cdot (\mathsf{Arr}[i] - 1) = 0 \space \forall i \in [0, \kappa -1]$, since $\mathsf{Poly}(\omega^i) = \mathsf{Arr}[i] \space \forall i \in [0, \kappa - 1]$. But this is precisely the condition we assumed held for the prover (since the array gets padded with $1$'s or $0$'s if $n \lt \kappa$), so the $Y_\mathsf{Zero}$ it creates by following the protocol is zero, and the transcript will be accepted.
 
 ### Soundness
 
@@ -103,7 +115,7 @@ Our proof is as follows:
 
 For the second win condition to be fulfilled, there must be at least one entry is $\mathsf{Arr}$ that is not 0 or 1. But then $\mathsf{Poly}_\mathsf{Vanish}(X)$ is not vanishing on $\mathcal{H}_\kappa$, so $Q(X)$ is not a polynomial (it is a rational function). This means that $\mathcal{A}$ cannot calcuated the correct commitment value $g^{Q(\tau)}$ without solving the t-SDH. Thus, $\mathcal{A}$ chooses an arbitrary value for $Q(\tau)$ and writes $K_Q = g^{Q(\tau)}$ to the transcript. Before this, it also writes a commitment to  $\mathsf{Poly}_\mathsf{Arr}(X)$. Both commitments $\mathcal{A}$ has written are linear combinations of the elements in $[g, g^\tau, g^{\tau^2}, \dots,g^{\tau^{n-1}}]$. $\mathcal{E}$ is given these coefficients (since $\mathcal{A}$ is an algebraic adversary) so $\mathcal{E}$ can output the original polynomials.
 
-$\mathcal{A}$ then obtains the random challenge $\zeta$ (using strong Fiat-Shamir). By the binding property of KZG commitments, $\mathsf{Poly}_\mathsf{Arr}(\zeta)$, can only feasibliy be opened to one value. For $\mathcal{A}$ to have the verifier accept, it must produce a proof that $Q(\zeta)$ opens to $Q(\zeta) = \frac{Y_\mathsf{Vanish1}}{(\zeta^n - 1)}$. This means being able to produce $g^{q(\tau)}$ where $q(\tau) = \frac{Q(\tau) - Q(\zeta)}{\tau - \zeta}$ and $Q(\zeta) = \frac{Y_\mathsf{Vanish1}}{(\zeta^n - 1)}$. Since $Q(\tau)$ and $Q(\zeta)$ are known, this implies knowing $g^{\frac{1}{\tau - \zeta}}$. Thus $\mathcal{A}$ would have found $\langle\zeta,g^{\frac{1}{\tau - \zeta}}\rangle$, which is the t-SDH problem. We have shown that creating an accepting proof reduces to the t-SDH, so $\mathcal{A}$'s probability of success is negligible.
+$\mathcal{A}$ then obtains the random challenge $\zeta$ (using strong Fiat-Shamir). By the binding property of KZG commitments, $\mathsf{Poly}_\mathsf{Arr}(\zeta)$, can only feasibliy be opened to one value. For $\mathcal{A}$ to have the verifier accept, it must produce a proof that $Q(\zeta)$ opens to $Q(\zeta) = \frac{Y_\mathsf{Vanish1}}{(\zeta^\kappa - 1)}$. This means being able to produce $g^{q(\tau)}$ where $q(\tau) = \frac{Q(\tau) - Q(\zeta)}{\tau - \zeta}$ and $Q(\zeta) = \frac{Y_\mathsf{Vanish1}}{(\zeta^\kappa - 1)}$. Since $Q(\tau)$ and $Q(\zeta)$ are known, this implies knowing $g^{\frac{1}{\tau - \zeta}}$. Thus $\mathcal{A}$ would have found $\langle\zeta,g^{\frac{1}{\tau - \zeta}}\rangle$, which is the t-SDH problem. We have shown that creating an accepting proof reduces to the t-SDH, so $\mathcal{A}$'s probability of success is negligible.
 
 ### Zero-Knowledge
 
@@ -113,4 +125,4 @@ The simulator $\mathcal{S}$ chooses an arbitrary value for ${\mathsf{Poly}_\math
 
 Now, $\mathcal{S}$ generates the second random challenge point $\zeta$ (which we assume is not in $\mathcal{H}_\kappa$; if it is in $\mathcal{H}_\kappa$, $\mathcal{S}$ simply restarts and runs from the beginning). This is once again by strong Fiat-Shamir.  $\mathcal{S}$ then create fake opening proofs for ${\mathsf{Poly}_\mathsf{Arr}(\zeta)}$, to an arbitrary value. This is done using the knowledge of $\tau$, calculating the witness polynomial $q(\tau) = \frac{{f(\tau) - f(\zeta)}}{\tau - \zeta}$.
 
-Finally, $\mathcal{S}$ creates a fake opening proof for $Q(\zeta) = \frac{Y_\mathsf{Vanish1}}{(\zeta^n - 1)}$. This is done using knowledge of $\tau$ to calculate an accepting witness $q(\tau)$, as above. This means that $Y_\mathsf{Zero}$ will be zero, and the transcript will be accepted by the verifier. It is indistinguishable from a transcript generates from a real execution, since $\mathsf{PolyCommit}_\mathsf{Ped}$ has the property of Indistinguishability of Commitments due to the randomization by $h^{\hat{\phi}(x)}$. 
+Finally, $\mathcal{S}$ creates a fake opening proof for $Q(\zeta) = \frac{Y_\mathsf{Vanish1}}{(\zeta^\kappa - 1)}$. This is done using knowledge of $\tau$ to calculate an accepting witness $q(\tau)$, as above. This means that $Y_\mathsf{Zero}$ will be zero, and the transcript will be accepted by the verifier. It is indistinguishable from a transcript generates from a real execution, since $\mathsf{PolyCommit}_\mathsf{Ped}$ has the property of Indistinguishability of Commitments due to the randomization by $h^{\hat{\phi}(x)}$. 

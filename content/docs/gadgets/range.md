@@ -2,9 +2,9 @@
 
 ## Recap of types
 
-| Type  | Description               | Recap                                                        | This |
-| ----- | ------------------------- | ------------------------------------------------------------ | ---- |
-| [range](#) | $\mathsf{Arr}[i]\in[0,r]$ | Each element of array $\mathsf{Arr}$ is in the range $[0,r]$ | ✅    |
+| Type | Description | Recap | This |
+| ---- | ----------- | ----- | ---- |
+| range | $\mathsf{Arr}[i]\in[0,r]$ | Each element of array $\mathsf{Arr}$ is in the range $[0,r]$ | ✅ |
 
 ## Relation
 
@@ -12,7 +12,7 @@ $\mathcal{R}_{\mathtt{add1}} := \left\{ \begin{array}{l} (K_\mathsf{Arr}) \end{a
 
 ## Intuition
 
-To prove each element of array $\mathsf{Arr}$ is in the range $[0,r]$, one of the most intuitive ways is we create a vector containing the numbers from $0$ to $r$ and run the lookup argument for $\mathsf{Arr}$. Another approach is we prove each element is in $[0,r]$. Specifically, we decompose the target number to digits in some base $x$ and prove (i) the digits are valid and (ii) the number can be recovered from the digits and the base. The prover ($\mathcal{P}$) holds a number $\eta$ and a vector $\mathsf{T}$ of $k=\lceil\log_x{\eta}\rceil$ integers from $\mathbb{Z}_q$: $[a_0,a_1,a_2,\dots,a_{k-1}]$. Then $r=x^k$ and the prover shows $\eta \in [0, r]$. It will produce a succinct (logarithm base $x$ of $\eta$; for simplicity, we will use base $2$) proof that the vector $\mathsf{T}$ satisfies the following conditions: (i) the first value of $\mathsf{T}$ equals to $\eta$ (ii) the last value of $\mathsf{T}$ equals to one or zero (iii) any value minus two times the next value is equal to one or zero in $\mathsf{T}$. The prover will encode $\mathsf{Arr}$ and $\mathsf{T}$ into two polynomials: $\mathsf{Poly}_\mathsf{Arr}$ and $\mathsf{Poly}_\mathsf{T}$ (using [evaluation points](../../background/poly-iop) on the domain $\mathcal{H}_\kappa$). It will commit to each polynomial: $K_\mathsf{Arr}$ and $K_\mathsf{T}$. The verifier ($\mathcal{V}$) cannot check any of the $\mathsf{Arr}$, $\mathsf{T}$ or $\mathsf{Poly}_\mathsf{Arr}$, $\mathsf{Poly}_\mathsf{T}$ values directly. Instead the verifier only sees $K_\mathsf{Arr}$, and $K_\mathsf{T}$.
+To prove each element of array $\mathsf{Arr}$ is in the range $[0,r]$, one of the most intuitive ways is we create a vector containing the numbers from $0$ to $r$ and run the lookup argument for $\mathsf{Arr}$. Another approach is we prove each element is in $[0,r]$. Specifically, we decompose the target number to digits in some base $x$ and prove (i) the digits are valid and (ii) the number can be recovered from the digits and the base. The prover ($\mathcal{P}$) holds a number $\eta$ and a vector $\mathsf{T}$ of $k=\lceil\log_x{\eta}\rceil$ integers from $\mathbb{Z}_q$: $[a_0,a_1,a_2,\dots,a_{k-1}]$. Then $r=x^k$ and the prover shows $\eta \in [0, r]$. It will produce a succinct (logarithm base $x$ of $\eta$; for simplicity, we will use base $2$) proof that the vector $\mathsf{T}$ satisfies the following conditions: (i) the first value of $\mathsf{T}$ equals to $\eta$ (ii) the last value of $\mathsf{T}$ equals to one or zero (iii) any value minus two times the next value is equal to one or zero in $\mathsf{T}$. The prover will encode $\mathsf{Arr}$ and $\mathsf{T}$ into two polynomials: $\mathsf{Poly}_\mathsf{Arr}$ and $\mathsf{Poly}_\mathsf{T}$ (using [evaluation points]() on the domain $\mathcal{H}_\kappa$). It will commit to each polynomial: $K_\mathsf{Arr}$ and $K_\mathsf{T}$. The verifier ($\mathcal{V}$) cannot check any of the $\mathsf{Arr}$, $\mathsf{T}$ or $\mathsf{Poly}_\mathsf{Arr}$, $\mathsf{Poly}_\mathsf{T}$ values directly. Instead the verifier only sees $K_\mathsf{Arr}$, and $K_\mathsf{T}$.
 
 Consider a small numerical example where $\eta = 14$, working with $x=2$. Since $k=\lceil\log_2{\eta}\rceil = 4$, we will demonstrate that $\eta \in [0,r=2^k]$ by constructing $\mathsf{Arr}$ consisting of $k$ integers. First, we know $\mathsf{T}[0] = \eta = 14$:
 
@@ -42,29 +42,27 @@ The second method is more general and widely used. The basic idea is instead of 
 
 * $\mathcal{P}$ holds a number $\eta\in\mathbb{Z}$
 * $\mathcal{P}$ computes or holds an array $\mathsf{T}=[t_0,t_1,t_2,\dots,t_{k-1}]$ of $k$ (recall $k=\lceil\log_2{\eta}\rceil$) integers ($t_i\in\mathbb{Z}$) such that:
-  * $\mathsf{T}[0]=\eta$
-  * $\mathsf{T}[k-1]\in\{0,1\}$
-  * $\mathsf{T}[i]-2\cdot\mathsf{T}[i+1]\in\{0,1\}$
+    * $\mathsf{T}[0]=\eta$
+    * $\mathsf{T}[k-1]\in\{0,1\}$
+    * $\mathsf{T}[i]-2\cdot\mathsf{T}[i+1]\in\{0,1\}$
 
 ### Polynomial Level
 
-We assume the array $\mathsf{T}$ is encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../../background/poly-iop) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 0 (which will not change the sum).
+We assume the array $\mathsf{T}$ is encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 0 (which will not change the sum).
 
 Recall the constraints we want to prove: 
-
 1. $\mathsf{T}[0]=\eta$
 2. $\mathsf{T}[k-1]\in\{0,1\}$
 3. $\mathsf{T}[i]-2\cdot\mathsf{T}[i+1]\in\{0,1\}$
 
 In polynomial form, the constraints are:
-
 1. For $X=\omega^0$: $\mathsf{Poly}_\mathsf{T}(X)=\eta$
 2. For $X=\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{T}(X)\in\{0,1\}$
 3. For all $X=\mathcal{H}_\kappa\setminus{\omega^{\kappa-1}}$: $\mathsf{Poly}_\mathsf{T}(X)-2\cdot\mathsf{Poly}_\mathsf{T}(X\omega)\in\{0,1\}$
 
 Note because the value of $\eta$ is a secret, $\mathcal{P}$ will not reveal $\eta$ to let $\mathcal{V}$ verify $\eta$ is the evaluation of $\mathsf{Poly}_\mathsf{T}(\omega^0)$. $\mathcal{P}$ will leverage the hiding property of KZG (Pedersen) commitment to prove the committed $\eta$ is the correct evaluation. Specifically, $\mathcal{P}$ claims the committed $\eta$ is the correct one and opens $\mathsf{Poly}_\mathsf{T}$ at $\omega^0$. If the committed $\eta$ satisfy the KZG verification, $\mathcal{V}$ can believe the first constraint is satisfied.
 
-We take care of the "for $X$" conditions of constraints 2 and 3 by zeroing out the rest of the polynomial that is not zero. See the gadget <span style="border-style:dotted;border-width: 2px;"> [zero1](../zero1)</span> for more on why this works.
+We take care of the "for $X$" conditions of constraints 2 and 3 by zeroing out the rest of the polynomial that is not zero. See the gadget <span style="border-style:dotted;border-width: 2px;"> [zero1](./zero1)</span> for more on why this works.
 
 1. $\mathsf{Poly}_\mathsf{Vanish1}(X)=\mathsf{Poly}_\mathsf{T}(X)\cdot[\mathsf{Poly}_\mathsf{T}(X)-1]\cdot\frac{X^\kappa-1}{X-\omega^{\kappa-1}}=0$
 2. $\mathsf{Poly}_\mathsf{Vanish2}(X)=[\mathsf{Poly}_\mathsf{T}(X)-2\cdot\mathsf{Poly}_\mathsf{T}(X\omega)]\cdot[\mathsf{Poly}_\mathsf{T}(X)-2\cdot\mathsf{Poly}_\mathsf{T}(X\omega)-1]\cdot(X-\omega^{\kappa-1})=0$
@@ -74,16 +72,15 @@ The two equations are vanishing for every value of $X\in\mathcal{H}_\kappa$ (but
 1. $Q_1(X) = \frac{\mathsf{Poly}_\mathsf{Vanish1}(X)}{X^\kappa - 1}$
 2. $Q_2(X) = \frac{\mathsf{Poly}_\mathsf{Vanish2}(X)}{X^\kappa - 1}$
 
-We can replace polynomials $Q_1(X)$, and $Q_2(X)$ with a single polynomial $Q(X)$. We can do this because all three constraints have the same format: $\mathsf{Poly}_\mathsf{Vanish_i}(X)=0$. The batching technique is to create a new polynomial with all two $\mathsf{Poly}_\mathsf{Vanish_i}(X)$ values as coefficients. If and (overwhelmingly) only if all three are vanishing, then so will the new polynomial. This polynomial will be evaluated at a random challenge point $\rho$ selected after the commitments to the earlier polynomials are fixed. 
+We can replace polynomials $Q_1(X)$, and $Q_2(X)$ with a single polynomial $Q(X)$. We can do this because all three constraints have the same format: $\mathsf{Poly}_\mathsf{Vanish_i}(X)=0$. The batching technique is to create a new polynomial with all three $\mathsf{Poly}_\mathsf{Vanish_i}(X)$ values as coefficients. If and (overwhelmingly) only if all three are vanishing, then so will the new polynomial. This polynomial will be evaluated at a random challenge point $\rho$ selected after the commitments to the earlier polynomials are fixed. 
 
-$Q(X) = \frac{\mathsf{Poly}_\mathsf{Vanish1}(X)+\rho\cdot\mathsf{Poly}_\mathsf{Vanish2}(X)}{X^n - 1}$
+$Q(X) = \frac{\mathsf{Poly}_\mathsf{Vanish1}(X)+\rho\cdot\mathsf{Poly}_\mathsf{Vanish2}(X)}{X^\kappa - 1}$
 
 By rearranging, we can get $\mathsf{Poly}_\mathsf{Zero}(X)$ as a true zero polynomial (zero at every value both in $\mathcal{H}_\kappa$ and outside of it):
 
 $\mathsf{Poly}_\mathsf{Zero}(X)=\mathsf{Poly}_\mathsf{Vanish1}(X) + \rho\cdot\mathsf{Poly}_\mathsf{Vanish2}(X)-Q(X)\cdot(X^{\kappa-1}-1)=0$
 
 Ultimately the range gadget will satisfy the following constraints at the Commitment Level:
-
 1. Show $Q(X)$ exists (as a polynomial that evenly divides the divisor)
 2. Show $\mathsf{Poly}_\mathsf{Zero}(X)$ is correctly constructed from $\mathsf{Poly}_\mathsf{T}(X)$
 3. Show $\mathsf{Poly}_\mathsf{Zero}(X)$ is the zero polynomial
@@ -93,7 +90,6 @@ Ultimately the range gadget will satisfy the following constraints at the Commit
 The verifier will never see the arrays or polynomials themselves. They are undisclosed because they either (i) contain private data or (ii) are too large to examine and maintain a succinct proof system. Instead, the prover will use commitments.
 
 The prover will write the following commitments to the transcript:
-
 * $K_\mathsf{T}=\mathsf{KZG.Commit}(\mathsf{Poly}_\mathsf{T}(X))$
 
 The prover will generate a random challenge evaluation point (using strong Fiat-Shamir) on the polynomial that is outside of $\mathcal{H}_\kappa$. Call this point $\rho$. It will be used by the prover to create polynomial $Q(X)$ (see above) and the prover will write to the transcript:
@@ -112,7 +108,7 @@ To check the proof, the verifier uses the transcript to construct the value $Y_\
 
 * $Y_\mathsf{Vanish1}=\mathsf{Poly}_\mathsf{T}(\zeta)\cdot[\mathsf{Poly}_\mathsf{T}(\zeta)-1]\cdot\frac{\zeta^\kappa-1}{\zeta-\omega^{\kappa-1}}$
 * $Y_\mathsf{Vanish2}=[\mathsf{Poly}_\mathsf{T}(\zeta)-2\cdot\mathsf{Poly}_\mathsf{T}(\zeta\omega)]\cdot[\mathsf{Poly}_\mathsf{T}(\zeta)-2\cdot\mathsf{Poly}_\mathsf{T}(\zeta\omega)-1]\cdot(\zeta-\omega^{\kappa-1})$ 
-* $Y_\mathsf{Zero}=Y_\mathsf{Vanish1}+\rho\cdot{Y_\mathsf{Vanish2}}-Q(\zeta)\cdot(\zeta^n-1)$
+* $Y_\mathsf{Zero}=Y_\mathsf{Vanish1}+\rho\cdot{Y_\mathsf{Vanish2}}-Q(\zeta)\cdot(\zeta^\kappa-1)$
 
 Finally, if the constraint system is true, the following constraint will be true (and will be false otherwise with overwhelming probability, due to the Schwartz-Zippel lemma on $\rho$ and $\zeta$) :
 
@@ -122,7 +118,36 @@ Finally, if the constraint system is true, the following constraint will be true
 
 ### Completeness
 
-Any honest prover can do the computations explained above and create an accepting proof.
+If $Y_\mathsf{Zero}$ is zero, then $\mathcal{V}$ will accept. Therefore, to show completeness, we show that any prover who runs the protocol with $\eta$ such that $\eta \in [0,r]$, can follow the steps outlined in the above protocol and the resulting $Y_\mathsf{Zero}$ will be equal to zero.  To see this, observed that $Y_\mathsf{Zero}$
+
+$= Y_\mathsf{Vanish1}+\rho\cdot{Y_\mathsf{Vanish2}}-Q(\zeta)\cdot(\zeta^\kappa-1)$
+
+$= \mathsf{Poly}_\mathsf{T}(\zeta)\cdot[\mathsf{Poly}_\mathsf{T}(\zeta)-1]\cdot\frac{\zeta^\kappa-1}{\zeta-\omega^{\kappa-1}} +[\mathsf{Poly}_\mathsf{T}(\zeta)-2\cdot\mathsf{Poly}_\mathsf{T}(\zeta\omega)]\cdot[\mathsf{Poly}_\mathsf{T}(\zeta)-2\cdot\mathsf{Poly}_\mathsf{T}(\zeta\omega)-1]\cdot(\zeta-\omega^{\kappa-1}) -Q(\zeta)\cdot(\zeta^\kappa-1)$
+
+$= \mathsf{Poly}_\mathsf{T}(\zeta)\cdot[\mathsf{Poly}_\mathsf{T}(\zeta)-1]\cdot\frac{\zeta^\kappa-1}{\zeta-\omega^{\kappa-1}} +[\mathsf{Poly}_\mathsf{T}(\zeta)-2\cdot\mathsf{Poly}_\mathsf{T}(\zeta\omega)]\cdot[\mathsf{Poly}_\mathsf{T}(\zeta)-2\cdot\mathsf{Poly}_\mathsf{T}(\zeta\omega)-1]\cdot(\zeta-\omega^{\kappa-1}) \newline -\frac{\mathsf{Poly}_\mathsf{Vanish1}(\zeta)+\rho\cdot\mathsf{Poly}_\mathsf{Vanish2}(\zeta)}{\zeta^n - 1}\cdot(\zeta^\kappa-1)$
+
+$= \mathsf{Poly}_\mathsf{T}(\zeta)\cdot[\mathsf{Poly}_\mathsf{T}(\zeta)-1]\cdot\frac{\zeta^\kappa-1}{\zeta-\omega^{\kappa-1}} +[\mathsf{Poly}_\mathsf{T}(\zeta)-2\cdot\mathsf{Poly}_\mathsf{T}(\zeta\omega)]\cdot[\mathsf{Poly}_\mathsf{T}(\zeta)-2\cdot\mathsf{Poly}_\mathsf{T}(\zeta\omega)-1]\cdot(\zeta-\omega^{\kappa-1}) \newline - [\mathsf{Poly}_\mathsf{T}(\zeta)\cdot[\mathsf{Poly}_\mathsf{T}(\zeta)-1]\cdot\frac{\zeta^\kappa-1}{\zeta-\omega^{\kappa-1}} +[\mathsf{Poly}_\mathsf{T}(\zeta)-2\cdot\mathsf{Poly}_\mathsf{T}(\zeta\omega)]\cdot[\mathsf{Poly}_\mathsf{T}(\zeta)-2\cdot\mathsf{Poly}_\mathsf{T}(\zeta\omega)-1]\cdot(\zeta-\omega^{\kappa-1})]$
+
+$=0$
+
+Where the third equality relies on the fact that $\mathsf{Poly}_\mathsf{Vanish1}(X)+\rho\cdot\mathsf{Poly}_\mathsf{Vanish2}(X)$ is divisible by $X^\kappa -1$. This is true if $\mathsf{Poly_{Vanish1}}(\zeta)$ and $\mathsf{Poly_{Vanish2}}(\zeta)$  are vanishing on $\mathcal{H}_\kappa$, i.e. if both of the following conditions hold:
+
+1. $ \mathsf{Poly}_\mathsf{T}(X)\cdot[\mathsf{Poly}_\mathsf{T}(X)-1]\cdot\frac{X^\kappa-1}{X-\omega^{\kappa-1}}=0$
+2. $ [\mathsf{Poly}_\mathsf{T}(X)-2\cdot\mathsf{Poly}_\mathsf{T}(X\omega)]\cdot[\mathsf{Poly}_\mathsf{T}(X)-2\cdot\mathsf{Poly}_\mathsf{T}(X\omega)-1]\cdot(X-\omega^{\kappa-1})=0$
+
+These conditions, in turn, hold if:
+
+1. For $X=\omega^0$: $\mathsf{Poly}_\mathsf{T}(X)=\eta$
+2. For $X=\omega^{\kappa-1}$: $\mathsf{Poly}_\mathsf{T}(X)\in\{0,1\}$
+3. For all $X=\mathcal{H}_\kappa\setminus{\omega^{\kappa-1}}$: $\mathsf{Poly}_\mathsf{T}(X)-2\cdot\mathsf{Poly}_\mathsf{T}(X\omega)\in\{0,1\}$
+
+Where we get the "For $X$" due to zeroing parts of the polynomials (see [zero1](../zero1.md)). Since $\mathsf{Poly_T}(\omega^i) = \mathsf{Arr_T}[i] \space \forall i \in [0, \kappa - 1]$, the above conditions are true if:
+
+1. $\mathsf{T}[0]=\eta$
+2. $\mathsf{T}[k-1]\in\{0,1\}$
+3. $\mathsf{T}[i]-2\cdot\mathsf{T}[i+1]\in\{0,1\}$
+
+Which are precisely the conditions we described in the intuition section that a honest prover will obey when encoding $\eta$. Thus, the $Y_\mathsf{Zero}$ it creates by following the protocol is zero, and its transcipt will be accepted.
 
 ### Soundness
 
@@ -132,8 +157,8 @@ We prove knowledge soundness in the Algebraic Group Model (AGM). To do so, we mu
 2. $\mathcal{E}$, given access to $\mathcal{A}$'s outputs from the previous step, outputs $\mathsf{Poly}_\mathsf{T}(X)$ and $Q$
 3. $\mathcal{A}$ plays the part of the prover in showing that $Y_\mathsf{Zero}$ is zero at a random challenge $\zeta$
 4. $\mathcal{A}$ wins if
-   * $\mathcal{V}$ accepts at the end of the protocol
-   * $\eta\notin[0,r]$
+    * $\mathcal{V}$ accepts at the end of the protocol
+    * $\eta\notin[0,r]$
 
 Our proof is as follows:
 

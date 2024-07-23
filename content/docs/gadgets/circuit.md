@@ -14,25 +14,38 @@ $\mathcal{R}_{\mathtt{circ}} := \left\{ \begin{array}{l} (K_\mathsf{T},K_\mathsf
 
 The prover ($\mathcal{P}$) and the verifier ($\mathcal{V}$) are both given a circuit $\mathsf{T}$, where $\mathsf{T}[0]$ and $\mathsf{T}[1]$ are the coefficients of the two inputs respectively, $\mathsf{T}[2]$ is the coefficient of the product of the two inputs, and $\mathsf{T}[3]$ is the selector of the gate ($\mathsf{T}[3]$ is one for addition gate and zero for multiplication gate). The prover wants to prove he knows an input vector $\mathsf{In}$ satisfying $\mathsf{T}$. Specifically, we define $\mathsf{In}[0]$ and $\mathsf{In}[1]$ are the inputs of the circuit, $\mathsf{In}[2]$ is a constant, and $\mathsf{In}[3]$ is the output. Thus, the prover will produce a succinct proof that $\mathsf{In}$ satisfies the following condition: the equation $\mathsf{T}[3]\cdot(\mathsf{In}[0]\cdot\mathsf{T}[0]+\mathsf{In}[1]\cdot\mathsf{T}[1])+(1-\mathsf{T}[3])\cdot(\mathsf{In}[0]\cdot\mathsf{In}[1]\cdot\mathsf{T}[2])+\mathsf{In}[2]=\mathsf{In}[3]$ holds.
 
-This means that if $\mathsf{T}[3] = 0$, the multiplication circuit must be satisfied:
+This means that if $\mathsf{T}[3] = 0$, this is the circuit which must be satisfied:
 
 {{< mermaid >}}
-    flowchart LR
-        in0["In[0]"] & in1["In[1]"] --> id1((x))
-        t2["T[2]"] & id1 --> id2((x))
-        in2["In[2]"] & id2 --> id3((+))
-        id3 --> in3["In[3]"]
+
+flowchart LR
+
+   in0["In[0]"] & in1["In[1]"] **-->** id1((x))
+
+   t2["T[2]"] & id1 **-->** id2((x))
+
+   in2["In[2]"] & id2 **-->** id3((+))
+
+   id3 **-->** in3["In[3]"]
+
 {{< /mermaid >}}
 
-And if $\mathsf{T}[3] = 1$, the addition circuit must be satisfied:
+And if $\mathsf{T}[3] = 1$, this is the circuit which must be satisfied:
 
 {{< mermaid >}}
-    flowchart LR
-        in0["In[0]"] & t0["T[0]"] --> id1((x))
-        in1["In[1]"] & t1["T[1]"] --> id2((x))
-        id1 & id2 --> id3((+))
-        in2["In[2]"] & id3 --> id4((+))
-        id4 --> in3["In[3]"]
+
+flowchart LR
+
+   in0["In[0]"] & t0["T[0]"] **-->** id1((x))
+
+   in1["In[1]"] & t1["T[1]"] **-->** id2((x))
+
+   id1 & id2 **-->** id3((+))
+
+   in2["In[2]"] & id3 **-->** id4((+))
+
+   id4 **-->** in3["In[3]"]
+
 {{< /mermaid >}}
 
 Consider, as an example, the circuit $5x+6y$. Thus, $\mathsf{T}=[5,6,0,1]$. Since $\mathsf{T}$ is publicly known to both parties, $\mathsf{Poly}_\mathsf{T}$ is also known and the prover does not need to prove the correctness of $\mathsf{T}$. Now the prover claims $\mathsf{In}=[6,5,0,60]$ satisfies the circuit. Indeed, $5\cdot 6+ 6\cdot 5 + 0 = 60$. Instead of sending each element of $\mathsf{In}$ one by one to show this, the prover interpolates a polynomial $\mathsf{Poly}_\mathsf{In}$ from $\mathsf{In}$ and computes a vanishing polynomial with $\mathsf{Poly}_\mathsf{T}$ and $\mathsf{Poly}_\mathsf{In}$. If the prover can prove the polynomial is vanishing, the verifier will be convinced that the prover knows a valid $\mathsf{In}$.
@@ -49,7 +62,7 @@ Consider, as an example, the circuit $5x+6y$. Thus, $\mathsf{T}=[5,6,0,1]$. Sinc
 
 ### Polynomial Level
 
-We assume arrays $\mathsf{T}$ and $\mathsf{In}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../../background/poly-iop) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 1 (which will not change the product). In this case, $\kappa$ is $4$.
+We assume arrays $\mathsf{T}$ and $\mathsf{In}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../background/poly-iop.md) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the array, the array can be padded with elements of value 1 (which will not change the product). In this case, $\kappa$ is $4$.
 
 Recall the constraint we want to prove: 
 
@@ -59,7 +72,7 @@ In polynomial form, the constraint is:
 
 1. For $X=\omega^0$: $\displaylines{\mathsf{Poly}_\mathsf{T}(X\omega^3)\cdot(\mathsf{Poly}_\mathsf{In}(X)\cdot\mathsf{Poly}_\mathsf{T}(X)+\mathsf{Poly}_\mathsf{In}(X\omega)\cdot\mathsf{Poly}_\mathsf{T}(X\omega))\\+(1-\mathsf{Poly}_\mathsf{T}(X\omega^3))\cdot(\mathsf{Poly}_\mathsf{In}(X)\cdot\mathsf{Poly}_\mathsf{In}(X\omega)\cdot\mathsf{Poly}_\mathsf{T}(X\omega^2))+\mathsf{Poly}_\mathsf{In}(X\omega^2)=\mathsf{Poly}_\mathsf{In}(X\omega^3)}$
 
-We take care of the "for $X$" condition by zeroing out the rest of the polynomial that is not zero. See the gadget <span style="border-style:dotted;border-width: 2px;"> [zero1](../zero1)</span> for more on why this works.
+We take care of the "for $X$" condition by zeroing out the rest of the polynomial that is not zero. See the gadget <span style="border-style:dotted;border-width: 2px;"> [zero1](./zero1)</span> for more on why this works.
 
 1. $\displaylines{\mathsf{Poly}_\mathsf{Vanish}(X)=[\mathsf{Poly}_\mathsf{T}(X\omega^3)\cdot(\mathsf{Poly}_\mathsf{In}(X)\cdot\mathsf{Poly}_\mathsf{T}(X)+\mathsf{Poly}_\mathsf{In}(X\omega)\cdot\mathsf{Poly}_\mathsf{T}(X\omega))\\+(1-\mathsf{Poly}_\mathsf{T}(X\omega^3))\cdot(\mathsf{Poly}_\mathsf{In}(X)\cdot\mathsf{Poly}_\mathsf{In}(X\omega)\cdot\mathsf{Poly}_\mathsf{T}(X\omega^2))+\\\mathsf{Poly}_\mathsf{In}(X\omega^2)-\mathsf{Poly}_\mathsf{In}(X\omega^3)]\cdot\frac{X^\kappa-1}{X-\omega^0}}$
 
@@ -118,7 +131,31 @@ Finally, if the constraint system is true, the following constraint will be true
 
 ### Completeness
 
-Any honest prover can do the computations explained above and create an accepting proof.
+If $Y_\mathsf{Zero}$ is zero, then $\mathcal{V}$ will accept. Therefore, to show completeness, we show that any prover who holds $\mathsf{In}$ that satisfies the circuit $\mathsf{T}$ can follow the steps outlined in the above protocol and the resulting $Y_\mathsf{Zero}$ will be equal to zero.  To see this, observed that $Y_\mathsf{Zero}$
+
+$= \mathsf{Poly}_\mathsf{Vanish}(\zeta)-Q(\zeta)\cdot(\zeta^{\kappa}-1)$
+
+$= [\mathsf{Poly}_\mathsf{T}(\zeta\omega^3)\cdot(\mathsf{Poly}_\mathsf{In}(\zeta)\cdot\mathsf{Poly}_\mathsf{T}(\zeta)+\mathsf{Poly}_\mathsf{In}(\zeta\omega)\cdot\mathsf{Poly}_\mathsf{T}(\zeta\omega))+(1-\mathsf{Poly}_\mathsf{T}(\zeta\omega^3))\cdot(\mathsf{Poly}_\mathsf{In}(\zeta)\cdot\mathsf{Poly}_\mathsf{In}(\zeta\omega)\cdot\mathsf{Poly}_\mathsf{T}(\zeta\omega^2))+\\\mathsf{Poly}_\mathsf{In}(\zeta\omega^2)-\mathsf{Poly}_\mathsf{In}(\zeta\omega^3)]\cdot\frac{\zeta^\kappa-1}{\zeta-\omega^0} -Q(\zeta)\cdot(\zeta^\kappa-1)$
+
+$= [\mathsf{Poly}_\mathsf{T}(\zeta\omega^3)\cdot(\mathsf{Poly}_\mathsf{In}(\zeta)\cdot\mathsf{Poly}_\mathsf{T}(\zeta)+\mathsf{Poly}_\mathsf{In}(\zeta\omega)\cdot\mathsf{Poly}_\mathsf{T}(\zeta\omega))+(1-\mathsf{Poly}_\mathsf{T}(\zeta\omega^3))\cdot(\mathsf{Poly}_\mathsf{In}(\zeta)\cdot\mathsf{Poly}_\mathsf{In}(\zeta\omega)\cdot\mathsf{Poly}_\mathsf{T}(\zeta\omega^2))+\\\mathsf{Poly}_\mathsf{In}(\zeta\omega^2)-\mathsf{Poly}_\mathsf{In}(\zeta\omega^3)]\cdot\frac{\zeta^\kappa-1}{\zeta-\omega^0} - \frac{\mathsf{Poly}_\mathsf{Vanish}(\zeta)}{\zeta^\kappa-1} \cdot(\zeta^\kappa-1)$
+
+$= [\mathsf{Poly}_\mathsf{T}(\zeta\omega^3)\cdot(\mathsf{Poly}_\mathsf{In}(\zeta)\cdot\mathsf{Poly}_\mathsf{T}(\zeta)+\mathsf{Poly}_\mathsf{In}(\zeta\omega)\cdot\mathsf{Poly}_\mathsf{T}(\zeta\omega))+(1-\mathsf{Poly}_\mathsf{T}(\zeta\omega^3))\cdot(\mathsf{Poly}_\mathsf{In}(\zeta)\cdot\mathsf{Poly}_\mathsf{In}(\zeta\omega)\cdot\mathsf{Poly}_\mathsf{T}(\zeta\omega^2))+\\\mathsf{Poly}_\mathsf{In}(\zeta\omega^2)-\mathsf{Poly}_\mathsf{In}(\zeta\omega^3)]\cdot\frac{\zeta^\kappa-1}{\zeta-\omega^0} \newline - [[\mathsf{Poly}_\mathsf{T}(\zeta\omega^3)\cdot(\mathsf{Poly}_\mathsf{In}(\zeta)\cdot\mathsf{Poly}_\mathsf{T}(\zeta)+\mathsf{Poly}_\mathsf{In}(\zeta\omega)\cdot\mathsf{Poly}_\mathsf{T}(\zeta\omega))+(1-\mathsf{Poly}_\mathsf{T}(\zeta\omega^3))\cdot(\mathsf{Poly}_\mathsf{In}(\zeta)\cdot\mathsf{Poly}_\mathsf{In}(\zeta\omega)\cdot\mathsf{Poly}_\mathsf{T}(\zeta\omega^2))+\\\mathsf{Poly}_\mathsf{In}(\zeta\omega^2)-\mathsf{Poly}_\mathsf{In}(\zeta\omega^3)]\cdot\frac{\zeta^\kappa-1}{\zeta-\omega^0} \cdot(\zeta^\kappa-1)]$
+
+$=0$
+
+Where the third equality relies on the fact that $\mathsf{Poly_{Vanish}}(X)$ is divisible by $X^\kappa -1$. This is true if $\mathsf{Poly_{Vanish}}(\zeta)$ is vanishing on $\mathcal{H}_\kappa$, i.e. if:
+
+ $\mathsf{Poly}_\mathsf{T}(\zeta\omega^3)\cdot(\mathsf{Poly}_\mathsf{In}(\zeta)\cdot\mathsf{Poly}_\mathsf{T}(\zeta)+\mathsf{Poly}_\mathsf{In}(\zeta\omega)\cdot\mathsf{Poly}_\mathsf{T}(\zeta\omega))+(1-\mathsf{Poly}_\mathsf{T}(\zeta\omega^3))\cdot(\mathsf{Poly}_\mathsf{In}(\zeta)\cdot\mathsf{Poly}_\mathsf{In}(\zeta\omega)\cdot\mathsf{Poly}_\mathsf{T}(\zeta\omega^2))\\+\mathsf{Poly}_\mathsf{In}(\zeta\omega^2)-\mathsf{Poly}_\mathsf{In}(\zeta\omega^3)]\cdot\frac{\zeta^\kappa-1}{\zeta-\omega^0} = 0$
+
+Which hold if, for $X=\omega^0$:
+
+$ \mathsf{Poly}_\mathsf{T}(X\omega^3)\cdot(\mathsf{Poly}_\mathsf{In}(X)\cdot\mathsf{Poly}_\mathsf{T}(X)+\mathsf{Poly}_\mathsf{In}(X\omega)\cdot\mathsf{Poly}_\mathsf{T}(X\omega))+(1-\mathsf{Poly}_\mathsf{T}(X\omega^3))\cdot(\mathsf{Poly}_\mathsf{In}(X)\cdot\mathsf{Poly}_\mathsf{In}(X\omega)\cdot\mathsf{Poly}_\mathsf{T}(X\omega^2))\\+\mathsf{Poly}_\mathsf{In}(X\omega^2)=\mathsf{Poly}_\mathsf{In}(X\omega^3)$
+
+Where we get the "for $X = \omega^0$" due to zeroing parts of the polynomials (see [zero1](../zero1.md)). Since $\mathsf{Poly_T}(\omega^i) = \mathsf{T}[i]$  and $\mathsf{Poly_{In}}(\omega^i) = \mathsf{In}[i]$, $\forall i \in [0, \kappa - 1]$, the above conditions are true if:
+
+$\mathsf{T}[3]\cdot(\mathsf{In}[0]\cdot\mathsf{T}[0]+\mathsf{In}[1]\cdot\mathsf{T}[1])+(1-\mathsf{T}[3])\cdot(\mathsf{In}[0]\cdot\mathsf{In}[1]\cdot\mathsf{T}[2])+\mathsf{In}[2]=\mathsf{In}[3]$
+
+But this means precisely that $\mathsf{In}$ satisfies the circuit $\mathsf{T}$, which was the condition we assumed about the prover. Thus, the $Y_\mathsf{Zero}$ it creates by following the protocol is zero, and its transcipt will be accepted.
 
 ### Soundness
 
