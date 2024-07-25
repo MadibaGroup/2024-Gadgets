@@ -34,6 +34,6 @@ headless: true
 - [concat]({{< relref "/docs/gadgets/concat" >}})
 - [range]({{< relref "/docs/gadgets/range" >}})
 - [circuit]({{< relref "/docs/gadgets/circuit" >}})
-- [sangria]({{< relref "/docs/gadgets/sangria" >}})
+- [folding]({{< relref "/docs/gadgets/folding" >}})
 
 <br />

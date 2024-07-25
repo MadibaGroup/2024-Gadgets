@@ -1,18 +1,18 @@
-# Sangria
+# Folding (Sangria)
 
 The following document is heavily based on the [Sangria techincal note](https://github.com/geometryxyz/technical_notes/blob/main/sangria_folding_plonk.pdf) and its [condensed form](https://geometry.xyz/notebook/sangria-a-folding-scheme-for-plonk).
 
 ## Intuition
 
-Given a PLONK circuit, and two private input/public input pairs, we want to reduce the work of checking each of these individually to the work of checking one such relation a single time This is called folding. Before we get into folding, though, let's review how a PLONK circuit works.
+Given a PLONK circuit, and two private input/public input pairs, we want to reduce the work of checking each of these individually to the work of checking one such relation a single time. This is called folding, and the model we explain here for Plonk, specifically, is called Sangria. Before we get into folding, though, let's review how a PLONK circuit works.
 
 In [circuit](../circuit) we look at how a circuit with a single gate works, but now we generalize to multi-gate circuits. Here we have vectors $\mathsf{L}$, $\mathsf{R}$, $\mathsf{O}$ $\in \mathbb{F}^{s + n +1}$ representing the right and left input, and the output, of each gate, where $n$ is the number of public inputs and $s$ is the number of gates. The $+1$ is an extra row to check the final result, i.e. if the circuit is satisfied. Together, $(\mathsf{L}, \mathsf{R}, \mathsf{O})$ is called the computational trace. These three vectors are divided into $X$, the public inputs, and $W$, the private inputs, or witness. A PLONK proof will show that a public input/private input pair $(X, W)$ satisfies a circuit defined by the tuple $(\mathsf{Q}, \mathsf{S})$, where $\mathsf{Q}$ is the set of selector vectors, and $\mathsf{S}$ is the set of copy contraints. A circuit being satisfied means that the copy constraints are satisfied, and that each gate is satisfied. The $i^{th}$ gate of the circuit is defined as ${q_L}_i \cdot l_i + {q_R}_i \cdot r_i + {q_O}_i \cdot o_i + {q_M}_i \cdot l_i \cdot r_i + {q_c}_i$ where ${q_L}_i, {q_R}_i, {q_O}_i, {q_M}_i, {q_c}_i$ are the $i^{th}$ values of each selector vector, and $l_i, r_i, o_i$ are the $i^{th}$ values of  $\mathsf{L}$, $\mathsf{R}$, and $\mathsf{O}$.
 
 Now, we turn to folding. Say we want to combine the checks for two private input/public input pairs, $(X', W')$ and $(X'', W'')$. We start by trying the most direct appraoch to reducing our two checks down to one: let's take a random linear combination of $(X', W')$ and $(X'', W'')$, and perform the check on it. Then our new private input/public input pair would be $(X, W) := (X' + sX'', W' + sW'')$.  We consider this as input to the circuit: $C_{Q,i}(\mathsf{L}, \mathsf{R}, \mathsf{O})$ $= C_{Q,i}(\mathsf{L}' + s\mathsf{L}'', \mathsf{R}' + s\mathsf{R,}'', \mathsf{O} + s\mathsf{O}'')$
 
-$= {q_L}_i \cdot (l_{1i} + sl_{2i} ) + {q_R}_i \cdot (r_{1i} + sr_{2i}) + {q_O}_i \cdot (o_{1i} + so_{2i}) + {q_M}_i \cdot (l_{1i} + s1_{2i}) (r_{1i} + sr_{2i}) + {q_C}_i$
+$= {q_L}_i \cdot (l_{i}' + sl_{i}'' ) + {q_R}_i \cdot (r_{i}' + sr_{i}'') + {q_O}_i \cdot (o_{i}' + so_{i}'') + {q_M}_i \cdot (l_{i}' + s1_{i}'') (r_{i}' + sr_{i}'') + {q_C}_i$
 
-$= {q_L}_i \cdot l_{1i} + {q_L}_i \cdot sl_{2i}  + {q_R}_i \cdot r_{1i} + {q_R}_i \cdot sr_{2i} + {q_O}_i \cdot o_{1i} + {q_O}_i \cdot so_{2i} + {q_M}_i \cdot (l_{1i} + s1_{2i}) (r_{1i} + sr_{2i}) + {q_C}_i$
+$= {q_L}_i \cdot l_{i}' + {q_L}_i \cdot sl_{i}''  + {q_R}_i \cdot r_{i}' + {q_R}_i \cdot sr_{i}'' + {q_O}_i \cdot o_{i}' + {q_O}_i \cdot so_{i}'' + {q_M}_i \cdot (l_{i}'+ s1_{i}'') (r_{i}' + sr_{i}'') + {q_C}_i$
 
 $\neq C_{Q,i}(\mathsf{L}', \mathsf{R}', \mathsf{O}')+ C_{Q,i}(\mathsf{L}'', \mathsf{R}'', \mathsf{O}'')$
 
@@ -77,9 +77,9 @@ To show completeness, we observe that $C'_{Q,i}(\mathsf{L}, \mathsf{R}, \mathsf{
 
 $= C'_{Q,i}(\mathsf{L}' + s\mathsf{L}'', \mathsf{R}' + s\mathsf{R}'', \mathsf{O}' + s\mathsf{O}'', u' + u'', \mathsf{E}' -s\mathsf{T} + s^2\mathsf{E}'')$
 
-$= (u' + su'') \cdot [{q_L}_i \cdot (l_i' + sl_i'') + {q_R}_i \cdot (r_i' + sr_i'') + {q_O}_i \cdot (o_i' +so_i'')] + {q_M}_i \cdot (l_i' + sl_i'') (r_i' + sr_i'') + (u' + su'')^2{q_C}_i + e'_i -st + s^2 e''_i$
+$= (u' + su'') \cdot [{q_L}_i \cdot (l_i' + sl_i'') + {q_R}_i \cdot (r_i' + sr_i'') + {q_O}_i \cdot (o_i' +so_i'')] + {q_M}_i \cdot (l_i' + sl_i'') (r_i' + sr_i'') + (u' + su'')^2{q_C}_i + e'_i -st_i + s^2 e''_i$
 
-$= u'(q_{L_i} \cdot l_i' + q_{R_i} \cdot r_i' + q_{O_i} \cdot o_i' + q_{M_i} \cdot l_i' \cdot r_i' + u' \cdot q_{C_i}) + e'_i + u'' \cdot s^2(q_{L_i} \cdot l_i'' + q_{R_i} \cdot r_i'' + q_{O_i} \cdot o_i'' + q_{M_i} \cdot l_i'' \cdot r_i'' + u'' \cdot q_{C_i}) + s^2 e''_i \newline + u''(q_{L_i} \cdot l_i' + q_{R_i} \cdot r_i' + q_{O_i} \cdot oi') + u'(q_{L_i} \cdot li'' + q_{R_i} \cdot r_i'' + q_{O_i} \cdot o_i'') + q_{M_i} \cdot (l_i' \cdot r_i'' + l_i'' \cdot r_i') + 2u'u''q_{C_i} - st$
+$= u'(q_{L_i} \cdot l_i' + q_{R_i} \cdot r_i' + q_{O_i} \cdot o_i' + q_{M_i} \cdot l_i' \cdot r_i' + u' \cdot q_{C_i}) + e'_i + u'' \cdot s^2(q_{L_i} \cdot l_i'' + q_{R_i} \cdot r_i'' + q_{O_i} \cdot o_i'' + q_{M_i} \cdot l_i'' \cdot r_i'' + u'' \cdot q_{C_i}) + s^2 e''_i \newline + u''(q_{L_i} \cdot l_i' + q_{R_i} \cdot r_i' + q_{O_i} \cdot oi') + u'(q_{L_i} \cdot li'' + q_{R_i} \cdot r_i'' + q_{O_i} \cdot o_i'') + q_{M_i} \cdot (l_i' \cdot r_i'' + l_i'' \cdot r_i') + 2u'u''q_{C_i} - st_i$
 
 $= u'(q_{L_i} \cdot l_i' + q_{R_i} \cdot r_i' + q_{O_i} \cdot o_i' + q_{M_i} \cdot l_i' \cdot r_i' + u' \cdot q_{C_i}) + e'_i + u'' \cdot s^2(q_{L_i} \cdot l_i'' + q_{R_i} \cdot r_i'' + q_{O_i} \cdot o_i'' + q_{M_i} \cdot l_i'' \cdot r_i'' + u'' \cdot q_{C_i}) + s^2 e''_i$
 
@@ -89,9 +89,9 @@ So following the steps of the protocol above provides a folding that satisfies c
 
 ### Soundness
 
-The proof for soundness is rather involved, so we provide the intuition for it here, and the [technical note](https://github.com/geometryxyz/technical_notes/blob/main/sangria_folding_plonk.pdf) for Sangria provides the proof in full. We rely on the fact that a binging commitment is used.
+The proof for soundness is rather involved, so we provide the intuition for it here, and the [technical note](https://github.com/geometryxyz/technical_notes/blob/main/sangria_folding_plonk.pdf) for Sangria provides the proof in full. We rely on the fact that a binding commitment is used.
 
-First, we apply the forking lemma for folding ([Nova paper](https://eprint.iacr.org/2021/370.pdf) lemma 1), protocol to obtain three transcripts. We then show that, using all three transcripts, the extractor can interpolate the values of $\mathsf{E}', r_e', \mathsf{E}'', r_e''$. It can also interpolate $(W', r_l', r_r', r_o')$ and $(W'', r_l'', r_r'', r_o'')$ using any two of the transcripts. Finally, we show that the traces these values belong to satisfy the copy constraints and the equality for each gate.
+First, we apply the forking lemma for folding ([Nova paper](https://eprint.iacr.org/2021/370.pdf) lemma 1), to obtain three transcripts. We then show that, using all three transcripts, the extractor can interpolate the values of $\mathsf{E}', r_e', \mathsf{E}'', r_e''$. It can also interpolate $(W', r_l', r_r', r_o')$ and $(W'', r_l'', r_r'', r_o'')$ using any two of the transcripts. Finally, we show that the traces these values belong to satisfy the copy constraints and the equality for each gate.
 
 ### Zero-Knowledge
 
