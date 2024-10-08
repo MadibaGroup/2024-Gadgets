@@ -47,7 +47,6 @@ Properties:
 * Other useful properties 👍: the sum of all values in a array can be computed by evaluating the polynomial at $P_1(\boxed{1})$! $\sum_{i=0}^d \mathsf{data}_i\cdot\boxed{1}^i=\sum_{i=0}^d \mathsf{data}_i$ . You can also show two arrays have the same sum (called a "sum check") by subtracting them and showing $P(\boxed{1})=0$.
 * Other useful properties 👍: when all coefficients are 0, the polynomial will be the zero polynomial ($P_1(\square)=0$). Coefficients can be entire polynomials, not just integers. A common optimization in Poly-IOP systems is taking a set of equations of polynomials that should equal 0, placing each into the coefficient of a super-polynomial, and showing the super-polynomial is the zero polynomial (which can be proven overwhelmingly by showing it is 0 at a randomly selected point).
 
-
 ### Encoding 2: Evaluation Points
 
 Create a list of points $\{x,y\}$ for the data: $\langle\{0,\mathsf{data}_0\},\{1,\mathsf{data}_1\},\{2,\mathsf{data}_2\},\{3,\mathsf{data}_3\},\{4,\mathsf{data}_4\}\rangle$ and interpolate a polynomial $P_2(\square)$ through these points. 
@@ -97,7 +96,6 @@ The optimization we will explore enables interpolation via the fast Fourier tran
 
 ![Roots of Unity](/figures/Figures.001.png)
 
-
 For terminology, we say $\omega$ is a generator with multiplicative order $\kappa$ in $\mathbb{Z}_q$ (or $\omega \in \mathbb{G}_\kappa$). This implies $\omega^\kappa=1$. Rearranging, $\omega=\sqrt[\kappa]{1}$. Thus we can equivalently describe $\omega$ as a $\kappa$-th root of 1. Finally, as 1 is the unity element in $Z_q$, $\omega$ is commonly called a $\kappa$-th root of unity. 
 
 For practical purposes, $\kappa$ represents the length of the longest array of data we can use in our protocol. Where does $\kappa$ come from? Different elements of $Z_q$ will have different multiplicative orders but every order must be a divisor of $q-1$. Thus $\kappa$ is the largest divisor of the exact value of $q$ used in an elliptic curve standard. BLS12-384 has $\kappa=2^{32}$ (for terminology, this called a $2$-adicity of $32$). In summary, we can only encode data arrays of length up to $2^{32}=4,294,967,296$.
@@ -127,8 +125,6 @@ Here are the simplifications:
 2) Integers are from a bounded range: $[0,q-1]$ or $\mathbb{Z}_q$ for a large (e.g., 256 bit) prime $q$.
 3) Polynomials are univariate (only one variable).
 
-
-
 ### Worked Example: Evaluation
 
 Assume $q=97$.
@@ -141,27 +137,23 @@ In this case, the list of coefficients (from least to greatest) is $\{44,45,83,6
 
 (Remark: Think of a straight line. It is of form $P(\square)=c_1\square+c_0$ which is degree $1$ with $2$ coefficients. You need $2$ points to figure out what the line should be. Generalizing, for a degree $d$ polynomial, $d+1$ coefficients or $d+1$ points are needed to fully determine it.)
 
-So the goal is to find $8$ points on the polynomial $P(\square)$. The points can be at any x-coordinates so we will chose $\{1,2,3,4,5,6,7,8\}$ for now. We call this the *domain*. Finding the points is a simple as plugging the x-coordinates into the $P(\square)$ equation:  
+So the goal is to find $8$ points on the polynomial $P(\square)$. The points can be at any x-coordinates so we will chose $\{1,2,3,4,5,6,7,8\}$ for now. We call this the *domain*. Finding the points is a simple as plugging the x-coordinates into the $P(\square)$ equation:
+
 $$
+\begin{alignat}{1}
 P(\boxed{1})=81 \boxed{1}^7+57 \boxed{1}^6+11 \boxed{1}^5+59 \boxed{1}^4+60 \boxed{1}^3+83 \boxed{1}^2+45 \boxed{1}+44=52 \\
-
 P(\boxed{2})=81 \boxed{2}^7+57 \boxed{2}^6+11 \boxed{2}^5+59 \boxed{2}^4+60 \boxed{2}^3+83 \boxed{2}^2+45 \boxed{2}+44=59 \\
-
 P(\boxed{3})=81 \boxed{3}^7+57 \boxed{3}^6+11 \boxed{3}^5+59 \boxed{3}^4+60 \boxed{3}^3+83 \boxed{3}^2+45 \boxed{3}+44=69 \\
-
 P(\boxed{4})=81 \boxed{4}^7+57 \boxed{4}^6+11 \boxed{4}^5+59 \boxed{4}^4+60 \boxed{4}^3+83 \boxed{4}^2+45 \boxed{4}+44=81 \\
-
 P(\boxed{5})=81 \boxed{5}^7+57 \boxed{5}^6+11 \boxed{5}^5+59 \boxed{5}^4+60 \boxed{5}^3+83 \boxed{5}^2+45 \boxed{5}+44=12 \\
-
 P(\boxed{6})=81 \boxed{6}^7+57 \boxed{6}^6+11 \boxed{6}^5+59 \boxed{6}^4+60 \boxed{6}^3+83 \boxed{6}^2+45 \boxed{6}+44=15 \\
-
 P(\boxed{7})=81 \boxed{7}^7+57 \boxed{7}^6+11 \boxed{7}^5+59 \boxed{7}^4+60 \boxed{7}^3+83 \boxed{7}^2+45 \boxed{7}+44=92 \\
-
 P(\boxed{8})=81 \boxed{8}^7+57 \boxed{8}^6+11 \boxed{8}^5+59 \boxed{8}^4+60 \boxed{8}^3+83 \boxed{8}^2+45 \boxed{8}+44=36 \\
+\end{alignat}
 $$
-
 
 In more succinct form, we are moving between a list of 8 coefficients and a list of 8 points on the polynomial.
+
 $$
 \left(
 \begin{array}{cccccccc}
@@ -176,8 +168,8 @@ $$
 \end{array}
 \right)
 $$
-Before figuring out how to go backward, we are going redo the same thing one more time, this time using matrix notation. The equivalent computation we just did is the following:
 
+Before figuring out how to go backward, we are going redo the same thing one more time, this time using matrix notation. The equivalent computation we just did is the following:
 
 $$
 \left(
@@ -192,9 +184,7 @@ $$
  \boxed{8}^0 & \boxed{8}^1 & \boxed{8}^2 & \boxed{8}^3 & \boxed{8}^4 & \boxed{8}^5 & \boxed{8}^6 & \boxed{8}^7\\
 \end{array}
 \right)
-
 \cdot
-
 \left(
 \begin{array}{c}
  44 \\
@@ -206,11 +196,8 @@ $$
  57 \\
  81 \\
 \end{array}
-\right)
-
- =
- 
- \left(
+\right)=
+\left(
 \begin{array}{c}
  ? \\
  ? \\
@@ -223,7 +210,9 @@ $$
 \end{array}
 \right)
 $$
+
 Evaluating it:
+
 $$
 \left(
 \begin{array}{cccccccc}
@@ -237,9 +226,7 @@ $$
  1 & 8 & 64 & 27 & 22 & 79 & 50 & 12 \\
 \end{array}
 \right)
-
 \cdot
-
 \left(
 \begin{array}{c}
  44 \\
@@ -251,11 +238,8 @@ $$
  57 \\
  81 \\
 \end{array}
-\right)
-
- =
- 
- \left(
+\right)=
+\left(
 \begin{array}{c}
  52 \\
  59 \\
@@ -283,11 +267,10 @@ Moving back to cryptography, imagine you have the polynomial in encrypted (or co
 
 A matrix with the above form is called a Vandermonde matrix. This process is called a discrete Fourier transform (or DFT). FFT is a special case of DFT and is faster. 
 
-
-
 ### Worked Example: Interpolation
 
 Now assume we have a set of points and want to go backwards to determine the coefficients:
+
 $$
 \left(
 \begin{array}{cccccccc}
@@ -302,7 +285,9 @@ $$
 \end{array}
 \right)
 $$
+
 Placing the evaluation process into matrix multiplication makes interpolation very easy to understand. We simply move the matrix to the other side of the equation, which involves inverting it. Above, we did the following (coefficients to points):
+
 $$
 \left(
 \begin{array}{cccccccc}
@@ -316,9 +301,7 @@ $$
  1 & 8 & 64 & 27 & 22 & 79 & 50 & 12 \\
 \end{array}
 \right)
-
 \cdot
-
 \left(
 \begin{array}{c}
  44 \\
@@ -330,11 +313,8 @@ $$
  57 \\
  81 \\
 \end{array}
-\right)
-
- =
- 
- \left(
+\right)=
+\left(
 \begin{array}{c}
  52 \\
  59 \\
@@ -347,7 +327,9 @@ $$
 \end{array}
 \right)
 $$
+
 To do interpolation (points to coefficients), we move the matrix to the other side of the equation:
+
 $$
 \left(
 \begin{array}{c}
@@ -360,11 +342,8 @@ $$
  57 \\
  81 \\
 \end{array}
-\right)
-
- =
- 
- \left(
+\right)=
+\left(
 \begin{array}{cccccccc}
  1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
  1 & 2 & 4 & 8 & 16 & 32 & 64 & 31 \\
@@ -376,10 +355,8 @@ $$
  1 & 8 & 64 & 27 & 22 & 79 & 50 & 12 \\
 \end{array}
 \right)^{-1}
-
 \cdot
-
- \left(
+\left(
 \begin{array}{c}
  52 \\
  59 \\
@@ -392,7 +369,9 @@ $$
 \end{array}
 \right)
 $$
+
 Solving the inverse matrix, we arrive at:
+
 $$
 \left(
 \begin{array}{c}
@@ -405,10 +384,7 @@ $$
  57 \\
  81 \\
 \end{array}
-\right)
-
- =
- 
+\right)=
 \left(
 \begin{array}{cccccccc}
  8 & 69 & 56 & 27 & 56 & 69 & 8 & 96 \\
@@ -421,10 +397,8 @@ $$
  73 & 71 & 78 & 64 & 33 & 19 & 26 & 24 \\
 \end{array}
 \right)
-
 \cdot
-
- \left(
+\left(
 \begin{array}{c}
  52 \\
  59 \\
@@ -437,6 +411,7 @@ $$
 \end{array}
 \right)
 $$
+
 Can we always invert the matrix? The answer is yes, assuming each row of the matrix is unique, which is to say, each evaluation point is unique (no repeats). The complexity analysis is the same as evaluation: the matrix can be pre-computed and the multiplication is $O(n^2)$. The FFT trick will work equally well on this matrix.
 
 #### Jargon
@@ -448,7 +423,6 @@ This process is called the inverse discrete Fourier transform (or iDFT). If each
 #### Divide-and-conquer
 
 The high level idea of speeding up both processes is called divide-and-conquer. Recall this equation:
-
 
 $$
 \left(
@@ -463,9 +437,7 @@ $$
  1 & 8 & 64 & 27 & 22 & 79 & 50 & 12 \\
 \end{array}
 \right)
-
 \cdot
-
 \left(
 \begin{array}{c}
  44 \\
@@ -477,11 +449,8 @@ $$
  57 \\
  81 \\
 \end{array}
-\right)
-
- =
- 
- \left(
+\right)=
+\left(
 \begin{array}{c}
  52 \\
  59 \\
@@ -494,7 +463,9 @@ $$
 \end{array}
 \right)
 $$
+
 What if we split this up? For example, say we find the evaluation at $\{1,2,3,4\}$ using the first four coefficients $\{44,45,83,60\}$, then we find the evaluation at $\{5,6,7,8\}$ using the last four coefficients $\{59,11,57,81\}$:
+
 $$
 \left(
 \begin{array}{cccc}
@@ -504,9 +475,7 @@ $$
  1 & 4 & 16 & 64 \\
 \end{array}
 \right)
-
 \cdot
-
 \left(
 \begin{array}{c}
  44 \\
@@ -514,11 +483,8 @@ $$
  83 \\
  60 \\
 \end{array}
-\right)
-
- =
- 
- \left(
+\right)=
+\left(
 \begin{array}{c}
  38 \\
  73 \\
@@ -526,9 +492,9 @@ $$
  57 \\
 \end{array}
 \right)
+$$
 
-\\
-
+$$
 \left(
 \begin{array}{cccc}
  1 & 5 & 25 & 28 \\
@@ -537,9 +503,7 @@ $$
  1 & 8 & 64 & 27 \\
 \end{array}
 \right)
-
 \cdot
-
 \left(
 \begin{array}{c}
  59 \\
@@ -547,11 +511,8 @@ $$
  57 \\
  81 \\
 \end{array}
-\right)
-
- =
- 
- \left(
+\right)=
+\left(
 \begin{array}{c}
  24 \\
  79 \\
@@ -560,6 +521,7 @@ $$
 \end{array}
 \right)
 $$
+
 Next, we need some way to *combine* $\{38,73,24,57\}$ and $\{24, 79, 60, 65\}$ to generate $\{52,59,69,81,12,15,92,36\}$ (that does not add a bunch more work). Assume we can pull this off, then we can recurse using this trick. Instead of directly computing the above two equations (involving two 4x4 matricies), we can split each of them into 2x2 matrices (for a total of four) using the same process. There is just one problem: there isn't a simple algorithm for the *combine* step (faster than just computing the entire original matrix) that is going to work for us.
 
 #### One parameter we can change
@@ -582,6 +544,7 @@ $$
 We cannot control the coefficients of the polynomial — they are what they are. What the polynomial evaluates to at $\{1,2,3,\ldots\}$ is also what it is, we cannot control it. However the one thing we did get to choose is $\{1,2,3,\ldots\}$ itself (which we call the domain). We can map between coefficients and any domain, assuming there are 8 unique evaluation points. They do not have to be these specific points. So the question is, are there a different set of points that are "nicer" to deal with than $\{1,2,3,\ldots\}$?
 
 The domain shows up in the second column of the matrix:
+
 $$
 \left(
 \begin{array}{cccccccc}
@@ -596,7 +559,9 @@ $$
 \end{array}
 \right)
 $$
+
 What if we make the points (the second column) the same values as the second row of the table: a domain of $\{1,2,4,8,16,32,64,31\}$? In this case, we will get a symmetric matrix which is a little "nicer" than one that is asymmetric. We will show both the matrix (using for evaluation) and its inverse (used for interpolation):
+
 $$
 \left(
 \begin{array}{cccccccc}
@@ -609,8 +574,7 @@ $$
  1 & 64 & 22 & 50 & 96 & 33 & 75 & 47 \\
  1 & 31 & 88 & 12 & 81 & 86 & 47 & 2 \\
 \end{array}
-\right)
-=
+\right)=
 \left(
 \begin{array}{cccccccc}
  32 & 41 & 79 & 38 & 34 & 89 & 74 & 2 \\
@@ -624,7 +588,9 @@ $$
 \end{array}
 \right)^{-1}
 $$
+
 This is nice but once we invert the matrix, is not symmetric any more. Is there a matrix where both the original and its inverse are symmetric? The answer is yes! Consider the domain $\{1,33,22,47,96,64,75,50\}$:
+
 $$
 \left(
 \begin{array}{cccccccc}
@@ -637,10 +603,7 @@ $$
  1 & 75 & 96 & 22 & 1 & 75 & 96 & 22 \\
  1 & 50 & 75 & 64 & 96 & 47 & 22 & 33 \\
 \end{array}
-\right)
-
-=
-
+\right)=
 \left(
 \begin{array}{cccccccc}
  85 & 85 & 85 & 85 & 85 & 85 & 85 & 85 \\
@@ -654,7 +617,9 @@ $$
 \end{array}
 \right)^{-1}
 $$
+
 With this new domain and the same coefficients, we can find the evaluation points:
+
 $$
 \left(
 \begin{array}{cccccccc}
@@ -668,9 +633,7 @@ $$
  1 & 50 & 75 & 64 & 96 & 47 & 22 & 33 \\
 \end{array}
 \right)
-
 \cdot
-
 \left(
 \begin{array}{c}
  44 \\
@@ -682,11 +645,8 @@ $$
  57 \\
  81 \\
 \end{array}
-\right)
-
- =
- 
- \left(
+\right)=
+\left(
 \begin{array}{c}
  52 \\
  13 \\
@@ -699,7 +659,9 @@ $$
 \end{array}
 \right)
 $$
+
 Or we can find the coefficients, given the evaluation points:
+
 $$
 \left(
 \begin{array}{c}
@@ -712,10 +674,7 @@ $$
  57 \\
  81 \\
 \end{array}
-\right)
-
- =
- 
+\right)=
 \left(
 \begin{array}{cccccccc}
  85 & 85 & 85 & 85 & 85 & 85 & 85 & 85 \\
@@ -728,10 +687,8 @@ $$
  85 & 89 & 27 & 18 & 12 & 8 & 70 & 79 \\
 \end{array}
 \right)
-
 \cdot
-
- \left(
+\left(
 \begin{array}{c}
  52 \\
  13 \\
@@ -745,8 +702,8 @@ $$
 \right)
 $$
 
-
 In summary:
+
 $$
 \left(
 \begin{array}{cccccccc}
@@ -761,6 +718,7 @@ $$
 \end{array}
 \right)
 $$
+
 Two questions:
 
 1) How did we find the domain $\{1,33,22,47,96,64,75,50\}$?
@@ -784,6 +742,7 @@ The idea is that you find the degree of your polynomial $d$, then you need $d+1$
 The remaining question is whether we can split the matrices into smaller (halve) matrices, and then combine the results. The answer is yes if the domain is based on roots of unity (for completeness, the answer is not necessarily no for other kinds of domains, but we do not explore that here). 
 
 Recall, with the new domain, we have:
+
 $$
 \left(
 \begin{array}{cccccccc}
@@ -798,43 +757,42 @@ $$
 \end{array}
 \right)
 $$
+
 Instead of dividing the coefficients into the first half and second halves, we will divide them into even coefficients (coefficients of terms $x^i$ where $i$ is even, including 0) and odd coefficients. We treat these two sets of coefficients as new polynomials $P_\mathsf{even}(\square)$ and $P_\mathsf{odd}(\square)$. Then we combine the two based on the following property:
+
 $$
 P(\square)=P_{\mathsf{even}}(\square^2)+\square\cdot P_{\mathsf{odd}}(\square^2)
 $$
 
 How does this save computation? We compute the following values:
+
 $$
+\begin{alignat}{1}
 P_\mathsf{even}(\boxed{\omega^0}^2)=P_\mathsf{even}(1)=57 \boxed{1}^3+59 \boxed{1}^2+83 \boxed{1}^1+44=49 \\
-
 P_\mathsf{even}(\boxed{\omega^1}^2)=P_\mathsf{even}(22)=57 \boxed{22}^3+59 \boxed{22}^2+83 \boxed{22}^1+44=72 \\
-
 P_\mathsf{even}(\boxed{\omega^2}^2)=P_\mathsf{even}(96)=57 \boxed{96}^3+59 \boxed{96}^2+83 \boxed{96}^1+44=60 \\
-
 P_\mathsf{even}(\boxed{\omega^3}^2)=P_\mathsf{even}(75)=57 \boxed{75}^3+59 \boxed{75}^2+83 \boxed{75}^1+44=92 \\
-
 \hline
-
 P_\mathsf{odd}(\boxed{\omega^0}^2)=P_\mathsf{odd}(1)=81\boxed{1}^3+11\boxed{1}^2+60\boxed{1}^1+45=3 \\
-
 P_\mathsf{odd}(\boxed{\omega^1}^2)=P_\mathsf{odd}{(22})= 81\boxed{22}^3+11\boxed{22}^2+60\boxed{22}^1+45=57 \\
-
 P_\mathsf{odd}(\boxed{\omega^2}^2)=P_\mathsf{odd}(96)=81\boxed{96}^3+11\boxed{96}^2+60\boxed{96}^1+45=12 \\
-
 P_\mathsf{odd}(\boxed{\omega^3}^2)=P_\mathsf{odd}(75)=81\boxed{75}^3+11\boxed{75}^2+60\boxed{75}^1+45=11 \\
+\end{alignat}
 $$
+
 We are not done, we have to figure out what to do with these 8 values still. But before showing that, note that while we are performing 8 evaluations, the evaluations only have 4 coefficients, so this is half the work of not using divide-and-conquer. Further, through recursion, we will be halving this over and over again anyways. 
 
 Also note that $P_\mathsf{even}(\boxed{\omega^0}^2)=P_\mathsf{even}(\boxed{\omega^4}^2)$ (or the multiplicative order of $\omega^2$ is half of $\omega$) which is why we only need to evaluate the first 4 values. 
 
 To combine these values, we take the output of the even evaluations: $\{49, 72, 60, 92\}$ and repeat it: $E=\{49, 72, 60, 92,49, 72, 60, 92\}$. We do the same with odd: $O=\{3, 57, 12, 11,3, 57, 12, 11\}$. We then compute: $E+O\cdot\mathsf{domain}$ (where multiplication is element-wise):
 
-
 $$
 \{49, 72, 60, 92,49, 72, 60, 92\}+(\{3, 57, 12, 11,3, 57, 12, 11\}\cdot\{1,33,22,47,96,64,75,50\})\\
 =\{52, 13, 33, 27, 46, 34, 87, 60\}
 $$
+
 That completes the operation and we have.
+
 $$
 \left(
 \begin{array}{cccccccc}
@@ -849,10 +807,6 @@ $$
 \end{array}
 \right)
 $$
-
-
-
-
 
 ## Footnotes
 
