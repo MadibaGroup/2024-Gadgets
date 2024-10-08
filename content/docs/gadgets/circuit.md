@@ -19,14 +19,10 @@ This means that if $\mathsf{T}[3] = 0$, this is the circuit which must be satisf
 {{< mermaid >}}
 
 flowchart LR
-
-   in0["In[0]"] & in1["In[1]"] **-->** id1((x))
-
-   t2["T[2]"] & id1 **-->** id2((x))
-
-   in2["In[2]"] & id2 **-->** id3((+))
-
-   id3 **-->** in3["In[3]"]
+   in0["In[0]"] & in1["In[1]"] --> id1((x))
+   t2["T[2]"] & id1 --> id2((x))
+   in2["In[2]"] & id2 --> id3((+))
+   id3 --> in3["In[3]"]
 
 {{< /mermaid >}}
 
@@ -35,16 +31,11 @@ And if $\mathsf{T}[3] = 1$, this is the circuit which must be satisfied:
 {{< mermaid >}}
 
 flowchart LR
-
-   in0["In[0]"] & t0["T[0]"] **-->** id1((x))
-
-   in1["In[1]"] & t1["T[1]"] **-->** id2((x))
-
-   id1 & id2 **-->** id3((+))
-
-   in2["In[2]"] & id3 **-->** id4((+))
-
-   id4 **-->** in3["In[3]"]
+   in0["In[0]"] & t0["T[0]"] --> id1((x))
+   in1["In[1]"] & t1["T[1]"] --> id2((x))
+   id1 & id2 --> id3((+))
+   in2["In[2]"] & id3 --> id4((+))
+   id4 --> in3["In[3]"]
 
 {{< /mermaid >}}
 
