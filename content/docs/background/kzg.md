@@ -70,7 +70,7 @@ KZG takes a different approach. To commit to a polynomial, the idea is to commit
 
 The idea of KZG is to commit to the evaluation of the polynomial at one random point $\tau$ and have this commitment represent a commitment to the entire polynomial. The important caveat is that no one knows what $\tau$ is (it is a secret). How do we pull this off? How can the prover figure out the evaluation of their polynomial at $\tau$ without knowing what $\tau$ is? And finally, if they can figure out what $P(\tau)$ is, can they not just reverse engineer what $\tau$ is (for example, by committing to $y=P(\tau)=\tau$)?
 
-KZG uses a trusted setup to generate a commitment to $\tau$. It then uses homomorphic operations to let a prover compute a commimtent to $P(\tau)$ using the commiment to $\tau$ without learning what $\tau$ is or even what $P(\tau)$ is. Committing to $P(\tau)$ is considered as good as committing to the entire polynomial! We will see these details next.
+KZG uses a trusted setup to generate a commitment to $\tau$. It then uses homomorphic operations to let a prover compute a commitment to $P(\tau)$ using the commitment to $\tau$ without learning what $\tau$ is or even what $P(\tau)$ is. Committing to $P(\tau)$ is considered as good as committing to the entire polynomial! We will see these details next.
 
 ### Setup
 
@@ -143,7 +143,7 @@ If the prover wants to open at multiple roots, it runs the exact same protocol b
 
 #### Selective Open: Arbitrary Point
 
-Most of the time, the prover wants to prove the polynomial passes through an arbitrary point $\{x,y\}=\{x,P(x)\}$ where $y$ is some integer that is not zero (and thus $x$ is not a root). Again, this is very easy to prove once we have a protocol for proving roots. The intution is as follows: if and only if $P(\square)$ has value $y$ at point $x$, then subtracting $y$ from $P(\square)$ will create a new polynomial $\tilde{P}(\square)=P(\square)-y$ that is zero at point $x$, making $x$ a root. (Visually you can imagine a polynomial with height $y$ at a point $x$, and subtracting $y$ shifts the whole polynomial down $y$ units, moving that point down to the x-axis.) The verifier can construct $K_{\tilde{P}(\tau)}$ from $K_{P(\tau)}$ using the additive homomorphic property:  $K_{\tilde{P}(\tau)}=K_{P(tau)\cdot} g^{-y}$. Then the prover shows $K_{\tilde{P}(\tau)}$ has a root at point $x$ using the protocol above for proving roots.
+Most of the time, the prover wants to prove the polynomial passes through an arbitrary point $\{x,y\}=\{x,P(x)\}$ where $y$ is some integer that is not zero (and thus $x$ is not a root). Again, this is very easy to prove once we have a protocol for proving roots. The intuition is as follows: if and only if $P(\square)$ has value $y$ at point $x$, then subtracting $y$ from $P(\square)$ will create a new polynomial $\tilde{P}(\square)=P(\square)-y$ that is zero at point $x$, making $x$ a root. (Visually you can imagine a polynomial with height $y$ at a point $x$, and subtracting $y$ shifts the whole polynomial down $y$ units, moving that point down to the x-axis.) The verifier can construct $K_{\tilde{P}(\tau)}$ from $K_{P(\tau)}$ using the additive homomorphic property:  $K_{\tilde{P}(\tau)}=K_{P(tau)\cdot} g^{-y}$. Then the prover shows $K_{\tilde{P}(\tau)}$ has a root at point $x$ using the protocol above for proving roots.
 
 #### Selective Open: Batch of Points
 

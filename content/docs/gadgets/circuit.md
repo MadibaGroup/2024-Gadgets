@@ -146,7 +146,7 @@ Where we get the "for $X = \omega^0$" due to zeroing parts of the polynomials (s
 
 $\mathsf{T}[3]\cdot(\mathsf{In}[0]\cdot\mathsf{T}[0]+\mathsf{In}[1]\cdot\mathsf{T}[1])+(1-\mathsf{T}[3])\cdot(\mathsf{In}[0]\cdot\mathsf{In}[1]\cdot\mathsf{T}[2])+\mathsf{In}[2]=\mathsf{In}[3]$
 
-But this means precisely that $\mathsf{In}$ satisfies the circuit $\mathsf{T}$, which was the condition we assumed about the prover. Thus, the $Y_\mathsf{Zero}$ it creates by following the protocol is zero, and its transcipt will be accepted.
+But this means precisely that $\mathsf{In}$ satisfies the circuit $\mathsf{T}$, which was the condition we assumed about the prover. Thus, the $Y_\mathsf{Zero}$ it creates by following the protocol is zero, and its transcript will be accepted.
 
 ### Soundness
 

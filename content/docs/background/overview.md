@@ -18,7 +18,7 @@ While we may add more background in future iterations, for now we punt on explai
    2. Construction: Pedersen Commitments
    3. Resources: [Lecture (Boneh)](https://www.youtube.com/watch?v=IkNZWJFcfcU)
 3. Zero knowledge proofs (high level idea)
-   1. Properities: completeness, soundness, zero-knowledge
+   1. Properties: completeness, soundness, zero-knowledge
    2. Resources: [Lecture (Goldwasser)](https://www.youtube.com/watch?v=uchjTIlPzFo)
 
 ## zk-SNARKs
@@ -43,7 +43,7 @@ What are the assumptions about the function, inputs, and outputs?
 * Inputs can also be undisclosed (private inputs), meaning the verifier does not see them and does need them to check that $\pi$ is correct. But what does it mean to check $z$ is correct if the inputs are not disclosed? It proves that the verifier knows some input $x$ such that, given function $f$, public input $y$ and public output $z$ that $z=f(x,y)$. This called a "proof of knowledge." The $\pi$ reveals zero information (or "zero knowledge") about $x$ (beyond what you can learn by knowing it is a legal input to $f$ that produces $y$).
 * As inferable from the above example, inputs can be a mix of public and private.
 
-**Ouputs:**
+**Outputs:**
 
 * The output $z$ is disclosed to the verifier, meaning that to check $\pi$ is correct requires a copy of $z$. 
 * $z$ does need to be a single integer, it can be a data structure. 
@@ -60,11 +60,11 @@ At first glance, SNARKs (rather than zk-SNARKs) seem useless but remember that p
 Last, it is important to recognize we are not getting something for "free" here. In order for the verifier to enjoy fast verification of $f$, someone else (the prover) had to execute $f$ and generate a proof $\pi$ for $f$ which is substantially more work than just running $f$. So the prover does extra work to save the verifier work. What are some models where this kind of trade-off makes sense for SNARKs (rather than zk-SNARKs)? There are probably many more, but the two big ones are:
 
 * Case 1: there is a powerful (but not trusted) computer like a cloud service and a smaller constrained device (like a phone with battery life). Additionally, the economics need to make sense for the cloud to execute on behalf of the smartphone (fees, subscription, service offered by phone manufacturer, ...).
-* Case 2: there are many verifiers that want to verifier the same thing so the system scales better if one party executes and issues a proof $\pi$ and the verifiers all check the proof rather than re-executing the function.
+* Case 2: there are many verifiers that want to verify the same thing so the system scales better if one party executes and issues a proof $\pi$ and the verifiers all check the proof rather than re-executing the function.
 
 ## Plonk & its gadgets
 
-There are numerous ways to implement a zk-SNARK system. Plonk uses a templated called a polynomial interactive oracle proof (or poly-IOP). The next background article will go into more detail about it. Roughly, the prover stores inputs, outputs, gates, and intermediate values in one-dimensional arrays (or vectors). It will also perform a set of operations on the arrays to prove the circuit is executed correctly. Generally proving that array operations are done correctly will require proofs that are proportional (in size and time) to the length of the array. 
+There are numerous ways to implement a zk-SNARK system. Plonk uses a templated called a polynomial interactive oracle proof (or Poly-IOP). The next background article will go into more detail about it. Roughly, the prover stores inputs, outputs, gates, and intermediate values in one-dimensional arrays (or vectors). It will also perform a set of operations on the arrays to prove the circuit is executed correctly. Generally proving that array operations are done correctly will require proofs that are proportional (in size and time) to the length of the array. 
 
 The trick to avoiding this is two-fold: first, the array will be encoded into a polynomial (univariate meaning a single variable) and every operation that is done on the array can be "mirrored" on the polynomial representation of the array. Second, the verifier will not receive the polynomials themselves but rather a short commitment to them. Again, every operation being done on the arrays and polynomials need to be mirrored on the commitments to the polynomials so the verifier can follow along.
 

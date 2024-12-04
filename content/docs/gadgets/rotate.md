@@ -40,7 +40,7 @@ To prove the relation between $\mathsf{Arr}$ and $\mathsf{Arr'}$, the prover mus
 
 We assume that $\mathsf{Arr}$ and $\mathsf{Arr'}$ are encoded as the y-coordinates into a univariant polynomial where the x-coordinates (called the domain $\mathcal{H}_\kappa$) are chosen as the multiplicative group of order $\kappa$ with generator $\omega\in\mathbb{G}_\kappa$ (see [Background](../../background/poly-iop) for more). In short, $\omega^0$ is the first element and $\omega^{\kappa-1}$ is the last element of $\mathcal{H}_\kappa$. If $\kappa$ is larger than the length of the arrays, then $\mathsf{Arr}$ can be padded with any value (say, all 1s) as long as this is done before the rotation to create $\mathsf{Arr'}$ is computed. 
 
-Recall the constrant we want to prove: 
+Recall the constraint we want to prove: 
 
 1. $\mathsf{Arr}'[i]= \mathsf{Arr}[i+\alpha]$ for $i \in [0, n-1]$
 
@@ -84,7 +84,7 @@ The prover will generate a random challenge evaluation point (using strong Fiat-
 
 -  $\mathsf{Poly}_\mathsf{Arr}(\zeta)=\mathsf{KZG.Open}(K_\mathsf{Arr},\zeta)$
 
-- $$\mathsf{Poly}_\mathsf{Arr'}(\zeta)=\mathsf{KZG.Open}(K_\mathsf{Arr'},\zeta)$
+- $\mathsf{Poly}_\mathsf{Arr'}(\zeta)=\mathsf{KZG.Open}(K_\mathsf{Arr'},\zeta)$
 
 - $Q(\zeta)=\mathsf{KZG.Open}(K_Q,\zeta)$
 
@@ -114,7 +114,7 @@ $= \mathsf{Poly_{Arr'}}(\zeta) - \mathsf{Poly_{Arr}}(\zeta)\cdot \omega^\alpha -
 
 $= 0$
 
-Where the third equality relies on the fact that $\mathsf{Poly_{Vanish}}(X)$ is divisible by $X^\kappa - 1$. This is true if $\mathsf{Poly_{Vanish}}(X)$ is vanishing on $\mathcal{H_\kappa}$, i.e. if $\mathsf{Poly}_\mathsf{Arr'}(X) - \mathsf{Poly}_\mathsf{Arr}(X)\cdot\omega^\alpha = 0 \space \forall X \in \mathcal{H_\kappa}$.  This is true if $\mathsf{Poly}_\mathsf{Arr'}(X) - \mathsf{Poly}_\mathsf{Arr}(X\cdot\omega^\alpha) = 0 \space \forall X \in \mathcal{H_\kappa}$, which is in turn true if $\mathsf{Arr'}[i] - \mathsf{Arr}[i + \alpha] = 0 \space \forall i \in [0, \kappa -1]$, since $\mathsf{Poly_Arr}(\omega^i)=\mathsf{Arr}[i] \space \forall i \in [0, \kappa -1]$. But $\mathsf{Arr'}[i] - \mathsf{Arr}[i + \alpha] = 0 \space \forall i \in [0, n-1]$ is precisely the relation between $\mathsf{Arr'}$ and $\mathsf{Arr}$ that we assumed held for our prover (if $\kappa \gt n$ then the arrays get padded such that this relation still holds), thus the $Y_\mathsf{Zero}(X)$ it creates by following the protocol is the zero polynomial, and its transcipt will be accepted.
+Where the third equality relies on the fact that $\mathsf{Poly_{Vanish}}(X)$ is divisible by $X^\kappa - 1$. This is true if $\mathsf{Poly_{Vanish}}(X)$ is vanishing on $\mathcal{H_\kappa}$, i.e. if $\mathsf{Poly}_\mathsf{Arr'}(X) - \mathsf{Poly}_\mathsf{Arr}(X)\cdot\omega^\alpha = 0 \space \forall X \in \mathcal{H_\kappa}$.  This is true if $\mathsf{Poly}_\mathsf{Arr'}(X) - \mathsf{Poly}_\mathsf{Arr}(X\cdot\omega^\alpha) = 0 \space \forall X \in \mathcal{H_\kappa}$, which is in turn true if $\mathsf{Arr'}[i] - \mathsf{Arr}[i + \alpha] = 0 \space \forall i \in [0, \kappa -1]$, since $\mathsf{Poly_Arr}(\omega^i)=\mathsf{Arr}[i] \space \forall i \in [0, \kappa -1]$. But $\mathsf{Arr'}[i] - \mathsf{Arr}[i + \alpha] = 0 \space \forall i \in [0, n-1]$ is precisely the relation between $\mathsf{Arr'}$ and $\mathsf{Arr}$ that we assumed held for our prover (if $\kappa \gt n$ then the arrays get padded such that this relation still holds), thus the $Y_\mathsf{Zero}(X)$ it creates by following the protocol is the zero polynomial, and its transcript will be accepted.
 
 ### Soundness
 
@@ -131,9 +131,9 @@ We prove knowledge soundness in the Algebraic Group Model (AGM). To do so, we mu
 
 Our proof is as follows:
 
-For the second win condition to be fulfilled, there must be some $i \in [0, n-1]$ such that $\mathsf{Arr'}[i] \neq \mathsf{Arr}[i + \alpha]$. But then $\mathsf{Poly}_\mathsf{Vanish}(X)$ is not vanishing on $\mathcal{H}_\kappa$, so $Q(X)$ is not a polynomial (it is a rational function). This means that $\mathcal{A}$ cannot calcuated the correct commitment value $g^{Q(\tau)}$ without solving the t-SDH. Thus, $\mathcal{A}$ chooses an arbitrary value for $Q(\tau)$ and writes $K_Q = g^{Q(\tau)}$ to the transcript. Before this, it also writes commitments to $\mathsf{Poly}_\mathsf{Arr}(X)$ and $\mathsf{Poly}_\mathsf{Arr'}(X)$. All commitments $\mathcal{A}$ has written are linear combinations of the elements in $[g, g^\tau, g^{\tau^2}, \dots,g^{\tau^{n-1}}]$. $\mathcal{E}$ is given these coefficients (since $\mathcal{A}$ is an algebraic adversary) so $\mathcal{E}$ can output the original polynomials.
+For the second win condition to be fulfilled, there must be some $i \in [0, n-1]$ such that $\mathsf{Arr'}[i] \neq \mathsf{Arr}[i + \alpha]$. But then $\mathsf{Poly}_\mathsf{Vanish}(X)$ is not vanishing on $\mathcal{H}_\kappa$, so $Q(X)$ is not a polynomial (it is a rational function). This means that $\mathcal{A}$ cannot calculated the correct commitment value $g^{Q(\tau)}$ without solving the t-SDH. Thus, $\mathcal{A}$ chooses an arbitrary value for $Q(\tau)$ and writes $K_Q = g^{Q(\tau)}$ to the transcript. Before this, it also writes commitments to $\mathsf{Poly}_\mathsf{Arr}(X)$ and $\mathsf{Poly}_\mathsf{Arr'}(X)$. All commitments $\mathcal{A}$ has written are linear combinations of the elements in $[g, g^\tau, g^{\tau^2}, \dots,g^{\tau^{n-1}}]$. $\mathcal{E}$ is given these coefficients (since $\mathcal{A}$ is an algebraic adversary) so $\mathcal{E}$ can output the original polynomials.
 
-$\mathcal{A}$ then obtains the random challenge $\zeta$ (using strong Fiat-Shamir). By the binding property of KZG commitments, $\mathsf{Poly}_\mathsf{Arr}(\zeta)$ and $\mathsf{Poly}_\mathsf{Arr'}(\zeta)$ can each only feasibliy be opened to one value. For $\mathcal{A}$ to have the verifier accept, it must produce a proof that $Q(\zeta)$ opens to $Q(\zeta) = \frac{Y_\mathsf{Vanish}} {(\zeta^\kappa - 1)}$. This means being able to produce $g^{q(\tau)}$ where $q(\tau) = \frac{Q(\tau) - Q(\zeta)}{\tau - \zeta}$ and $Q(\zeta) = \frac{Y_\mathsf{Vanish}}{(\zeta^\kappa - 1)}$. Since $Q(\tau)$ and $Q(\zeta)$ are known, this implies knowing $g^{\frac{1}{\tau - \zeta}}$. Thus $\mathcal{A}$ would have found $\langle\zeta,g^{\frac{1}{\tau - \zeta}}\rangle$, which is the t-SDH problem. We have shown that creating an accepting proof reduces to the t-SDH, so $\mathcal{A}$'s probability of success is negligible.
+$\mathcal{A}$ then obtains the random challenge $\zeta$ (using strong Fiat-Shamir). By the binding property of KZG commitments, $\mathsf{Poly}_\mathsf{Arr}(\zeta)$ and $\mathsf{Poly}_\mathsf{Arr'}(\zeta)$ can each only feasibly be opened to one value. For $\mathcal{A}$ to have the verifier accept, it must produce a proof that $Q(\zeta)$ opens to $Q(\zeta) = \frac{Y_\mathsf{Vanish}} {(\zeta^\kappa - 1)}$. This means being able to produce $g^{q(\tau)}$ where $q(\tau) = \frac{Q(\tau) - Q(\zeta)}{\tau - \zeta}$ and $Q(\zeta) = \frac{Y_\mathsf{Vanish}}{(\zeta^\kappa - 1)}$. Since $Q(\tau)$ and $Q(\zeta)$ are known, this implies knowing $g^{\frac{1}{\tau - \zeta}}$. Thus $\mathcal{A}$ would have found $\langle\zeta,g^{\frac{1}{\tau - \zeta}}\rangle$, which is the t-SDH problem. We have shown that creating an accepting proof reduces to the t-SDH, so $\mathcal{A}$'s probability of success is negligible.
 
 ### Zero-Knowledge
 

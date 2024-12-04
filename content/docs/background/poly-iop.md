@@ -5,7 +5,7 @@ type: docs
 
 # Polynomials
 
-All the gadgets in Plonkbook follow the same high level model, called a polynomial interactive proof (Poly-IOP). Each gadget is defined as an operation on one or more arrays of data. The arrays are encoded into a univariate polynomial (see below) and the polynomial is committed to (next background section) and passed to the verifier. The verifier works with commitments and sees that operations on commitments are mirroring a set of operations being done on the polynomials themselves. And the operations on the polynomials are mirroring operations on the data encoded into them as an array. 
+All the gadgets in Plonkbook follow the same high level model, called a polynomial interactive oracle proof (Poly-IOP). Each gadget is defined as an operation on one or more arrays of data. The arrays are encoded into a univariate polynomial (see below) and the polynomial is committed to (next background section) and passed to the verifier. The verifier works with commitments and sees that operations on commitments are mirroring a set of operations being done on the polynomials themselves. And the operations on the polynomials are mirroring operations on the data encoded into them as an array. 
 
 Each gadget description will begin with the array and show the operation being done on the array. It will then show how to manipulate a polynomial holding the array so that the operation is performed on the underlying array. It will then show how the verifier can use only commitments to the polynomials, rather than the full polynomials, to follow along and check every step.
 
@@ -53,7 +53,7 @@ Create a list of points $\{x,y\}$ for the data: $\langle\{0,\mathsf{data}_0\},\{
 
 Properties:
 
-* Slow (or moderate) 👎: converting a set of points into a set of coefficients is called interpolation and is $O(n^2)$ time generally. A certain optimization allows $O(n\log n)$ time by chosing $x$ coordinates with a mathematical relationship (more on this later).
+* Slow (or moderate) 👎: converting a set of points into a set of coefficients is called interpolation and is $O(n^2)$ time generally. A certain optimization allows $O(n\log n)$ time by choosing $x$ coordinates with a mathematical relationship (more on this later).
 * Addition 👍: two arrays can be added together (slot-by-slot) by simply adding the polynomials together
 * Multiplication 👍: two arrays can be multiplied together (slot-by-slot) by simply multiplying the polynomials together
 * Opening 👍: proving the value of the $i$th element in the array is $\mathsf{data}_i$ is possible with polynomial math by showing $P_2(\boxed{i})=\mathsf{data}_i$ and KZG has a precise algorithm for this. 
@@ -106,7 +106,7 @@ For practical purposes, $\kappa$ represents the length of the longest array of d
 
 FFT is a fast algorithm for transitions between coefficients (Encoding 1) and evaluation points (Encoding 2) .
 
-```mermaid
+{{< mermaid >}}
 flowchart LR
     co[coefficients]
     points[points]
@@ -114,8 +114,7 @@ flowchart LR
     co --evaluation--> points
     points --interpolation--> co
     
-  
-```
+{{< /mermaid >}}
 
 Polynomials, interpolation, and Fourier transforms are all big topics that have general theories and applications. This article will not try to explain anything in its full generality. Instead we will simplify as much as possible, limiting ourselves to only what we need for many cryptographic applications.
 
@@ -522,7 +521,7 @@ $$
 \right)
 $$
 
-Next, we need some way to *combine* $\{38,73,24,57\}$ and $\{24, 79, 60, 65\}$ to generate $\{52,59,69,81,12,15,92,36\}$ (that does not add a bunch more work). Assume we can pull this off, then we can recurse using this trick. Instead of directly computing the above two equations (involving two 4x4 matricies), we can split each of them into 2x2 matrices (for a total of four) using the same process. There is just one problem: there isn't a simple algorithm for the *combine* step (faster than just computing the entire original matrix) that is going to work for us.
+Next, we need some way to *combine* $\{38,73,24,57\}$ and $\{24, 79, 60, 65\}$ to generate $\{52,59,69,81,12,15,92,36\}$ (that does not add a bunch more work). Assume we can pull this off, then we can recurse using this trick. Instead of directly computing the above two equations (involving two 4x4 matrices), we can split each of them into 2x2 matrices (for a total of four) using the same process. There is just one problem: there isn't a simple algorithm for the *combine* step (faster than just computing the entire original matrix) that is going to work for us.
 
 #### One parameter we can change
 

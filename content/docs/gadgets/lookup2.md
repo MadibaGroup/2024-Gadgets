@@ -50,7 +50,7 @@ It is probably worth an example at this point.
 * $\mathsf{Acc_4}=[-7,15,-12,\bot]$
 * $\mathsf{Acc_5}=[-7,15,-12,\bot,0,0,0,0,0,0,0,0,0,0,0,0]$
 
-The first array $\mathsf{Acc_1}$ is the concatination for $\mathsf{Arr}$ and $\mathsf{T}$. The intuition for this is as follows. Every element of $\mathsf{Arr}$ is in $\mathsf{T}$ (what is being proven) but the converse is not true, not every element of $\mathsf{T}$ is necessarily in $\mathsf{Arr}$. By constructing $\mathsf{Acc_1}$, the prover has an array where every element of $\mathsf{T}$ appears at least once. This will be convenient later. Additionally, if the prover can show every element in $\mathsf{Acc_1}$ is in $\mathsf{T}$, it implies every element in the original $\mathsf{Arr}$ is in $\mathsf{T}$ so it can now move forward with $\mathsf{Acc_1}$.
+The first array $\mathsf{Acc_1}$ is the concatenation for $\mathsf{Arr}$ and $\mathsf{T}$. The intuition for this is as follows. Every element of $\mathsf{Arr}$ is in $\mathsf{T}$ (what is being proven) but the converse is not true, not every element of $\mathsf{T}$ is necessarily in $\mathsf{Arr}$. By constructing $\mathsf{Acc_1}$, the prover has an array where every element of $\mathsf{T}$ appears at least once. This will be convenient later. Additionally, if the prover can show every element in $\mathsf{Acc_1}$ is in $\mathsf{T}$, it implies every element in the original $\mathsf{Arr}$ is in $\mathsf{T}$ so it can now move forward with $\mathsf{Acc_1}$.
 
 How does $\mathsf{Acc_1}$ compare to $\mathsf{T}$? They both have the same elements but $\mathsf{Acc_1}$ has a bunch of extra duplicates of values. Also the appearance of elements in $\mathsf{Acc_1}$ are in a different (arbitrary) order. Next the prover will sort the values of $\mathsf{Acc_1}$, grouping all duplicates together, and having them appear in the same order as the original $\mathsf{T}$ (which does not have to be sorted). 
 
@@ -76,9 +76,9 @@ The prover will show that $\mathsf{Acc_1}$ is constructed correctly with the $\m
 
 
 
- $\mathsf{T}$ to the end of $\mathsf{Arr}$ does not change anything about the arguement  
+ $\mathsf{T}$ to the end of $\mathsf{Arr}$ does not change anything about the argument  
 
-In fact, the only difference betweeen $\mathsf{Acc_1}$ and $\mathsf{T}$ itself is that there are serveral duplicates 
+In fact, the only difference between $\mathsf{Acc_1}$ and $\mathsf{T}$ itself is that there are several duplicates 
 
 
 
