@@ -30,7 +30,7 @@ To prove the relation between $\mathsf{Arr}$ and $\mathsf{Arr'}$, the prover mus
 
 ### Array Level
 
-\* $\mathcal{P}$ holds an array $\mathsf{Arr_1} = [a_0, a_1, a_2, \dots, a_{n-1}]$ of $n$ integers ($a_{i} \in \mathbb{Z}_q$)
+\* $\mathcal{P}$ holds an array $\mathsf{Arr} = [a_0, a_1, a_2, \dots, a_{n-1}]$ of $n$ integers ($a_{i} \in \mathbb{Z}_q$)
 
 \* $\mathcal{P}$ holds or computes $\mathsf{Arr}'$ such that:
 

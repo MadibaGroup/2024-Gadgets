@@ -40,13 +40,13 @@ What are the assumptions about the function, inputs, and outputs?
 
 * $f$ can have any number of inputs which are typically integers (modulus the large prime).
 * Inputs can be disclosed to the verifier (public inputs), meaning that to check $\pi$ is correct, the verifier also checks that these were the inputs that were used to produce $z$.
-* Inputs can also be undisclosed (private inputs), meaning the verifier does not see them and does need them to check that $\pi$ is correct. But what does it mean to check $z$ is correct if the inputs are not disclosed? It proves that the verifier knows some input $x$ such that, given function $f$, public input $y$ and public output $z$ that $z=f(x,y)$. This called a "proof of knowledge." The $\pi$ reveals zero information (or "zero knowledge") about $x$ (beyond what you can learn by knowing it is a legal input to $f$ that produces $y$).
+* Inputs can also be undisclosed (private inputs), meaning the verifier does not see them and does need them to check that $\pi$ is correct. But what does it mean to check $z$ is correct if the inputs are not disclosed? It proves that the prover knows some input $x$ such that, given function $f$, public input $y$ and public output $z$ that $z=f(x,y)$. This called a "proof of knowledge." The $\pi$ reveals zero information (or "zero knowledge") about $x$ (beyond what you can learn by knowing it is a legal input to $f$ that produces $y$).
 * As inferable from the above example, inputs can be a mix of public and private.
 
 **Outputs:**
 
 * The output $z$ is disclosed to the verifier, meaning that to check $\pi$ is correct requires a copy of $z$. 
-* $z$ does need to be a single integer, it can be a data structure. 
+* $z$ does not need to be a single integer, it can be a data structure. 
 
 **Proof Output:**
 
