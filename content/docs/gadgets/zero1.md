@@ -27,15 +27,15 @@ Shown for "zero last" but can be adapted to the other sub-types of $\texttt{zero
 
 ## Intuition
 
-This gadget is a helper gadget that is not very useful as a stand-alone gadget, but is used in nearly all other gadgets to handle things like boundary conditions (see Red Tape). The semantics of the gadget might seem weird but eventually you will see it in use (e.g., $\texttt{add2}$). The prover ($\mathcal{P}$) holds an array $\mathsf{Arr} = [a_0, a_1, a_2, \dots, a_{n-1}]$ of $n$ integers (from $\mathbb{Z}_q$). It will produce a succinct (independent of $n$) proof that $\mathsf{Arr'}$ contains a 0 at a selected element (such as the last element). At the other elements, the operation is zero-preserving, meaning it will not replace a 0 in $\mathsf{Arr}$. If an element in $\mathsf{Arr}$ is non-zero and the 
+This gadget is a helper gadget that is not very useful as a stand-alone gadget, but is used in nearly all other gadgets to handle things like boundary conditions (see Red Tape). The semantics of the gadget might seem weird but eventually you will see it in use (e.g., $\texttt{add2}$). The prover ($\mathcal{P}$) holds an array $\mathsf{Arr} = [a_0, a_1, a_2, \dots, a_{n-1}]$ of $n$ integers (from $\mathbb{Z}_q$). It will produce a succinct (independent of $n$) proof that $\mathsf{Arr'}$ contains a 0 at a selected element (such as the last element). At the other elements, the operation is zero-preserving, meaning it will not replace a 0 in $\mathsf{Arr}$. [TODO]{If an element in $\mathsf{Arr}$ is non-zero and the 
 
 
 
 it contains $\bot$ which is  an arbitrary integer 
 
- the same at every element 
+ the same at every element }
 
- $\mathsf{Prod}_\mathsf{Arr}$ is the product of all the elements in the array. The prover will encode the array into a polynomial $\mathsf{Poly}_\mathsf{Arr}$ (using [evaluation points](../../background/poly-iop) on the domain $\mathcal{H}_\kappa$) and commit to the polynomial $K_\mathsf{Arr}$. The verifier ($\mathcal{V}$) cannot check $\textsf{Arr}$ or $\mathsf{Poly}_\mathsf{Arr}$ directly (they may contain secret information, and even if they do not, it is too long to check) so the verifier only sees $K_\mathsf{Arr}$ and the asserted value $\mathsf{Prod_\mathsf{Arr}}$.Zeroing Parts of an Array
+ $\mathsf{Prod}_\mathsf{Arr}$ is the product of all the elements in the array. The prover will encode the array into a polynomial $\mathsf{Poly}_\mathsf{Arr}$ (using [evaluation points](../../background/poly-iop) on the domain $\mathcal{H}_\kappa$) and commit to the polynomial $K_\mathsf{Arr}$. The verifier ($\mathcal{V}$) cannot check $\textsf{Arr}$ or $\mathsf{Poly}_\mathsf{Arr}$ directly (they may contain secret information, and even if they do not, it is too long to check) so the verifier only sees $K_\mathsf{Arr}$ and the asserted value $\mathsf{Prod_\mathsf{Arr}}$.[TODO]{Zeroing Parts of an Array}
 
 Assuming an input array of size $n$: $\langle \mathsf{data}_0,\mathsf{data}_1,\ldots,\mathsf{data}_{n-1}\rangle$ and input array encoded into the polynomial. This uses "Encoding 2" from above (evaluation points) and uses "Roots of Unity + FFT" from above where $\omega\in\mathbb{G}_\kappa$ is a generator for the x-coordinates of the points.
 
