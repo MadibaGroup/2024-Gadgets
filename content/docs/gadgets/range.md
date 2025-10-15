@@ -167,7 +167,8 @@ First, we prove $\eta\ge{0}$. To make $\mathsf{Poly}_\mathsf{Vanish1}$ exist, th
 Second, we prove $\eta\le{r}$. For simplicity, we assume $r$ is the power of two (recall $\kappa=\log_2{r}$). From $\mathsf{Poly}_\mathsf{Vanish2}$, we know $\mathsf{T}[0]$ is less than or equal to $2^\kappa$. Therefore, $\eta\le{r}$.
 
 ### Zero-Knowledge
-
+<!--
 To prove the above protocol is zero-knowledge, we do so by constructing a probabilistic polynomial time simulator $\mathcal{S}$ which, for every (possibly malicious) verifier $\mathcal{V}$, can output a view of the execution of the protocol that is indistinguishable from the view produced by the real execution of the program.
 
 The simulator $\mathcal{S}$ randomly generates an $\eta^*$, then follows the same steps a prover would prove the lookup argument. $\mathcal{S}$ computes $\mathsf{T^*}$ and interpolates $\mathsf{Poly}_\mathsf{T^*}$ from $\mathsf{T^*}$. It computes $Q^*(X)$ and finally outputs the commitments to each of these polynomials (and writes the commitments to the transcript). Then, it generates the random challenge $\zeta^*$ (once again this is by strong Fiat-Shamir). It creates opening proofs for $\mathsf{Poly}_\mathsf{T^*}(\zeta^*),\mathsf{Poly}_\mathsf{T^*}(\zeta^*\omega)$, and $Q^*(\zeta^*)$, and writes these to the transcript as well. Since $\mathcal{S}$ knows each of the above polynomials, it can honestly compute this step and the proof will be accepted by $\mathcal{V}$. The transcript it generates this way will be indistinguishable from a transcript generated from a real execution since $\mathsf{PolyCommit}_\mathsf{Ped}$ has the property of Indistinguishability of Commitments due to the randomization by $h^{\hat{\phi}(x)}$.
+-->
